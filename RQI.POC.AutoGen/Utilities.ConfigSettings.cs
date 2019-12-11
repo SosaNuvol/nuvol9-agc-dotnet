@@ -249,6 +249,36 @@ namespace RQI.POC.AutoGen
             }
         }
 
+        public static string EnumTableList
+        {
+            get
+            {
+                // ** Init
+                var result = ConfigurationManager.AppSettings["RQI.POC.AutoGen.EnumTableList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string MetaDataTableList
+        {
+            get
+            {
+                // ** Init
+                var result = ConfigurationManager.AppSettings["RQI.POC.AutoGen.MetaDataTableList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
         private static string ConvertToSQLListFormat(string rawList)
         {
             // ** Init

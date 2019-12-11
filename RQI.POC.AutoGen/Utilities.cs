@@ -74,7 +74,6 @@ namespace RQI.POC.AutoGen
             return false;
         }
 
-
         public static string TransformName(string name)
         {
             if (String.IsNullOrEmpty(name))

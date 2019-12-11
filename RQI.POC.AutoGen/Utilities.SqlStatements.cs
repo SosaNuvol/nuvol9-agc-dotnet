@@ -442,6 +442,119 @@ ORDER BY
 			return results;
 		}
 
+		private const string _ENUM_TABLE_SQL_FORMAT = "SELECT * FROM {0}.{1}";
+		public static EnumTable GetEnumTable(string schemaName, string tableName)
+		{
+			// ** Init
+			EnumTable result = new EnumTable();
+			result.Values = new Dictionary<string, int>();
+
+			using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, schemaName, tableName)))
+			{
+				// ** Init
+				string enumName = rdr.GetName(0);
+				result.IDName = enumName;
+				if (enumName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
+				{
+					enumName = enumName.Substring(0, enumName.Length - 2);
+				}
+				result.EnumName = enumName;
+
+				string baseClassName;
+				Type fType = rdr.GetFieldType(0);
+				if (fType == typeof(byte))
+				{
+					baseClassName = "byte";
+				}
+				else if (fType == typeof(int))
+				{
+					baseClassName = "int";
+				}
+				else if (fType == typeof(short))
+				{
+					baseClassName = "short";
+				}
+				else if (fType == typeof(long))
+				{
+					baseClassName = "long";
+				}
+				else
+				{
+					// ReSharper disable once UseStringInterpolation
+					throw new NotSupportedException(string.Format("Enum type for {0}.{1} is {2} but must be byte, int, short or long", schemaName, tableName, fType.Name));
+				}
+				result.BaseClassName = baseClassName;
+
+				while (rdr.Read())
+				{
+					// ** Init
+					int id = Convert.ToInt32(rdr[0]);
+					string name = (string)rdr[1];
+
+					name = TransformEnumName(name);
+
+					result.Values.Add(name, id);
+				}
+			}
+
+			// ** Return result
+			return result;
+		}
+
+		public static MetaDataTable GetMetaDataTable(string schemaName, string szTableName)
+		{
+			// Locals
+			var oResult = new MetaDataTable();
+			oResult.Values = new Dictionary<string, string>();
+
+			// Loop through the result
+			using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, szTableName, schemaName)))
+			{
+				string szMetaDataName = rdr.GetName(0);
+				oResult.IDName = szMetaDataName;
+				if (szMetaDataName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
+				{
+					szMetaDataName = szMetaDataName.Substring(0, szMetaDataName.Length - 2);
+				}
+				oResult.MetaDataName = szMetaDataName;
+
+				// Loop through the tables and build the list
+				while (rdr.Read())
+				{
+					// Print to console
+					System.Diagnostics.Debug.WriteLine("What up");
+
+					string szId = (string)rdr[0];
+					string szName = (string)rdr[1];
+					// TODO:  Andres you can comment this out so that you can just take what is in the database.
+					szName = TransformEnumName(szName);
+
+					// Add to list
+					oResult.Values.Add(szId, szName);
+				}
+			}
+
+			// Return Result
+			return oResult;
+		}
+
+		public static string TransformEnumName(string name)
+		{
+			// ** Init
+			if (string.IsNullOrEmpty(name))
+				return string.Empty;
+
+			// ** Transform
+			var newName = name;
+			newName = Inflector.ToPascalCase(newName, false);
+			newName = IsStringNumeric(newName) ? "_" + newName : newName;
+			newName = StripNonAlphaNumeric(newName);
+			newName = newName.Trim();
+			newName = KeyWordCheck(newName, String.Empty);
+
+			// ** Return result
+			return newName;
+		}
 
 		#endregion Database Artifacts
 	}

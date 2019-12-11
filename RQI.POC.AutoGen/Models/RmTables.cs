@@ -129,12 +129,39 @@ ORDER BY
 
                     tableItem.FKTables = Utilities.LoadFKTables(tableItem.Name, tableItem.Schema);
 
+                    //loop the FK tables and see if there's a match for our FK columns
+                    foreach (Column col in tableItem.Columns)
+                    {
+                        FKTable fkt = tableItem.FKTables.FirstOrDefault(
+                            x => x.ThisColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
+                        );
+
+                        col.IsForeignKey = fkt != null;
+                        col.ForeignKeyTableName = fkt != null ? fkt.OtherSchema + "." + fkt.OtherTable : "";
+                        col.IsEnum = fkt != null && Utilities.EnumTables.Keys.Any(eKey => eKey.EndsWith("." + col.ForeignKeyTableName));
+                    }
                     #endregion Flag and load ancilary properties of table
                 }
                 else
                 {
                     // ReSharper disable once UseStringInterpolation
                     throw new Exception(string.Format("No columns for Table: {0}.{1}", tableItem.Schema, tableItem.Name));
+                }
+
+                // ** Check if this is a Types table that needs to be stubbed out.
+                // ReSharper disable once UseStringInterpolation
+                if (Utilities.EnumTables.ContainsKey(string.Format("{0}.{1}", tableItem.Schema, tableItem.Name)))
+                {
+                    //set enum table on table
+                    tableItem.Enum = Utilities.GetEnumTable(tableItem.Schema, tableItem.Name);
+                }
+
+
+                // ** Check to see if this table is a MetaDataTable
+                if (Utilities.MetaDataTables.ContainsKey(tableItem.Name))
+                {
+                    // Set MetaData table on table
+                    tableItem.MetaData = Utilities.GetMetaDataTable(tableItem.Schema, tableItem.Name);
                 }
 
                 // ** Add to Dictionary
