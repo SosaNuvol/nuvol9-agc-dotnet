@@ -124,10 +124,10 @@ ORDER BY
                     #region Flag and load ancilary properties of table
                     // ** Init
                     tableItem.IsHistorical = columns.Any(c => c.Name.Equals("IsDeleted") && c.Name.Equals("IsActive"));
-                    tableItem.SingleFKTables = LoadSingleFKTables(tableItem.Name, tableItem.Schema);
-                    tableItem.QueryableFKTables = LoadManyFKTables(tableItem.Name, tableItem.Schema);
+                    tableItem.SingleFKTables = Utilities.LoadSingleFKTables(tableItem.Name, tableItem.Schema);
+                    tableItem.QueryableFKTables = Utilities.LoadManyFKTables(tableItem.Name, tableItem.Schema);
 
-                    tableItem.FKTables = LoadManyFKTables(tableItem.Name, tableItem.Schema);
+                    tableItem.FKTables = Utilities.LoadFKTables(tableItem.Name, tableItem.Schema);
 
                     #endregion Flag and load ancilary properties of table
                 }
@@ -138,7 +138,7 @@ ORDER BY
                 }
 
                 // ** Add to Dictionary
-                if (tableLookup[key] == null) tableLookup.Add(key, tableItem);
+                if (!tableLookup.ContainsKey(key)) tableLookup.Add(key, tableItem);
             }
 
             // ** Create many to many navigation collections

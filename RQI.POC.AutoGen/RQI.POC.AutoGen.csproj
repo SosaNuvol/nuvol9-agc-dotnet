@@ -60,6 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Base\ForeignKeyRow.cs" />
+    <Compile Include="Models\Base\ForeignKeyRowCollection.cs" />
     <Compile Include="Utilities.ConfigSettings.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Models\Base\Column.cs" />
