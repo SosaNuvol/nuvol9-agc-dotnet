@@ -13,6 +13,7 @@
 namespace RQI.POC.AutoGen
 {
     using System;
+    using System.Collections.Generic;
 
     public static partial class Utilities
     {

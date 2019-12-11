@@ -137,7 +137,8 @@ ORDER BY
                         );
 
                         col.IsForeignKey = fkt != null;
-                        col.ForeignKeyTableName = fkt != null ? fkt.OtherSchema + "." + fkt.OtherTable : "";
+                        col.ForeignKeyTableName = fkt != null ? fkt.OtherTable : "";
+                        col.ForeignKeyTableSchemaName = fkt != null ? fkt.OtherSchema : "";
                         col.IsEnum = fkt != null && Utilities.EnumTables.Keys.Any(eKey => eKey.EndsWith("." + col.ForeignKeyTableName));
                     }
                     #endregion Flag and load ancilary properties of table
@@ -156,7 +157,6 @@ ORDER BY
                     tableItem.Enum = Utilities.GetEnumTable(tableItem.Schema, tableItem.Name);
                 }
 
-
                 // ** Check to see if this table is a MetaDataTable
                 if (Utilities.MetaDataTables.ContainsKey(tableItem.Name))
                 {
@@ -165,13 +165,45 @@ ORDER BY
                 }
 
                 // ** Add to Dictionary
+                // TODO:  Not sure that I need this line
                 if (!tableLookup.ContainsKey(key)) tableLookup.Add(key, tableItem);
             }
 
             // ** Create many to many navigation collections
-            foreach (var manyToManyTable in _manyToManyTables)
+            foreach (var table in _manyToManyTables)
             {
-                
+                // ** Init
+                var fromColumn = table.CompositeKeyColumns[0];
+                var toColumn = table.CompositeKeyColumns[1];
+
+                // ReSharper disable once InlineOutVariableDeclaration
+                Table fromTable;
+                if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out fromTable))
+                {
+                    // ReSharper disable once UseStringInterpolation
+                    throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
+                }
+
+                // ReSharper disable once InlineOutVariableDeclaration
+                Table toTable;
+                if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out toTable))
+                {
+                    // ReSharper disable once UseStringInterpolation
+                    throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
+                }
+
+                fromTable.Collections.Add(new NavigationCollection
+                {
+                    EntityType = toColumn.CleanName.Replace("Id", ""),
+                    CollectionName = toTable.Name,
+                    IsManyToMany = true
+                });
+
+                toTable.Collections.Add(new NavigationCollection
+                {
+                    EntityType = fromColumn.CleanName.Replace("Id", ""),
+                    CollectionName = fromTable.Name
+                });
             }
         }
 
@@ -189,6 +221,7 @@ ORDER BY
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
+/*
         private SqlCommand GetCommand(string sql)
         {
             SqlConnection conn = new SqlConnection(_sqlConnectionString);
@@ -196,6 +229,7 @@ ORDER BY
             conn.Open();
             return cmd;
         }
+*/
 
     }
 }

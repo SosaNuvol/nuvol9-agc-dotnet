@@ -45,7 +45,9 @@ namespace RQI.POC.AutoGen.Models.Base
         public string DefaultSetting { get; set; }
         
         public string ForeignKeyTableName { get; set; }
-        
+
+        public string ForeignKeyTableSchemaName { get; set; }
+
         public string TableName { get; set; }
         
         public string TableSchema { get; set; }
