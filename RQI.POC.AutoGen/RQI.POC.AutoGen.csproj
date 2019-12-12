@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="Models\Base\ForeignKeyRow.cs" />
     <Compile Include="Models\Base\ForeignKeyRowCollection.cs" />
+    <Compile Include="Models\Base\RmBase.cs" />
+    <Compile Include="Models\RmViews.cs" />
     <Compile Include="Utilities.ConfigSettings.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Models\Base\Column.cs" />

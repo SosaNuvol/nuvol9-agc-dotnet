@@ -13,6 +13,7 @@
 namespace RQI.POC.AutoGen
 {
     using System;
+    using System.Collections.Generic;
 
     public static partial class Utilities
     {
@@ -36,6 +37,16 @@ namespace RQI.POC.AutoGen
 
         public static bool ShouldGenerateTable(string tableName)
         {
+            return ShouldGenerate(tableName, IncludeTableListEnumerable, ExcludeTableListEnumerable);
+        }
+
+        public static bool ShouldGenerateView(string viewName)
+        {
+            return ShouldGenerate(viewName, IncludeViewListEnumerable, ExcludeViewListEnumerable);
+        }
+
+        public static bool ShouldGenerate(string objectName, IEnumerable<string> includeList, IEnumerable<string> excludeList)
+        {
             // ** Init
             var generateAll = IncludeTableList.Equals("*");
 
@@ -45,14 +56,10 @@ namespace RQI.POC.AutoGen
                 /*********************************************************************
                  * When generating all tables then we look at the exclude tables list
                  *********************************************************************/
-
-                // ** Init
-                var excludeList = ExcludeTableListEnumerable;
-
                 // ** Check that the table name is not in the exclude list
                 foreach (var excludeItem in excludeList)
                 {
-	                if (IsRegexMatch(tableName, excludeItem.Trim())) return false;
+                    if (IsRegexMatch(objectName, excludeItem.Trim())) return false;
                 }
 
                 // ** Table was not on the exclude list
@@ -65,9 +72,9 @@ namespace RQI.POC.AutoGen
              * This means that tables were specifically requested in the includeList need to make
              * them prove themselves.
              ************************************************************************************/
-            foreach (var includeItem in IncludeTableListEnumerable)
+            foreach (var includeItem in includeList)
             {
-	            if (IsRegexMatch(tableName, includeItem.Trim())) return true;
+                if (IsRegexMatch(objectName, includeItem.Trim())) return true;
             }
 
             // ** Return result

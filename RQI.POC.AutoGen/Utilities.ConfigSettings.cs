@@ -55,6 +55,7 @@ namespace RQI.POC.AutoGen
             }
         }
 
+        #region TABLES
         /// <summary>
         /// List of all tables that will be included in the ORM.  Make sure that the schema is specified.
         ///     i.e. Docs.Packages,rules.Rulesets
@@ -121,7 +122,78 @@ namespace RQI.POC.AutoGen
                 return tableNameArray.Select(AddSchemaIfMissing).ToList();
             }
         }
+        #endregion TABLES
 
+        #region VIEWS
+
+        /// <summary>
+        /// List of all tables that will be included in the ORM.  Make sure that the schema is specified.
+        ///     i.e. Docs.Packages,rules.Rulesets
+        /// </summary>
+        public static string IncludeViewList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeViewList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+
+                // ** Return result
+                return rawValue;
+            }
+        }
+
+        /// <summary>
+        /// Wrapper around the IncludeTableList that returns an IEnumerable
+        /// </summary>
+        public static IEnumerable<string> IncludeViewListEnumerable
+        {
+            get
+            {
+                // ** Init
+                var tableNameArray = IncludeViewList.Split(',');
+
+                // ** Return result
+                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+            }
+        }
+
+        /// <summary>
+        /// This is a list of tables to exclude when the includeList has an '*'.
+        /// </summary>
+        public static string ExcludeViewList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeViewList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "^vwGen_*,vwUserExperienceSchedules";
+
+                // ** Return result
+                return rawValue;
+            }
+        }
+
+        /// <summary>
+        /// Wrapper around the ExcludeTableList that returns an IEnumerable
+        /// </summary>
+        public static IEnumerable<string> ExcludeViewListEnumerable
+        {
+            get
+            {
+                // ** Init
+                var tableNameArray = ExcludeViewList.Split(',');
+
+                // ** Return result
+                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+            }
+        }
+
+        #endregion VIEWS
         /// <summary>
         /// This is used for all Regex comparisons.  If true it will ignore the case of string comparisons.
         /// </summary>

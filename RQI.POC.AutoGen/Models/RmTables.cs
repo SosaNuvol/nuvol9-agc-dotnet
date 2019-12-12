@@ -13,43 +13,39 @@ namespace RQI.POC.AutoGen.Models
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Data.SqlClient;
     using System.Linq;
     using Base;
     using Microsoft.Practices.Unity;
 
-    public class RmTables
+    public class RmTables : RmBase
     {
         private List<Table> _tables;
         private readonly List<Table> _manyToManyTables;
-        private readonly string _sqlConnectionString;
-        private const string _SQL_STATEMENT = @"
-SELECT
-	T.TABLE_CATALOG
-	, T.TABLE_SCHEMA
-	, T.TABLE_NAME
-	, T.TABLE_TYPE
-FROM INFORMATION_SCHEMA.TABLES AS T
-WHERE
-	(T.TABLE_TYPE='BASE TABLE')
-	AND (t.TABLE_SCHEMA IN (@SCHEMA_LIST@))
-ORDER BY
-	T.TABLE_SCHEMA,
-	T.TABLE_NAME
-";
-
-        private string _sqlStatement;
+        private const string _BASE_TABLE = "BASE TABLE";
+//        private const string _SQL_STATEMENT = @"
+//SELECT
+//	T.TABLE_CATALOG
+//	, T.TABLE_SCHEMA
+//	, T.TABLE_NAME
+//	, T.TABLE_TYPE
+//FROM INFORMATION_SCHEMA.TABLES AS T
+//WHERE
+//	(T.TABLE_TYPE='BASE TABLE')
+//	AND (t.TABLE_SCHEMA IN (@SCHEMA_LIST@))
+//ORDER BY
+//	T.TABLE_SCHEMA,
+//	T.TABLE_NAME
+//";
 
         [InjectionConstructor]
-        public RmTables([Dependency("SqlConnectionString")]string sqlConnectionString)
+        public RmTables([Dependency("SqlConnectionString")]string sqlConnectionString) : base(sqlConnectionString)
         {
             // ** Bind to Properties
-            _sqlConnectionString = sqlConnectionString;
             _tables = null;
             _manyToManyTables = new List<Table>();
 
             // ** Init
-            InitInstance(Utilities.SchemaList);
+            InitInstance(Utilities.SchemaList, _BASE_TABLE);
         }
 
         public List<Table> Load()
@@ -60,7 +56,7 @@ ORDER BY
             // ** Init
             _tables = new List<Table>();
             var tableLookup  = new Dictionary<string, Table>();
-            using (IDataReader dataReader = GetReader(_sqlStatement))
+            using (IDataReader dataReader = GetReader(sqlStatement))
             {
                 while (dataReader.Read())
                 {
@@ -72,8 +68,7 @@ ORDER BY
                     };
 
                     // ** Check if table is included
-                    // ReSharper disable once UseStringInterpolation
-                    if (Utilities.ShouldGenerateTable(string.Format("{0}.{1}", tbl.Schema, tbl.Name)))
+                    if (Utilities.ShouldGenerateTable($"{tbl.Schema}.{tbl.Name}"))
                     {
                         // ** Set needed properties to Table.
                         tbl.CleanName = Utilities.TransformName(tbl.Name);
@@ -91,10 +86,9 @@ ORDER BY
             {
                 // ** Init 
                 var key = tableItem.Schema + "." + tableItem.Name;
-                // ReSharper disable once InlineOutVariableDeclaration
-                List<Column> columns;
 
-                if (Utilities.TableColumnDict.TryGetValue(key, out columns))
+                // ** Look for the columns for the given table key.
+                if (Utilities.TableColumnDict.TryGetValue(key, out var columns))
                 {
                     // ** Init
                     tableItem.Columns = columns;
@@ -186,8 +180,7 @@ ORDER BY
                 Table fromTable;
                 if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out fromTable))
                 {
-                    // ReSharper disable once UseStringInterpolation
-                    Utilities.ErrorLogs.Add(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
+                    Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign from table for column \"{fromColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
                 }
 
@@ -195,8 +188,7 @@ ORDER BY
                 Table toTable;
                 if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out toTable))
                 {
-                    // ReSharper disable once UseStringInterpolation
-                    Utilities.ErrorLogs.Add(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
+                    Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{toColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
                 }
 
@@ -228,7 +220,7 @@ ORDER BY
                     // ** Init
                     if (!tableLookup.TryGetValue(fkTable.OtherSchema + "." + fkTable.OtherTable, out var toTable))
                     {
-                        Utilities.ErrorLogs.Add($"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
+                        Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
                         continue;
                         // throw new Exception($"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
                     }
@@ -252,30 +244,5 @@ ORDER BY
             // ** Return result
             return _tables;
         }
-
-        private void InitInstance(string schemaListString)
-        {
-            // ** Return result
-            _sqlStatement = _SQL_STATEMENT.Replace("@SCHEMA_LIST@", schemaListString);
-        }
-
-        private IDataReader GetReader(string sql)
-        {
-            SqlConnection conn = new SqlConnection(_sqlConnectionString);
-            SqlCommand cmd = new SqlCommand(sql, conn);
-            conn.Open();
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-        }
-
-/*
-        private SqlCommand GetCommand(string sql)
-        {
-            SqlConnection conn = new SqlConnection(_sqlConnectionString);
-            SqlCommand cmd = new SqlCommand(sql, conn);
-            conn.Open();
-            return cmd;
-        }
-*/
-
     }
 }
