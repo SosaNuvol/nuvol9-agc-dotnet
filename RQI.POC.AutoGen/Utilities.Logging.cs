@@ -15,8 +15,9 @@ namespace RQI.POC.AutoGen
     {
         #region Logging
 
-        public static List<string> errorLogs = new List<string>();
-        public static List<string> warningLogs = new List<string>();
+        public static List<string> ErrorLogs = new List<string>();
+
+        public static List<string> WarningLogs = new List<string>();
 
         #endregion Logging
     }

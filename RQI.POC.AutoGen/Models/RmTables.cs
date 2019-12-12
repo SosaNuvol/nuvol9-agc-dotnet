@@ -20,8 +20,8 @@ namespace RQI.POC.AutoGen.Models
 
     public class RmTables
     {
-        private readonly List<Table> _tables = new List<Table>();
-        private readonly List<Table> _manyToManyTables = new List<Table>();
+        private List<Table> _tables;
+        private readonly List<Table> _manyToManyTables;
         private readonly string _sqlConnectionString;
         private const string _SQL_STATEMENT = @"
 SELECT
@@ -45,14 +45,20 @@ ORDER BY
         {
             // ** Bind to Properties
             _sqlConnectionString = sqlConnectionString;
+            _tables = null;
+            _manyToManyTables = new List<Table>();
 
             // ** Init
             InitInstance(Utilities.SchemaList);
         }
 
-        public void Load()
+        public List<Table> Load()
         {
+            // ** Check that there is a tables generated
+            if (_tables != null) return _tables;
+
             // ** Init
+            _tables = new List<Table>();
             var tableLookup  = new Dictionary<string, Table>();
             using (IDataReader dataReader = GetReader(_sqlStatement))
             {
@@ -181,7 +187,8 @@ ORDER BY
                 if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out fromTable))
                 {
                     // ReSharper disable once UseStringInterpolation
-                    throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
+                    Utilities.ErrorLogs.Add(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
+                    // throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
                 }
 
                 // ReSharper disable once InlineOutVariableDeclaration
@@ -189,9 +196,14 @@ ORDER BY
                 if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out toTable))
                 {
                     // ReSharper disable once UseStringInterpolation
-                    throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
+                    Utilities.ErrorLogs.Add(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
+                    // throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
                 }
 
+                // ** Check that the to and from tables are present
+                if (toTable == null || fromTable == null) continue;
+
+                // ** Add to fromTable
                 fromTable.Collections.Add(new NavigationCollection
                 {
                     EntityType = toColumn.CleanName.Replace("Id", ""),
@@ -199,12 +211,46 @@ ORDER BY
                     IsManyToMany = true
                 });
 
+                // ** Add to toTable
                 toTable.Collections.Add(new NavigationCollection
                 {
                     EntityType = fromColumn.CleanName.Replace("Id", ""),
                     CollectionName = fromTable.Name
                 });
             }
+
+            // ** Create one to many navigation collections.
+            _tables = _tables.Where(t => !t.IsManyToManyTable).ToList();
+            foreach (var table in _tables)
+            {
+                foreach (var fkTable in table.SingleFKTables)
+                {
+                    // ** Init
+                    if (!tableLookup.TryGetValue(fkTable.OtherSchema + "." + fkTable.OtherTable, out var toTable))
+                    {
+                        Utilities.ErrorLogs.Add($"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
+                        continue;
+                        // throw new Exception($"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
+                    }
+
+                    if (!toTable.Collections.Any(c => c.CollectionName.Equals(table.Name)))
+                    {
+                        // Check to see if last two characters is 'ID' case insensitive.
+                        var lastPos = table.PrimaryKey.ToLower().LastIndexOf("id", StringComparison.CurrentCultureIgnoreCase);
+                        if (lastPos > -1)
+                        {
+                            toTable.Collections.Add(new NavigationCollection
+                            {
+                                EntityType = table.PrimaryKey.Substring(0, lastPos),
+                                CollectionName = table.Name
+                            });
+                        }
+                    }
+                }
+            }
+
+            // ** Return result
+            return _tables;
         }
 
         private void InitInstance(string schemaListString)
