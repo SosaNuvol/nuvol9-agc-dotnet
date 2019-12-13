@@ -10,6 +10,7 @@
 
 namespace RQI.POC.AutoGen.Models.Base
 {
+    using System;
     using System.Data;
     using System.Data.SqlClient;
     using Microsoft.Practices.Unity;
@@ -19,7 +20,7 @@ namespace RQI.POC.AutoGen.Models.Base
 
         #region Properties
         private string _classType;
-        protected readonly string sqlConnectionString;
+        protected readonly string SQLConnectionString;
         protected const string SQL_STATEMENT = @"
 SELECT
 	  T.TABLE_CATALOG
@@ -30,19 +31,22 @@ FROM
     INFORMATION_SCHEMA.TABLES AS T WITH(NOLOCK)
 WHERE
 	(T.TABLE_TYPE='@CLASS_TYPE@')
-	AND (t.TABLE_SCHEMA IN (@SCHEMA_LIST@))
+@SCHEMA_CLAUSE@
 ORDER BY
 	T.TABLE_SCHEMA,
 	T.TABLE_NAME
 ";
 
-        protected string sqlStatement;
+        protected const string SQL_SCHEMA_CLAUSE = @"	AND (t.TABLE_SCHEMA IN (@SCHEMA_LIST@))
+";
+
+        protected string SQLStatement;
 
         #endregion Properties
 
         public RmBase([Dependency("SqlConnectionString")]string sqlConnectionString)
         {
-            this.sqlConnectionString = sqlConnectionString;
+            SQLConnectionString = sqlConnectionString;
         }
 
         #region Methods
@@ -52,14 +56,26 @@ ORDER BY
             // ** Bind Properties
             _classType = classType;
 
-            // ** Return result
-            sqlStatement = SQL_STATEMENT.Replace("@SCHEMA_LIST@", schemaListString);
-            sqlStatement = sqlStatement.Replace("@CLASS_TYPE@", _classType);
+            // ** Build class type
+            SQLStatement = SQL_STATEMENT.Replace("@CLASS_TYPE@", _classType);
+
+            // ** Check if we are going to show all schemas
+            if (!schemaListString.Equals("'*'"))
+            {
+                // ** Build Schema clause
+                SQLStatement = SQLStatement.Replace("@SCHEMA_CLAUSE@", SQL_SCHEMA_CLAUSE);
+                SQLStatement = SQLStatement.Replace("@SCHEMA_LIST@", schemaListString);
+            }
+            else
+            {
+                // ** Erase the Schema clause from SQL Statement
+                SQLStatement = SQLStatement.Replace("@SCHEMA_CLAUSE@", string.Empty);
+            }
         }
 
         protected IDataReader GetReader(string sql)
         {
-            var conn = new SqlConnection(sqlConnectionString);
+            var conn = new SqlConnection(SQLConnectionString);
             var cmd = new SqlCommand(sql, conn);
             conn.Open();
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);

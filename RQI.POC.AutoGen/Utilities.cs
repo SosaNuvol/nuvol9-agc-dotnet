@@ -14,6 +14,7 @@ namespace RQI.POC.AutoGen
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static partial class Utilities
     {
@@ -27,12 +28,10 @@ namespace RQI.POC.AutoGen
         public static string AddSchemaIfMissing(string tableName)
         {
             // ** Check that there is a schema
-            // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            if (tableName.IndexOf(".") > -1) return tableName;
+            if (tableName.IndexOf(".", StringComparison.Ordinal) > -1) return tableName;
 
             // ** Add default schema of dbo
-            // ReSharper disable once UseStringInterpolation
-            return string.Format("dbo.{0}", tableName);
+            return $"dbo.{tableName}";
         }
 
         public static bool ShouldGenerateTable(string tableName)
@@ -48,10 +47,11 @@ namespace RQI.POC.AutoGen
         public static bool ShouldGenerate(string objectName, IEnumerable<string> includeList, IEnumerable<string> excludeList)
         {
             // ** Init
-            var generateAll = IncludeTableList.Equals("*");
+            var includeItems = includeList as string[] ?? includeList.ToArray();
+            var generateAll = includeItems.FirstOrDefault(s => s.Equals("*"));
 
             // ** Check Generate All tables
-            if (generateAll)
+            if (!string.IsNullOrEmpty(generateAll))
             {
                 /*********************************************************************
                  * When generating all tables then we look at the exclude tables list
@@ -72,7 +72,7 @@ namespace RQI.POC.AutoGen
              * This means that tables were specifically requested in the includeList need to make
              * them prove themselves.
              ************************************************************************************/
-            foreach (var includeItem in includeList)
+            foreach (var includeItem in includeItems)
             {
                 if (IsRegexMatch(objectName, includeItem.Trim())) return true;
             }

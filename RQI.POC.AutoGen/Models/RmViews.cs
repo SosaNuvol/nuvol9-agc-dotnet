@@ -10,7 +10,6 @@
 
 namespace RQI.POC.AutoGen.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
@@ -30,7 +29,7 @@ namespace RQI.POC.AutoGen.Models
             _views = null;
 
             // ** Init
-            InitInstance(Utilities.SchemaList, "VIEW");
+            InitInstance(Utilities.ViewsSchemaList, "VIEW");
         }
 
         #region Methods
@@ -44,7 +43,7 @@ namespace RQI.POC.AutoGen.Models
             _views = new List<Table>();
 
             // ** Build Views list
-            using (IDataReader dataReader = GetReader(sqlStatement))
+            using (IDataReader dataReader = GetReader(SQLStatement))
             {
                 // ** Root loop through reader
                 while (dataReader.Read())
@@ -77,7 +76,7 @@ namespace RQI.POC.AutoGen.Models
                 // ** Init 
                 var key = $"{tbl.Schema}.{tbl.Name}";
 
-                if (Utilities.TableColumnDict.TryGetValue(key, out var columns))
+                if (Utilities.ViewsColumnDict.TryGetValue(key, out var columns))
                 {
                     // ** Init
                     tbl.Columns = columns;
@@ -94,26 +93,10 @@ namespace RQI.POC.AutoGen.Models
                         tbl.PrimaryKey = "";
                     }
 
-                    tbl.SingleFKTables = Utilities.LoadSingleFKTables(tbl.Name, tbl.Schema);
-                    tbl.QueryableFKTables = Utilities.LoadManyFKTables(tbl.Name, tbl.Schema);
-
-                    tbl.FKTables = Utilities.LoadFKTables(tbl.Name, tbl.Schema);
-
-                    // ** loop the FK tables and see if there's a match for our FK columns
-                    foreach (Column col in tbl.Columns)
-                    {
-                        // ** Init
-                        FKTable fkt = tbl.FKTables.FirstOrDefault(
-                            x => x.ThisColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
-                        );
-
-                        col.IsForeignKey = !col.IsPK && fkt != null;
-                        col.ForeignKeyTableName = (!col.IsPK && fkt != null) ? fkt.OtherSchema + "." + fkt.OtherTable : "";
-                    }
                 }
                 else
                 {
-                    throw new Exception($"No columns for View: {tbl.Schema}.{tbl.Name}");
+                    Utilities.LogError(Utilities.ClassTypes.View, $"No columns for View: {tbl.Schema}.{tbl.Name}");
                 }
             }
 

@@ -118,16 +118,73 @@ ORDER BY
 	, [Owner]
 	, ThisTable";
 
+        private const string _VIEWS_COL_SQL_STATEMENT = @"
+SELECT
+	  T.TABLE_CATALOG AS [VIEW_CATALOG]
+	, T.TABLE_SCHEMA AS [VIEW_SCHEMA]
+	, T.TABLE_NAME AS [VIEW_NAME]
+	, COL.COLUMN_NAME
+	, COL.IS_NULLABLE
+	, COL.DATA_TYPE
+	, COL.CHARACTER_MAXIMUM_LENGTH
+	, COL.COLUMN_DEFAULT
+	, COL.ORDINAL_POSITION
+FROM
+    INFORMATION_SCHEMA.TABLES AS T WITH(NOLOCK)
+	INNER JOIN INFORMATION_SCHEMA.COLUMNS AS COL WITH (NOLOCK)
+	ON
+		(COL.TABLE_SCHEMA = T.TABLE_SCHEMA)
+		AND (COL.TABLE_NAME = T.TABLE_NAME)
+WHERE
+	(T.TABLE_TYPE='VIEW')
+@SCHEMA_CLAUSE@
+---	AND (T.TABLE_SCHEMA IN ('Docs','rules','Oracle'))
+ORDER BY
+	T.TABLE_SCHEMA,
+	T.TABLE_NAME,
+	COL.ORDINAL_POSITION
+
+";
+
+        private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN ('Docs','rules','Oracle'))
+";
+
         private static string GetTableColSqlStatement
         {
 	        get
 	        {
 				// ** Init
-				var result = _TABLE_COL_SQL_STATEMENT.Replace("@SCHEMA_LIST@", SchemaList);
+				var result = _TABLE_COL_SQL_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
 				result = result.Replace("@SYSTEM_COL_TO_IGNORE@", SQLSystemColToIgnoreList);
 				result = result.Replace("@COL_DATA_TYPES_TO_IGNORE@", SQLColDataTypeToIgnoreList);
 
 				// ** Return result
+				return result;
+	        }
+        }
+
+        private static string GetViewsColSqlStatement
+        {
+	        get
+	        {
+				// ** Init
+				var result = _VIEWS_COL_SQL_STATEMENT;
+
+				// ** Check that there is a Schema list
+				// ** Check if we are going to show all schemas
+				if (!ViewsSchemaList.Equals("'*'"))
+				{
+					// ** Build Schema clause
+					result = result.Replace("@SCHEMA_CLAUSE@", _VIEWS_SCHEMA_CLAUSE);
+					result = result.Replace("@SCHEMA_LIST@", ViewsSchemaList);
+				}
+				else
+				{
+					// ** Erase the Schema clause from SQL Statement
+					result = result.Replace("@SCHEMA_CLAUSE@", string.Empty);
+				}
+
+				// ** Return result;
 				return result;
 	        }
         }
@@ -228,6 +285,74 @@ ORDER BY
 			}
 		}
 
+		private static Dictionary<string, List<Column>> _viewsColumnDict;
+
+		public static Dictionary<string, List<Column>> ViewsColumnDict
+		{
+			get
+			{
+				// ** Check if this has been generated
+				if (_viewsColumnDict != null) return _viewsColumnDict;
+
+				// ** Init
+				_viewsColumnDict = new Dictionary<string, List<Column>>();
+				var currentViewName = "";
+				var currentViewSchema = "";
+				List<Column> list = null;
+
+				// ** Loop through columns
+				using (IDataReader rdr = GetReader(GetViewsColSqlStatement))
+				{
+					// ** Loop through column tuples
+					while (rdr.Read())
+					{
+						// ** Init
+						var viewName = (string)rdr["VIEW_NAME"];
+						var viewSchemaName = (string)rdr["VIEW_SCHEMA"];
+
+						// ** Check we are looking at the right table
+						if (!currentViewName.Equals(viewName) || !currentViewSchema.Equals(viewSchemaName))
+						{
+							// ** Reset mechanism for the loop
+							currentViewName = viewName;
+							currentViewSchema = viewSchemaName;
+							list = new List<Column>();
+							_viewsColumnDict.Add(viewSchemaName + "." + viewName, list);
+						}
+
+						// ** Build Column Info
+						var col = new Column();
+						col.Name = (string)rdr["COLUMN_NAME"];
+						col.CleanName = TransformName(col.Name);
+						col.DataType = rdr["DATA_TYPE"].ToString();
+						col.SysType = GetSysType(col.DataType);
+						col.DbType = GetDbType(col.DataType);
+						col.AutoIncrement = false;
+						object obj = rdr["COLUMN_DEFAULT"];
+						col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
+						col.IsReadOnly = true;
+						col.IsNullable = rdr["IS_NULLABLE"].ToString() == "YES";
+						col.TableName = viewName;
+						col.TableSchema = viewSchemaName;
+						col.IsPK = false;
+
+						if (int.TryParse(rdr["CHARACTER_MAXIMUM_LENGTH"].ToString(), out var maxLength))
+						{
+							col.MaxLength = maxLength;
+						}
+
+						// ** Check if the column list needs to be reset.
+						if (list == null) throw new Exception("Column list can not be null.");
+
+						// ** Add column
+						list.Add(col);
+					}
+				}
+
+				// ** Return result
+				return _viewsColumnDict;
+			}
+		}
 
 		private static ForeignKeyRowCollection _foreignKeyRows;
 		public static ForeignKeyRowCollection ForeignKeyRows
@@ -241,7 +366,7 @@ ORDER BY
 				_foreignKeyRows = new ForeignKeyRowCollection();
 
 				// ** Init SQL Statement
-				var sql = _FOREIGN_KEY_COLLECTIONS_STATEMENT.Replace("@SCHEMA_LIST@", SchemaList);
+				var sql = _FOREIGN_KEY_COLLECTIONS_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
 
 				using (IDataReader rdr = GetReader(sql))
 				{

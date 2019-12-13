@@ -35,17 +35,59 @@ namespace RQI.POC.AutoGen
         }
 
         /// <summary>
-        /// List of Schemas that will be used
+        /// List of Schemas that will be used for tables.
         /// </summary>
-        public static string SchemaList
+        public static string TableSchemaList
         {
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.SchemaList"];
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.TableSchemaList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "Docs,rules";
+
+                // ** Build the
+                var result = ConvertToSQLListFormat(rawValue);
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// List of Schemas that will be used for views
+        /// </summary>
+        public static string ViewsSchemaList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.ViewsSchemaList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+
+                // ** Build the
+                var result = ConvertToSQLListFormat(rawValue);
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// List of Schemas that will be used for Stored Procedures.
+        /// </summary>
+        public static string StoredProcedureSchemaList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
 
                 // ** Build the
                 var result = ConvertToSQLListFormat(rawValue);
@@ -86,7 +128,7 @@ namespace RQI.POC.AutoGen
                 var tableNameArray = IncludeTableList.Split(',');
 
                 // ** Return result
-                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+                return GetRegExEnumerableList(tableNameArray);
             }
         }
 
@@ -119,7 +161,7 @@ namespace RQI.POC.AutoGen
                 var tableNameArray = ExcludeTableList.Split(',');
 
                 // ** Return result
-                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+                return GetRegExEnumerableList(tableNameArray);
             }
         }
         #endregion TABLES
@@ -156,7 +198,7 @@ namespace RQI.POC.AutoGen
                 var tableNameArray = IncludeViewList.Split(',');
 
                 // ** Return result
-                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+                return GetRegExEnumerableList(tableNameArray);
             }
         }
 
@@ -189,11 +231,24 @@ namespace RQI.POC.AutoGen
                 var tableNameArray = ExcludeViewList.Split(',');
 
                 // ** Return result
-                return tableNameArray.Select(AddSchemaIfMissing).ToList();
+                return GetRegExEnumerableList(tableNameArray);
             }
         }
 
         #endregion VIEWS
+
+        public static IEnumerable<string> GetRegExEnumerableList(string[] regExpressionList)
+        {
+            // ** Init
+            var result = new List<string> {"*"};
+
+            // ** Check for wildcard 
+            if (regExpressionList.Length == 1 && regExpressionList[0].Equals("*")) return result;
+
+            // ** Return result
+            return regExpressionList.Select(AddSchemaIfMissing).ToList();
+        }
+
         /// <summary>
         /// This is used for all Regex comparisons.  If true it will ignore the case of string comparisons.
         /// </summary>
@@ -202,11 +257,10 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                bool result;
                 var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexIgnoreCase"];
 
                 // ** Check configuration value
-                if (bool.TryParse(rawValue, out result)) return result;
+                if (bool.TryParse(rawValue, out var result)) return result;
 
                 // ** Return result
                 return false;

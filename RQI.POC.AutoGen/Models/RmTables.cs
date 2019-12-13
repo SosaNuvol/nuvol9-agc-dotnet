@@ -45,7 +45,7 @@ namespace RQI.POC.AutoGen.Models
             _manyToManyTables = new List<Table>();
 
             // ** Init
-            InitInstance(Utilities.SchemaList, _BASE_TABLE);
+            InitInstance(Utilities.TableSchemaList, _BASE_TABLE);
         }
 
         public List<Table> Load()
@@ -56,7 +56,7 @@ namespace RQI.POC.AutoGen.Models
             // ** Init
             _tables = new List<Table>();
             var tableLookup  = new Dictionary<string, Table>();
-            using (IDataReader dataReader = GetReader(sqlStatement))
+            using (IDataReader dataReader = GetReader(SQLStatement))
             {
                 while (dataReader.Read())
                 {
