@@ -24,7 +24,9 @@ namespace RQI.POC.AutoGen
         public enum ClassTypes
         {
             BaseTable,
-            View
+            View,
+            Procedure,
+            Function
         }
 
         #endregion Logging

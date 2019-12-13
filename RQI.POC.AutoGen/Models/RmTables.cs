@@ -21,7 +21,6 @@ namespace RQI.POC.AutoGen.Models
     {
         private List<Table> _tables;
         private readonly List<Table> _manyToManyTables;
-        private const string _BASE_TABLE = "BASE TABLE";
 //        private const string _SQL_STATEMENT = @"
 //SELECT
 //	T.TABLE_CATALOG
@@ -45,7 +44,7 @@ namespace RQI.POC.AutoGen.Models
             _manyToManyTables = new List<Table>();
 
             // ** Init
-            InitInstance(Utilities.TableSchemaList, _BASE_TABLE);
+            InitInstance(Utilities.TableSchemaList, SQLTypesEnum.Tables);
         }
 
         public List<Table> Load()

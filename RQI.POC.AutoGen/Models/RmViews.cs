@@ -26,10 +26,11 @@ namespace RQI.POC.AutoGen.Models
         [InjectionConstructor]
         public RmViews([Dependency("SqlConnectionString")] string sqlConnectionString): base(sqlConnectionString)
         {
+            // ** Init Class properties
             _views = null;
 
             // ** Init
-            InitInstance(Utilities.ViewsSchemaList, "VIEW");
+            InitInstance(Utilities.ViewsSchemaList, SQLTypesEnum.Views);
         }
 
         #region Methods

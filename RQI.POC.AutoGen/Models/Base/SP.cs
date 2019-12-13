@@ -10,11 +10,21 @@
 
 namespace RQI.POC.AutoGen.Models.Base
 {
+    using System;
     using System.Collections.Generic;
-    using System.Text;
+    using System.Text.RegularExpressions;
+    using Newtonsoft.Json;
 
     public class SP
     {
+        #region Properties
+        
+        private readonly string _definition;
+        private const string _REG_EX_FIND_HEADER = "CREATE[ ]*PROCEDURE[ \\[]*@SCHEMA_NAME@[\\].[]*@SPROC_NAME@[\\]]*";
+        private const string _REG_EX_ARGUMENT = "\\@[\\S+]* [\\S+\\(\\)]*[ ]*=[ ]*([\\S+]*)";
+
+        public string SchemaName { get; set; }
+
         public string Name { get; set; }
 
         public string CleanName { get; set; }
@@ -23,26 +33,62 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public List<SPParam> Parameters { get; set; }
 
-        public SP()
+        #endregion Properties
+
+        public SP(string definition, string jsonParameterList, string schema, string sprocName)
         {
-            Parameters = new List<SPParam>();
+            // ** Bind Properties
+            SchemaName = schema;
+            Name = sprocName;
+            Parameters = JsonConvert.DeserializeObject<List<SPParam>>(jsonParameterList);
+            _definition = definition;
+
+            // ** Initialize SPROC
+            InitializeSPROC();
         }
 
-        public string ArgList
+        #region Methods
+
+        public void InitializeSPROC()
         {
-            get
+            // ** Check that there is a definition
+            if (string.IsNullOrEmpty(_definition)) return;
+
+            // ** Init
+            var headerRegEx = _REG_EX_FIND_HEADER.Replace("@SCHEMA_NAME@", SchemaName);
+            headerRegEx = headerRegEx.Replace("@SPROC_NAME@", Name);
+            var rx = new Regex(headerRegEx);
+            var startIndex = rx.Match(_definition).Index;
+            // ** ** Check that we found the header
+            if (startIndex == -1)
             {
-                StringBuilder sb = new StringBuilder();
-                int loopCount = 1;
-                foreach (var par in Parameters)
-                {
-                    sb.AppendFormat("{0} {1}", par.SysType, par.CleanName);
-                    if (loopCount < Parameters.Count)
-                        sb.Append(",");
-                    loopCount++;
-                }
-                return sb.ToString();
+                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
+                return;
+            }
+
+            // ** ** Find End of Argument List
+            var endIndex = _definition.IndexOf("AS", startIndex, StringComparison.CurrentCulture);
+            // ** ** Check that it was found
+            if (endIndex == -1)
+            {
+                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the end of the argument list");
+                return;
+            }
+
+            // ** Capture the Argument Definition block
+            var argumentBody = _definition.Substring(startIndex, endIndex - startIndex);
+            rx = new Regex(_REG_EX_ARGUMENT);
+
+            // ** Loop through arguments
+            foreach (Match match in rx.Matches(argumentBody))
+            {
+                // ** Init
+                var argumentDefinition = match.Value;
+
+                Console.WriteLine("This is the Argument : {0}", argumentDefinition);
             }
         }
-	}
+
+        #endregion Methods
+    }
 }

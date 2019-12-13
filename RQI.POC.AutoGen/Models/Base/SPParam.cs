@@ -11,21 +11,36 @@
 namespace RQI.POC.AutoGen.Models.Base
 {
     using System.Data;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     public class SPParam
     {
+        [JsonProperty(propertyName:"name", Required = Required.Always)]
         public string Name { get; set; }
 
+        [JsonProperty(propertyName: "cleanName", Required = Required.Always)]
         public string CleanName { get; set; }
 
+        [JsonProperty(propertyName: "sysType")]
         public string SysType { get; set; }
 
+        [JsonProperty(propertyName: "dbType", Required = Required.Always)]
         public string DbType { get; set; }
 
+        [JsonProperty(propertyName: "mode", Required = Required.Always)]
         public ParameterDirection Mode { get; set; }
 
-        public int Precision { get; set; }
+        [JsonProperty(propertyName: "numericPrecision")]
+        public int? Precision { get; set; }
 
-        public int Scale { get; set; }
+        [JsonProperty(propertyName: "numericScale")]
+        public int? Scale { get; set; }
+
+        [JsonProperty(propertyName: "ordinalPosition", Required = Required.Always)]
+        public int OrdinalPosition { get; set; }
+
+        [JsonProperty(propertyName: "defaultValue")]
+        public string DefaultValue { get; set; }
     }
 }

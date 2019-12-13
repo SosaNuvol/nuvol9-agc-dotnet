@@ -77,6 +77,27 @@ namespace RQI.POC.AutoGen
         }
 
         /// <summary>
+        /// List of Schemas that will be used for views
+        /// </summary>
+        public static string ProceduresSchemaList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+
+                // ** Build the
+                var result = ConvertToSQLListFormat(rawValue);
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        /// <summary>
         /// List of Schemas that will be used for Stored Procedures.
         /// </summary>
         public static string StoredProcedureSchemaList

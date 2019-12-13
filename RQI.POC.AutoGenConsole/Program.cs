@@ -14,6 +14,8 @@ namespace RQI.POC.AutoGenConsole
 {
     using System;
     using System.Configuration;
+    using System.Data;
+    using System.Data.SqlClient;
     using AutoGen.Models;
 
     internal class Program
@@ -25,10 +27,17 @@ namespace RQI.POC.AutoGenConsole
             var connectionString = ConfigurationManager.AppSettings["ConnectionString"];
             var table = new RmTables(connectionString);
             var views = new RmViews(connectionString);
+            var sprocs = new RmProcedures(connectionString);
 
             // ** Load from SQL
+            var sprocResult = sprocs.Load();
             var tableResult = table.Load();
             var viewsResult = views.LoadViews();
+
+            #region DEBUGGING 
+
+            //ExecuteTest(connectionString);
+            #endregion DEBUGGING 
 
             // ** Print results
             Console.WriteLine($"|*** Count of tables: {tableResult.Count}");
@@ -81,5 +90,22 @@ namespace RQI.POC.AutoGenConsole
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** DONE **********************************************");
         }
+
+        //private static void ExecuteTest(string connectionString)
+        //{
+        //    // ** Init
+        //    DataTable sprocs;
+        //    using (var conn = new SqlConnection(connectionString))
+        //    {
+        //        conn.Open();
+        //        sprocs = conn.GetSchema("Procedures");
+        //        conn.Close();
+        //    }
+
+        //    foreach (DataRow sproc in sprocs.Rows)
+        //    {
+        //        Console.WriteLine($"SPROC Name: {sproc["ROUTINE_NAME"].ToString()}");
+        //    }
+        //}
     }
 }
