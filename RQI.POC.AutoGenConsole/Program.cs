@@ -88,6 +88,29 @@ namespace RQI.POC.AutoGenConsole
 
             // ** Show done
             Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** SPROCS **********************************************");
+
+            // ** Loop though all Views
+            counter = 0;
+            foreach (var sprocItem in sprocResult)
+            {
+                // ** Init
+                counter++;
+                
+                // ** Print view information
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"|** {counter:D4}|=> View Name: {sprocItem.Name,-50} | Columns: {sprocItem.Parameters.Count:D3}");
+
+                // ** Print Columns
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                foreach (var sprocItemParam in sprocItem.Parameters)
+                {
+                    Console.WriteLine($"|** ** Param Name {sprocItemParam.Name,-50} | Column C# Type: {sprocItemParam.SysType,-22} | Column DB Type: {sprocItemParam.DbType?.ToUpper(),-22} | IsOptional: {sprocItemParam.IsOptional} | Default Value: {sprocItemParam.DefaultValue}");
+                }
+            }
+
+            // ** Show done
+            Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** DONE **********************************************");
         }
 

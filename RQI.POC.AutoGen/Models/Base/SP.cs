@@ -40,7 +40,7 @@ namespace RQI.POC.AutoGen.Models.Base
             // ** Bind Properties
             SchemaName = schema;
             Name = sprocName;
-            Parameters = JsonConvert.DeserializeObject<List<SPParam>>(jsonParameterList);
+            Parameters = string.IsNullOrEmpty(jsonParameterList) ? new List<SPParam>() : JsonConvert.DeserializeObject<List<SPParam>>(jsonParameterList);
             _definition = definition;
 
             // ** Initialize SPROC
@@ -85,7 +85,43 @@ namespace RQI.POC.AutoGen.Models.Base
                 // ** Init
                 var argumentDefinition = match.Value;
 
-                Console.WriteLine("This is the Argument : {0}", argumentDefinition);
+                // ** Capture values
+                var operatorArray = argumentDefinition.Split('=');
+                var parameterName = operatorArray[0];
+                var valueString = operatorArray[1];
+
+                // ** Init parameterName
+                parameterName = parameterName.Trim();
+                parameterName = parameterName.Substring(0, parameterName.IndexOf(' ')); // Remove the Type definition
+
+                // ** Init valueString
+                valueString = valueString.Trim();
+
+                // ** Find the parameter in the list
+                var foundParam = Parameters.Find(s => s.Name.Equals(parameterName));
+
+                // ** Check if found
+                if (foundParam == null)
+                {
+                    Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {Name} with Parameter {parameterName}");
+                    continue;
+                }
+
+                // ** Init SysType
+                foundParam.SysType = Utilities.GetSysType(foundParam.DbType);
+
+                // ** Test for default value first
+                if (valueString.ToUpper().Equals("NULL"))
+                {
+                    foundParam.IsOptional = true;
+                    continue;
+                }
+
+                // ** Capture default value
+                foundParam.DefaultValue = valueString;
+
+                // ** Print
+                Console.WriteLine("SPROC: {0} | This is the Argument : {1} = {2}", Name, parameterName, valueString);
             }
         }
 

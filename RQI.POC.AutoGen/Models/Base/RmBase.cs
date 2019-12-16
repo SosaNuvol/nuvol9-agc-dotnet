@@ -92,7 +92,7 @@ FOR JSON PATH
 )
 SELECT * FROM WithParametersCTE";
 
-        protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN ('Docs')))
+        protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN (@SCHEMA_LIST@)))
 ";
 
         protected string SQLStatement;

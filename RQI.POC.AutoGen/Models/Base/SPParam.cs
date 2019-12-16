@@ -42,5 +42,7 @@ namespace RQI.POC.AutoGen.Models.Base
 
         [JsonProperty(propertyName: "defaultValue")]
         public string DefaultValue { get; set; }
+
+        public bool IsOptional { get; set; }
     }
 }

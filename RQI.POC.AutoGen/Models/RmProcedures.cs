@@ -43,10 +43,13 @@ namespace RQI.POC.AutoGen.Models
                 while (dataReader.Read())
                 {
                     // ** Init
-                    var name = dataReader["Definition"] == typeof(DBNull) ? null : (string) dataReader["Definition"];
-                    var schema = dataReader["Schema"] == typeof(DBNull) ? null : (string)dataReader["Schema"];
-                    var jsonParameterList = dataReader["JsonParametersList"] == typeof(DBNull) ? null : (string)dataReader["JsonParametersList"];
-                    var definition = dataReader["Definition"] == typeof(DBNull) ? null : (string)dataReader["Definition"];
+                    var name = DBNull.Value.Equals(dataReader["Name"]) ? null : (string) dataReader["Name"];
+                    var schema = DBNull.Value.Equals(dataReader["Schema"]) ? null : (string)dataReader["Schema"];
+                    var jsonParameterList = DBNull.Value.Equals(dataReader["JsonParametersList"]) ? null : (string)dataReader["JsonParametersList"];
+                    var definition = DBNull.Value.Equals(dataReader["Definition"]) ? null : (string)dataReader["Definition"];
+
+                    // ** Check that there is a name
+                    if (string.IsNullOrEmpty(name)) continue;
 
                     // ** Build SPROC
                     var sprocItem = new SP(definition
@@ -55,6 +58,8 @@ namespace RQI.POC.AutoGen.Models
                         , name);
 
                     // ** Bind Data
+                    sprocItem.CleanName = Utilities.TransformName(sprocItem.Name);
+                    sprocItem.ClassName = Utilities.Inflector.MakeSingular(sprocItem.CleanName);
 
                     // ** Load to list
                     _storedProcedures.Add(sprocItem);

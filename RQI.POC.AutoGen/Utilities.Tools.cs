@@ -471,10 +471,10 @@ namespace RQI.POC.AutoGen
             return inputText;
         }
 
-        private static string GetSysType(string sqlType)
+        public static string GetSysType(string sqlType)
         {
             string sysType = "string";
-            switch (sqlType)
+            switch (sqlType.ToLower())
             {
                 case "bigint":
                     sysType = "long";
@@ -491,6 +491,7 @@ namespace RQI.POC.AutoGen
                 case "date":
                 case "smalldatetime":
                 case "datetime":
+                case "datetime2":
                     sysType = "DateTime";
                     break;
                 case "datetimeoffset":
