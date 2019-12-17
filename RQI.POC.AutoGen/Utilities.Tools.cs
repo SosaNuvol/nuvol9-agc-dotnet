@@ -12,6 +12,7 @@ namespace RQI.POC.AutoGen
     using System;
     using System.Data;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
 
@@ -587,6 +588,67 @@ namespace RQI.POC.AutoGen
                     return DbType.AnsiString;
             }
         }
+
+        #region Model Utility
+        /// <summary>
+        /// Gets plural of the specified name.
+        /// </summary>
+        /// <param name="name">The name to pluralize.</param>
+        /// <returns>Plural name.</returns>
+        public static string GetPluralName(string name)
+        {
+            string plural;
+
+            if (SkipGetPluralName(name))
+            {
+                return name;
+            }
+
+            if (Regex.IsMatch(name, "([^aeiouy]|qu)y$", RegexOptions.IgnoreCase))
+            {
+                plural = Regex.Replace(name, "y$", "ies");
+            }
+            else if (name.EndsWith("Info") || name.EndsWith("Information"))
+            {
+                plural = name;
+            }
+            else if (WordsThatShouldEndInES(name))
+            {
+                plural = $"{name}es";
+            }
+            else
+            {
+                plural = $"{name}s";
+            }
+
+            return plural;
+        }
+
+        public static bool SkipGetPluralName(string name)
+        {
+            // ** Init
+            var skipList = SkipPluralNamesList.Split(',');
+
+            // ** Look for Ends with
+            var itemFound = skipList.FirstOrDefault(name.EndsWith);
+
+            // ** Return result
+            return !string.IsNullOrEmpty(itemFound);
+        }
+
+        public static bool WordsThatShouldEndInES(string name)
+        {
+            // ** Init
+            var skipList = WordsThatShouldEndInESList.Split(',');
+
+            // ** Look for Ends with
+            var itemFound = skipList.FirstOrDefault(name.EndsWith);
+
+            // ** Return result
+            return !string.IsNullOrEmpty(itemFound);
+        }
+
+        #endregion Model Utility
 
     }
 

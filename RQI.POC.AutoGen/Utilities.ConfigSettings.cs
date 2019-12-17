@@ -24,7 +24,23 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["ConnectionString"];
+                var rawValue = Config?.AppSettings.Settings["ConnectionString"]?.Value ?? ConfigurationManager.AppSettings["ConnectionString"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "";
+
+                // ** Return result
+                return rawValue;
+            }
+        }
+
+        public static string Namespace
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.POC.AutoGen.Namespace";
+                var rawValue = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "";
@@ -42,7 +58,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.TableSchemaList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.TableSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.TableSchemaList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "Docs,rules";
@@ -63,7 +79,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.ViewsSchemaList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.ViewsSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.ViewsSchemaList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
@@ -84,7 +100,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StPrcSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
@@ -100,23 +116,23 @@ namespace RQI.POC.AutoGen
         /// <summary>
         /// List of Schemas that will be used for Stored Procedures.
         /// </summary>
-        public static string StoredProcedureSchemaList
-        {
-            get
-            {
-                // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+        //public static string StoredProcedureSchemaList
+        //{
+        //    get
+        //    {
+        //        // ** Init
+        //        var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StPrcSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
 
-                // ** Check configuration value
-                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+        //        // ** Check configuration value
+        //        if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
 
-                // ** Build the
-                var result = ConvertToSQLListFormat(rawValue);
+        //        // ** Build the
+        //        var result = ConvertToSQLListFormat(rawValue);
 
-                // ** Return result
-                return result;
-            }
-        }
+        //        // ** Return result
+        //        return result;
+        //    }
+        //}
 
         #region TABLES
         /// <summary>
@@ -128,7 +144,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeTableList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.IncludeTableList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeTableList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
@@ -161,7 +177,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeTableList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.ExcludeTableList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeTableList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "dbo.sysdiagrams";
@@ -198,7 +214,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeViewList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.IncludeViewList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeViewList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
@@ -231,7 +247,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeViewList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.ExcludeViewList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeViewList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "^vwGen_*,vwUserExperienceSchedules";
@@ -278,7 +294,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexIgnoreCase"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.RegexIgnoreCase"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexIgnoreCase"];
 
                 // ** Check configuration value
                 if (bool.TryParse(rawValue, out var result)) return result;
@@ -296,7 +312,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexReplaceExpression"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.RegexReplaceExpression"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexReplaceExpression"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = string.Empty;
@@ -314,7 +330,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexMatchExpression"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.RegexMatchExpression"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexMatchExpression"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = string.Empty;
@@ -332,7 +348,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexDictionaryReplace"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.RegexDictionaryReplace"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.RegexDictionaryReplace"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = string.Empty;
@@ -350,7 +366,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StripText"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StripText"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StripText"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = string.Empty;
@@ -365,7 +381,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.SQL.SystemColToIgnoreList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.SQL.SystemColToIgnoreList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.SQL.SystemColToIgnoreList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) return "''";
@@ -383,7 +399,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.SQL.ColumnDataTypeToIgnoreList"];
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.SQL.ColumnDataTypeToIgnoreList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.SQL.ColumnDataTypeToIgnoreList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) return "''";
@@ -401,7 +417,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var result = ConfigurationManager.AppSettings["RQI.POC.AutoGen.EnumTableList"];
+                var result = Config?.AppSettings.Settings["RQI.POC.AutoGen.EnumTableList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.EnumTableList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(result)) return string.Empty;
@@ -416,7 +432,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var result = ConfigurationManager.AppSettings["RQI.POC.AutoGen.MetaDataTableList"];
+                var result = Config?.AppSettings.Settings["RQI.POC.AutoGen.MetaDataTableList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.MetaDataTableList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(result)) return string.Empty;
@@ -451,6 +467,38 @@ namespace RQI.POC.AutoGen
 
             // ** Return result
             return result.ToString();
+        }
+
+        public static string SkipPluralNamesList
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.POC.AutoGen.SkipPluralNamesList";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string WordsThatShouldEndInESList
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.POC.AutoGen.WordsShouldEndES";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
         }
 
         #endregion Configuration Properties

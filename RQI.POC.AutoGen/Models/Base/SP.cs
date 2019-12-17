@@ -54,33 +54,26 @@ namespace RQI.POC.AutoGen.Models.Base
             // ** Check that there is a definition
             if (string.IsNullOrEmpty(_definition)) return;
 
-            // ** Init
-            var headerRegEx = _REG_EX_FIND_HEADER.Replace("@SCHEMA_NAME@", SchemaName);
-            headerRegEx = headerRegEx.Replace("@SPROC_NAME@", Name);
-            var rx = new Regex(headerRegEx);
-            var startIndex = rx.Match(_definition).Index;
-            // ** ** Check that we found the header
-            if (startIndex == -1)
-            {
-                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
-                return;
-            }
+            // ** Process SPROC from Definition
+            InitSPROCDefinition();
+        }
 
-            // ** ** Find End of Argument List
-            var endIndex = _definition.IndexOf("AS", startIndex, StringComparison.CurrentCulture);
-            // ** ** Check that it was found
-            if (endIndex == -1)
-            {
-                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the end of the argument list");
-                return;
-            }
+        /// <summary>
+        /// Take the SPROC definition and parse it's information for the purpose of stripping default values.
+        /// </summary>
+        private void InitSPROCDefinition()
+        {
+            // ** Parse Argument Body
+            var parameterBody = ParseOutParameterBody();
 
-            // ** Capture the Argument Definition block
-            var argumentBody = _definition.Substring(startIndex, endIndex - startIndex);
-            rx = new Regex(_REG_EX_ARGUMENT);
+            // ** Check that there is parameter body
+            if (string.IsNullOrEmpty(parameterBody)) return;
+
+            // ** Init the Regex object to loop through parameters body
+            var rx = new Regex(_REG_EX_ARGUMENT);
 
             // ** Loop through arguments
-            foreach (Match match in rx.Matches(argumentBody))
+            foreach (Match match in rx.Matches(parameterBody))
             {
                 // ** Init
                 var argumentDefinition = match.Value;
@@ -107,9 +100,6 @@ namespace RQI.POC.AutoGen.Models.Base
                     continue;
                 }
 
-                // ** Init SysType
-                foundParam.SysType = Utilities.GetSysType(foundParam.DbType);
-
                 // ** Test for default value first
                 if (valueString.ToUpper().Equals("NULL"))
                 {
@@ -123,6 +113,40 @@ namespace RQI.POC.AutoGen.Models.Base
                 // ** Print
                 Console.WriteLine("SPROC: {0} | This is the Argument : {1} = {2}", Name, parameterName, valueString);
             }
+        }
+
+        /// <summary>
+        /// Using Regex it parses out the Parameter body from the SPROC definition
+        /// </summary>
+        /// <returns><c>string</c>the Argument body</returns>
+        private string ParseOutParameterBody()
+        {
+            // ** Init
+            var headerRegEx = _REG_EX_FIND_HEADER.Replace("@SCHEMA_NAME@", SchemaName);
+            headerRegEx = headerRegEx.Replace("@SPROC_NAME@", Name);
+            var rx = new Regex(headerRegEx);
+            var startIndex = rx.Match(_definition).Index;
+            // ** ** Check that we found the header
+            if (startIndex == -1)
+            {
+                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
+                return null;
+            }
+
+            // ** ** Find End of Argument List
+            var endIndex = _definition.IndexOf("AS", startIndex, StringComparison.CurrentCulture);
+            // ** ** Check that it was found
+            if (endIndex == -1)
+            {
+                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the end of the argument list");
+                return null;
+            }
+
+            // ** Capture the Argument Definition block
+            var argumentBody = _definition.Substring(startIndex, endIndex - startIndex);
+
+            // ** Return result
+            return argumentBody;
         }
 
         #endregion Methods

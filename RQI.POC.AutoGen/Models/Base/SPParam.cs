@@ -12,18 +12,30 @@ namespace RQI.POC.AutoGen.Models.Base
 {
     using System.Data;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
 
     public class SPParam
     {
+        #region Parameters
+
         [JsonProperty(propertyName:"name", Required = Required.Always)]
         public string Name { get; set; }
 
         [JsonProperty(propertyName: "cleanName", Required = Required.Always)]
         public string CleanName { get; set; }
 
+        private string _sysType; 
         [JsonProperty(propertyName: "sysType")]
-        public string SysType { get; set; }
+        public string SysType {
+            get
+            {
+                // ** Init
+                _sysType = Utilities.GetSysType(DbType);
+
+                // ** Return result
+                return _sysType;
+            }
+            set => _sysType = value;
+        }
 
         [JsonProperty(propertyName: "dbType", Required = Required.Always)]
         public string DbType { get; set; }
@@ -44,5 +56,7 @@ namespace RQI.POC.AutoGen.Models.Base
         public string DefaultValue { get; set; }
 
         public bool IsOptional { get; set; }
+
+        #endregion Parameters
     }
 }

@@ -14,8 +14,7 @@ namespace RQI.POC.AutoGenConsole
 {
     using System;
     using System.Configuration;
-    using System.Data;
-    using System.Data.SqlClient;
+    using System.Linq;
     using AutoGen.Models;
 
     internal class Program
@@ -30,9 +29,9 @@ namespace RQI.POC.AutoGenConsole
             var sprocs = new RmProcedures(connectionString);
 
             // ** Load from SQL
-            var sprocResult = sprocs.Load();
-            var tableResult = table.Load();
-            var viewsResult = views.LoadViews();
+            var sprocResult = sprocs.Load().OrderBy(s => s.SchemaName);
+            var tableResult = table.Load().OrderBy(s => s.Schema);
+            var viewsResult = views.LoadViews().OrderBy(s => s.Schema);
 
             #region DEBUGGING 
 
@@ -40,7 +39,7 @@ namespace RQI.POC.AutoGenConsole
             #endregion DEBUGGING 
 
             // ** Print results
-            Console.WriteLine($"|*** Count of tables: {tableResult.Count}");
+            Console.WriteLine($"|*** Count of tables: {tableResult.LongCount()}");
 
             // ** Loop through all tables
             var counter = 0;
@@ -99,13 +98,13 @@ namespace RQI.POC.AutoGenConsole
                 
                 // ** Print view information
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"|** {counter:D4}|=> View Name: {sprocItem.Name,-50} | Columns: {sprocItem.Parameters.Count:D3}");
+                Console.WriteLine($"|** {counter:D4}|=> View Name: {sprocItem.Name,-50} | Parameters: {sprocItem.Parameters.Count:D3}");
 
                 // ** Print Columns
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 foreach (var sprocItemParam in sprocItem.Parameters)
                 {
-                    Console.WriteLine($"|** ** Param Name {sprocItemParam.Name,-50} | Column C# Type: {sprocItemParam.SysType,-22} | Column DB Type: {sprocItemParam.DbType?.ToUpper(),-22} | IsOptional: {sprocItemParam.IsOptional} | Default Value: {sprocItemParam.DefaultValue}");
+                    Console.WriteLine($"|** ** Param Name {sprocItemParam.Name,-50} | Parameter C# Type: {sprocItemParam.SysType,-22} | Parameter DB Type: {sprocItemParam.DbType?.ToUpper(),-22} | IsOptional: {sprocItemParam.IsOptional} | Default Value: {sprocItemParam.DefaultValue}");
                 }
             }
 

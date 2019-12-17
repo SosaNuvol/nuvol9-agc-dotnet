@@ -14,10 +14,21 @@ namespace RQI.POC.AutoGen
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
 
     public static partial class Utilities
     {
+        private static Configuration _config;
+
+        public static Configuration Config => _config;
+
+        // ** Initialization
+        public static void InitializeMe(Configuration config)
+        {
+            _config = config;
+        }
+
         #region Methods
 
         /// <summary>
