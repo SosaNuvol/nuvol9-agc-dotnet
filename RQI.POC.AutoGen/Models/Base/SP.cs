@@ -96,7 +96,7 @@ namespace RQI.POC.AutoGen.Models.Base
                 // ** Check if found
                 if (foundParam == null)
                 {
-                    Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {Name} with Parameter {parameterName}");
+                    Utilities.LogInternalError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {Name} with Parameter {parameterName}");
                     continue;
                 }
 
@@ -129,7 +129,7 @@ namespace RQI.POC.AutoGen.Models.Base
             // ** ** Check that we found the header
             if (startIndex == -1)
             {
-                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
+                Utilities.LogInternalError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
                 return null;
             }
 
@@ -138,7 +138,7 @@ namespace RQI.POC.AutoGen.Models.Base
             // ** ** Check that it was found
             if (endIndex == -1)
             {
-                Utilities.LogError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the end of the argument list");
+                Utilities.LogInternalError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the end of the argument list");
                 return null;
             }
 

@@ -14,6 +14,8 @@ namespace RQI.POC.AutoGen.Models.Base
     {
         public string EntityType { get; set; }
 
+        public string Schema { get; set; }
+
         public string CollectionName { get; set; }
 
         public bool IsManyToMany { get; set; }

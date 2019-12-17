@@ -26,7 +26,12 @@ namespace RQI.POC.AutoGen
         // ** Initialization
         public static void InitializeMe(Configuration config)
         {
+            // ** Init
             _config = config;
+
+            // ** Reset Logs
+            ErrorLogs = new List<LogEntry>();
+            WarningLogs = new List<LogEntry>();
         }
 
         #region Methods

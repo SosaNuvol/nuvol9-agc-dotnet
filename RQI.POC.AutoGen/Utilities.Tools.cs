@@ -10,6 +10,7 @@
 namespace RQI.POC.AutoGen
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
     using System.Linq;
@@ -662,6 +663,37 @@ namespace RQI.POC.AutoGen
             return result;
         }
 
+        /// <summary>
+        /// This is used in T4T to not add a ForeignKey Property since it will not be rendered in the Models
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="tablesList"></param>
+        /// <returns><c>bool</c></returns>
+        // ReSharper disable once UnusedMember.Global
+        public static bool IsForeignKeyTableInTablesList(Column col, IEnumerable<Table> tablesList)
+        {
+            // ** Init
+            var foundItem = tablesList.FirstOrDefault(t => t.Schema.Equals(col.ForeignKeyTableSchemaName) && t.Name.Equals(col.ForeignKeyTableName));
+
+            // ** Check and return
+            return foundItem != null;
+        }
+
+        /// <summary>
+        /// This is used in T4T to not add a collection item into the Models.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="tablesList"></param>
+        /// <returns><c>bool</c></returns>
+        // ReSharper disable once UnusedMember.Global
+        public static bool IsCollectionInTableList(NavigationCollection col, IEnumerable<Table> tablesList)
+        {
+            // ** Init
+            var foundItem = tablesList.FirstOrDefault(t => t.Schema.Equals(col.CollectionName) && t.Name.Equals(col.Schema));
+
+            // ** Check and return
+            return foundItem != null;
+        }
         #endregion Model Utility
 
     }

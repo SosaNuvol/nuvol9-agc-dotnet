@@ -21,20 +21,6 @@ namespace RQI.POC.AutoGen.Models
     {
         private List<Table> _tables;
         private readonly List<Table> _manyToManyTables;
-//        private const string _SQL_STATEMENT = @"
-//SELECT
-//	T.TABLE_CATALOG
-//	, T.TABLE_SCHEMA
-//	, T.TABLE_NAME
-//	, T.TABLE_TYPE
-//FROM INFORMATION_SCHEMA.TABLES AS T
-//WHERE
-//	(T.TABLE_TYPE='BASE TABLE')
-//	AND (t.TABLE_SCHEMA IN (@SCHEMA_LIST@))
-//ORDER BY
-//	T.TABLE_SCHEMA,
-//	T.TABLE_NAME
-//";
 
         [InjectionConstructor]
         public RmTables([Dependency("SqlConnectionString")]string sqlConnectionString) : base(sqlConnectionString)
@@ -179,7 +165,7 @@ namespace RQI.POC.AutoGen.Models
                 Table fromTable;
                 if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out fromTable))
                 {
-                    Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign from table for column \"{fromColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
+                    Utilities.LogInternalWarning(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign from table for column \"{fromColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
                 }
 
@@ -187,7 +173,7 @@ namespace RQI.POC.AutoGen.Models
                 Table toTable;
                 if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out toTable))
                 {
-                    Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{toColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
+                    Utilities.LogInternalWarning(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{toColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));
                 }
 
@@ -199,6 +185,7 @@ namespace RQI.POC.AutoGen.Models
                 {
                     EntityType = toColumn.CleanName.Replace("Id", ""),
                     CollectionName = toTable.Name,
+                    Schema = toTable.Schema,
                     IsManyToMany = true
                 });
 
@@ -206,7 +193,8 @@ namespace RQI.POC.AutoGen.Models
                 toTable.Collections.Add(new NavigationCollection
                 {
                     EntityType = fromColumn.CleanName.Replace("Id", ""),
-                    CollectionName = fromTable.Name
+                    CollectionName = fromTable.Name,
+                    Schema = fromTable.Schema
                 });
             }
 
@@ -219,12 +207,12 @@ namespace RQI.POC.AutoGen.Models
                     // ** Init
                     if (!tableLookup.TryGetValue(fkTable.OtherSchema + "." + fkTable.OtherTable, out var toTable))
                     {
-                        Utilities.LogError(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
+                        Utilities.LogInternalWarning(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
                         continue;
                         // throw new Exception($"Unable to lookup foreign to table for column \"{fkTable.ThisTable}.{fkTable.ThisColumn}\" on one to many table \"{table.Schema}.{table.Name}\", verify constraints are correct.");
                     }
 
-                    if (!toTable.Collections.Any(c => c.CollectionName.Equals(table.Name)))
+                    if (!toTable.Collections.Any(c => c.CollectionName.Equals(table.Name) && c.Schema.Equals(table.Schema)))
                     {
                         // Check to see if last two characters is 'ID' case insensitive.
                         var lastPos = table.PrimaryKey.ToLower().LastIndexOf("id", StringComparison.CurrentCultureIgnoreCase);
@@ -233,7 +221,8 @@ namespace RQI.POC.AutoGen.Models
                             toTable.Collections.Add(new NavigationCollection
                             {
                                 EntityType = table.PrimaryKey.Substring(0, lastPos),
-                                CollectionName = table.Name
+                                CollectionName = table.Name,
+                                Schema = table.Schema
                             });
                         }
                     }

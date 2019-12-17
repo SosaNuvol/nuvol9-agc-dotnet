@@ -97,7 +97,7 @@ namespace RQI.POC.AutoGen.Models
                 }
                 else
                 {
-                    Utilities.LogError(Utilities.ClassTypes.View, $"No columns for View: {tbl.Schema}.{tbl.Name}");
+                    Utilities.LogInternalError(Utilities.ClassTypes.View, $"No columns for View: {tbl.Schema}.{tbl.Name}");
                 }
             }
 
