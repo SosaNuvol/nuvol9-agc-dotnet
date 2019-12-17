@@ -214,17 +214,18 @@ namespace RQI.POC.AutoGen.Models
 
                     if (!toTable.Collections.Any(c => c.CollectionName.Equals(table.Name) && c.Schema.Equals(table.Schema)))
                     {
-                        // Check to see if last two characters is 'ID' case insensitive.
-                        var lastPos = table.PrimaryKey.ToLower().LastIndexOf("id", StringComparison.CurrentCultureIgnoreCase);
-                        if (lastPos > -1)
+                        //// Check to see if last two characters is 'ID' case insensitive.
+                        //var lastPos = table.PrimaryKey.ToLower().LastIndexOf("id", StringComparison.CurrentCultureIgnoreCase);
+                        //if (lastPos > -1)
+                        //{
+                        toTable.Collections.Add(new NavigationCollection
                         {
-                            toTable.Collections.Add(new NavigationCollection
-                            {
-                                EntityType = table.PrimaryKey.Substring(0, lastPos),
-                                CollectionName = table.Name,
-                                Schema = table.Schema
-                            });
-                        }
+                            //EntityType = table.PrimaryKey.Substring(0, lastPos),
+                            EntityType = table.ClassName,
+                            CollectionName = table.Name,
+                            Schema = table.Schema
+                        });
+                        //}
                     }
                 }
             }
