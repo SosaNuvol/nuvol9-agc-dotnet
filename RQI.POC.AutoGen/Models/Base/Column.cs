@@ -48,6 +48,8 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public string ForeignKeyTableSchemaName { get; set; }
 
+        public string ForeignKeyClassName { get; set; }
+
         public string TableName { get; set; }
         
         public string TableSchema { get; set; }

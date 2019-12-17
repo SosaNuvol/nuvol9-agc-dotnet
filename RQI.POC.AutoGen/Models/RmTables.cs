@@ -117,14 +117,21 @@ namespace RQI.POC.AutoGen.Models
                     //loop the FK tables and see if there's a match for our FK columns
                     foreach (Column col in tableItem.Columns)
                     {
+                        // ** Find the foreign Key table
                         FKTable fkt = tableItem.FKTables.FirstOrDefault(
                             x => x.ThisColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
                         );
 
+                        // ** Bind properties
                         col.IsForeignKey = fkt != null;
                         col.ForeignKeyTableName = fkt != null ? fkt.OtherTable : "";
                         col.ForeignKeyTableSchemaName = fkt != null ? fkt.OtherSchema : "";
                         col.IsEnum = fkt != null && Utilities.EnumTables.Keys.Any(eKey => eKey.EndsWith("." + col.ForeignKeyTableName));
+
+                        // ** Get the Foreign Key table ClassName
+                        var foundFkTable = _tables.FirstOrDefault(t => t.Name.Equals(col.ForeignKeyTableName) && t.Schema.Equals(col.ForeignKeyTableSchemaName));
+                        if (foundFkTable == null) continue;
+                        col.ForeignKeyClassName = foundFkTable.ClassName;
                     }
                     #endregion Flag and load ancilary properties of table
                 }
