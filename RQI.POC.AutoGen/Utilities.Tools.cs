@@ -15,6 +15,7 @@ namespace RQI.POC.AutoGen
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using Models.Base;
 
     public static partial class Utilities
     {
@@ -646,6 +647,19 @@ namespace RQI.POC.AutoGen
 
             // ** Return result
             return !string.IsNullOrEmpty(itemFound);
+        }
+
+        public static string CheckNullable(Column col)
+        {
+            // ** Init
+            var result = "";
+
+            // ** Check
+            if (col.IsNullable && col.SysType != "byte[]" && col.SysType != "string")
+                result = "?";
+
+            // ** Return result
+            return result;
         }
 
         #endregion Model Utility
