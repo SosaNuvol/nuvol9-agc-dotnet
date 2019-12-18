@@ -92,7 +92,10 @@ namespace RQI.POC.AutoGen.Models.Base
                     // ReSharper disable once UseObjectOrCollectionInitializer
                     var row = new SPResultSetColumn();
 
+                    row.IsNullable = (bool) rdr["IsNullable"];
+
                     row.Name = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
+                    row.Name = row.Name?.Trim();
                     row.ClassName = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
                     row.DataType = (string)rdr["DataTypeName"];
 
@@ -100,9 +103,17 @@ namespace RQI.POC.AutoGen.Models.Base
                     row.Precision = (byte)rdr["Precision"];
                     row.Scale = (byte)rdr["Scale"];
 
-                    row.SysType = Utilities.GetSysType(row.DataType);
+                    row.SysType = Utilities.GetSysTypeWithNullable(row.DataType, row.IsNullable);
                     row.DbType = Utilities.GetDbType(row.DataType);
                     row.ColumnOrdinal = (int) rdr["ColumnOrdinal"];
+
+                    // ** Check if the column name is repeated.
+                    var foundCol = ResultSetColumns.FirstOrDefault(c => c.Name.Equals(row.Name?.Trim()));
+                    if (foundCol != null)
+                    {
+                        Utilities.LogInternalWarning(Utilities.ClassTypes.Procedure, $"The SPROC: {Name} in the result set has a duplicate column named '{row.Name}'.");
+                        continue;
+                    }
 
                     ResultSetColumns.Add(row);
                 }
@@ -122,7 +133,7 @@ namespace RQI.POC.AutoGen.Models.Base
                 }
 
                 // ** Make sure that all columns have names
-                foreach (var spResultSetColumn in ResultSetColumns.Where(c => string.IsNullOrEmpty(c.Name)))
+                foreach (var spResultSetColumn in ResultSetColumns.Where(c => string.IsNullOrEmpty(c.Name.Trim())))
                 {
                     spResultSetColumn.Name = $"Col{spResultSetColumn.ColumnOrdinal}";
                     spResultSetColumn.ClassName = $"Col{spResultSetColumn.ColumnOrdinal}";

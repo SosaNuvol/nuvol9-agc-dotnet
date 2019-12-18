@@ -157,6 +157,7 @@ SELECT
 	, SPR.[precision] AS [Precision]
 	, SPR.scale AS [Scale]
 	, SPR.column_ordinal AS [ColumnOrdinal]
+	, SPR.is_nullable AS [IsNullable]
 FROM
 	sys.dm_exec_describe_first_result_set(N'EXEC @SPROC_FULLNAME@', NULL, 0) AS SPR
 	INNER JOIN sys.types AS TP

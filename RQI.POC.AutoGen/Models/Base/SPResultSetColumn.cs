@@ -31,5 +31,7 @@ namespace RQI.POC.AutoGen.Models.Base
         public short Scale { get; set; }
 
         public int ColumnOrdinal { get; set; }
+
+        public bool IsNullable { get; set; }
     }
 }

@@ -474,6 +474,36 @@ namespace RQI.POC.AutoGen
             return inputText;
         }
 
+        public static string GetSysTypeWithNullable(string sqlType, bool isNullable)
+        {
+            // ** Init
+            var result = GetSysType(sqlType);
+
+            // ** Set nullable if needed
+            if (isNullable)
+            {
+                switch (result)
+                {
+                    case "int":
+                    case "long":
+                    case "short":
+                    case "Guid":
+                    case "double":
+                    case "decimal":
+                    case "byte":
+                    case "bool":
+                    case "DateTime":
+                    case "DateTimeOffset":
+                    case "TimeSpan":
+                        result = $"{result}?";
+                        break;
+                }
+            }
+
+            // ** Return result
+            return result;
+        }
+
         public static string GetSysType(string sqlType)
         {
             string sysType = "string";
