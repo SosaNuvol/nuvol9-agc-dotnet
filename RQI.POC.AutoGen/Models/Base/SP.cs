@@ -12,6 +12,8 @@ namespace RQI.POC.AutoGen.Models.Base
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using Newtonsoft.Json;
 
@@ -31,7 +33,15 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public string ClassName { get; set; }
 
+        public bool ReturnsNothing { get; set; } = true;
+
+        public bool IsSingleColumnResultSet { get; set; }
+
+        public SPResultSetColumn SingleColumnResultSet { get; private set; }
+
         public List<SPParam> Parameters { get; set; }
+
+        public List<SPResultSetColumn> ResultSetColumns { get; set; }
 
         #endregion Properties
 
@@ -56,6 +66,68 @@ namespace RQI.POC.AutoGen.Models.Base
 
             // ** Process SPROC from Definition
             InitSPROCDefinition();
+
+            // ** Process SPROC Result Set
+            InitSPROCResultSet();
+        }
+
+        /// <summary>
+        /// Take the SPROC name and pull from the database the output of it.
+        /// </summary>
+        private void InitSPROCResultSet()
+        {
+            // ** Init
+            var sql = Utilities.SPROC_RESULT_SET_SQL_STATEMENT.Replace("@SPROC_FULLNAME@", $"[{SchemaName}].[{Name}]");
+            ResultSetColumns = new List<SPResultSetColumn>();
+
+            // ** Execute
+            using (IDataReader rdr = Utilities.GetReader(sql))
+            {
+                // ** Build the dataSet.
+                while (rdr.Read())
+                {
+                    // ** Init
+                    ReturnsNothing = false;
+
+                    // ReSharper disable once UseObjectOrCollectionInitializer
+                    var row = new SPResultSetColumn();
+
+                    row.Name = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
+                    row.ClassName = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
+                    row.DataType = (string)rdr["DataTypeName"];
+
+                    row.MaxLength = (short)rdr["MaxLength"];
+                    row.Precision = (byte)rdr["Precision"];
+                    row.Scale = (byte)rdr["Scale"];
+
+                    row.SysType = Utilities.GetSysType(row.DataType);
+                    row.DbType = Utilities.GetDbType(row.DataType);
+                    row.ColumnOrdinal = (int) rdr["ColumnOrdinal"];
+
+                    ResultSetColumns.Add(row);
+                }
+
+                // ** Check if there is not resultset
+                if (ReturnsNothing) return;
+
+                // ** Check for a single value return with no columns
+                if (ResultSetColumns.Count == 1 && string.IsNullOrEmpty(ResultSetColumns[0].Name))
+                {
+                    // ** Pull the DataType and flag it as a scalar value return type
+                    IsSingleColumnResultSet = true;
+                    SingleColumnResultSet = ResultSetColumns[0];
+
+                    // ** DONE.  So exit
+                    return;
+                }
+
+                // ** Make sure that all columns have names
+                foreach (var spResultSetColumn in ResultSetColumns.Where(c => string.IsNullOrEmpty(c.Name)))
+                {
+                    spResultSetColumn.Name = $"Col{spResultSetColumn.ColumnOrdinal}";
+                    spResultSetColumn.ClassName = $"Col{spResultSetColumn.ColumnOrdinal}";
+                }
+            }
         }
 
         /// <summary>

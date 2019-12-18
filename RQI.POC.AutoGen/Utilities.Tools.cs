@@ -528,7 +528,7 @@ namespace RQI.POC.AutoGen
             return sysType;
         }
 
-        private static DbType GetDbType(string sqlType)
+        public static DbType GetDbType(string sqlType)
         {
             switch (sqlType)
             {

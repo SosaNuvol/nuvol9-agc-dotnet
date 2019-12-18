@@ -149,6 +149,22 @@ ORDER BY
         private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN ('Docs','rules','Oracle'))
 ";
 
+		public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
+SELECT
+	  SPR.[name] AS [ColName]
+	, TP.[name] AS [DataTypeName]
+	, SPR.max_length AS [MaxLength]
+	, SPR.[precision] AS [Precision]
+	, SPR.scale AS [Scale]
+	, SPR.column_ordinal AS [ColumnOrdinal]
+FROM
+	sys.dm_exec_describe_first_result_set(N'EXEC @SPROC_FULLNAME@', NULL, 0) AS SPR
+	INNER JOIN sys.types AS TP
+	ON
+		(TP.system_type_id = SPR.system_type_id)
+ORDER BY
+	SPR.column_ordinal";
+
         private static string GetTableColSqlStatement
         {
 	        get
@@ -192,7 +208,7 @@ ORDER BY
 
 		#region Database Artifacts
 
-		private static IDataReader GetReader(string sql)
+		public static IDataReader GetReader(string sql)
 		{
 			SqlConnection conn = new SqlConnection(ConnectionString);
 			SqlCommand cmd = new SqlCommand(sql, conn);
