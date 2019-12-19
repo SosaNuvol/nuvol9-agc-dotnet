@@ -34,12 +34,28 @@ namespace RQI.POC.AutoGen
             }
         }
 
-        public static string Namespace
+        public static string NamespaceModels
         {
             get
             {
                 // ** Init
-                const string key = "RQI.POC.AutoGen.Namespace";
+                const string key = "RQI.POC.AutoGen.NamespaceModels";
+                var rawValue = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "";
+
+                // ** Return result
+                return rawValue;
+            }
+        }
+
+        public static string NamespaceDataAccess
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.POC.AutoGen.NamespaceDataAccess";
                 var rawValue = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
 
                 // ** Check configuration value

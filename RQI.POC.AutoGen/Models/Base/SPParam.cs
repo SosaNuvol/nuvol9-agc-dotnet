@@ -58,5 +58,24 @@ namespace RQI.POC.AutoGen.Models.Base
         public bool IsOptional { get; set; }
 
         #endregion Parameters
+
+        // ReSharper disable once UnusedMember.Global
+        public string GetArgumentForCSharp()
+        {
+            // ** Init
+            var result = (IsOptional && !SysType.Equals("string")) ? $"Nullable<{SysType}> {CleanName}" : $"{SysType} {CleanName}";
+
+            // ** Check if default value
+            if (!string.IsNullOrEmpty(DefaultValue)) result = result + $" = {GetDefaultValueForCSharp()}";
+
+            // ** Return result
+            return result;
+        }
+
+        private string GetDefaultValueForCSharp()
+        {
+            // ** Check that the SysType is string
+            return !SysType.Equals("string") ? DefaultValue : $"\"{DefaultValue}\"";
+        }
     }
 }

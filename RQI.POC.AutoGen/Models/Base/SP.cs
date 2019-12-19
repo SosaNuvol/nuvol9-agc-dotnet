@@ -232,6 +232,23 @@ namespace RQI.POC.AutoGen.Models.Base
             return argumentBody;
         }
 
+        // ReSharper disable once UnusedMember.Global
+        public List<SPParam> GetParametersList(bool? hideDefaultValue = null)
+        {
+            // Check value
+            if (hideDefaultValue == null) return Parameters;
+
+            // ** Return hidden default value parameters
+            if (hideDefaultValue.Value)
+                return Parameters.Where(p => string.IsNullOrEmpty(p.DefaultValue)).OrderBy(p => p.OrdinalPosition)
+                    .ToList();
+
+            // ** Return default values parameters only
+            return Parameters.Where(p => !string.IsNullOrEmpty(p.DefaultValue)).OrderBy(p => p.OrdinalPosition)
+                .ToList();
+
+        }
+
         #endregion Methods
     }
 }
