@@ -40,6 +40,9 @@ namespace RQI.POC.AutoGen.Models.Base
         [JsonProperty(propertyName: "dbType", Required = Required.Always)]
         public string DbType { get; set; }
 
+        [JsonProperty(propertyName: "dataLength")]
+        public int? MaxLength { get; set; }
+
         [JsonProperty(propertyName: "mode", Required = Required.Always)]
         public ParameterDirection Mode { get; set; }
 

@@ -57,7 +57,7 @@ WITH RootCTE AS (
 	WHERE
 		(R.routine_type = '@CLASS_TYPE@')
 @SCHEMA_CLAUSE@
-, WithParametersCTE AS (
+), WithParametersCTE AS (
 	SELECT
 		RT.*
 		, (
@@ -92,7 +92,7 @@ FOR JSON PATH
 )
 SELECT * FROM WithParametersCTE";
 
-        protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN (@SCHEMA_LIST@)))
+        protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN (@SCHEMA_LIST@))
 ";
 
         protected string SQLStatement;
