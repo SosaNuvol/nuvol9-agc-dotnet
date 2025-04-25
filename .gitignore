@@ -3,8 +3,9 @@
 ################################################################################
 
 /packages
-/.vs
-/RQI.POC.AutoGen/bin/Debug
-/RQI.POC.AutoGen/obj/Debug
-/RQI.POC.AutoGenConsole/bin/Debug
-/RQI.POC.AutoGenConsole/obj/Debug
+.vs/
+bin/
+obj/
+*.userprefs
+*.suo
+*.user

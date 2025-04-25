@@ -12,7 +12,7 @@ namespace RQI.POC.AutoGen.Models.Base
 {
     using System.Data;
     using System.Data.SqlClient;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class RmBase
     {

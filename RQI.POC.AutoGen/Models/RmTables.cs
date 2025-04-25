@@ -15,7 +15,7 @@ namespace RQI.POC.AutoGen.Models
     using System.Data;
     using System.Linq;
     using Base;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class RmTables : RmBase
     {

@@ -16,6 +16,7 @@ namespace RQI.POC.AutoGenConsole
     using System.Configuration;
     using System.Linq;
     using AutoGen.Models;
+    using RQI.POC.AutoGenConsole.Utilities;
 
     internal class Program
     {
@@ -38,28 +39,10 @@ namespace RQI.POC.AutoGenConsole
             //ExecuteTest(connectionString);
             #endregion DEBUGGING 
 
-            // ** Print results
-            Console.WriteLine($"|*** Count of tables: {tableResult.LongCount()}");
-
-            // ** Loop through all tables
             var counter = 0;
-            foreach (var tableItem in tableResult)
-            {
-                // ** Init
-                counter++;
-                var tableName = $"[{tableItem.Schema}].[{tableItem.Name}]";
 
-                // ** Print table info
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"|** {counter:D4}|-> Table Name: {tableName,-50} | Columns: {tableItem.Columns.Count:D3}");
-
-                // ** Print Columns
-                Console.ForegroundColor = ConsoleColor.Blue;
-                foreach (var tableItemColumn in tableItem.Columns)
-                {
-                    Console.WriteLine($"|** ** Column Name {tableItemColumn.Name,-50} | Column C# Type: {tableItemColumn.DbType,-22} | Column DB Type: {tableItemColumn.DataType.ToUpper(), -22} | Column Length: {tableItemColumn.MaxLength}");
-                }
-            }
+            var tableGenerator = new NOAHTablesGenerator(tableResult);
+            tableGenerator.Generate(counter);
 
             // ** Show done
             Console.ForegroundColor = defaultConsoleTextColor;
