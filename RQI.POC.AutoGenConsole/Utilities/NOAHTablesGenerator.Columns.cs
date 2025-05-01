@@ -20,11 +20,24 @@ namespace RQI.POC.AutoGenConsole.Utilities
                     foreignKeyColumns.Add(column);
                     sb.AppendLine($"\t[ForeignKey(\"{column.ForeignKeyClassName}\")]");
                 }
+                if (column.AutoIncrement)
+                {
+                    sb.AppendLine($"\t[DatabaseGenerated(DatabaseGeneratedOption.Identity){AddKey(column.IsPK)}]");
+                }
+                else if (column.IsPK)
+                {
+                    sb.AppendLine($"\t[Key]");
+                }
                 sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\")]");
                 sb.AppendLine($"\tpublic virtual {column.SysType} {column.CleanName} {{ get; set; }}");
             }
 
             return sb.ToString();
+        }
+
+        private string AddKey(bool isPK)
+        {
+            return isPK ? ", Key" : string.Empty;
         }
 
         public string BuildForeighKeys(List<Column> foreignKeyColumns, string tableSchema)
