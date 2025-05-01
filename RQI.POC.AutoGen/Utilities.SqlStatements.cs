@@ -147,7 +147,7 @@ ORDER BY
 
 ";
 
-        private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN ('Docs','rules','Oracle'))
+        private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN (@VIEW_SCHEMA_LIST@))
 ";
 
 		public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
@@ -193,8 +193,8 @@ ORDER BY
 				if (!ViewsSchemaList.Equals("'*'"))
 				{
 					// ** Build Schema clause
-					result = result.Replace("@SCHEMA_CLAUSE@", _VIEWS_SCHEMA_CLAUSE);
-					result = result.Replace("@SCHEMA_LIST@", ViewsSchemaList);
+					var schemaClause = _VIEWS_SCHEMA_CLAUSE.Replace("@VIEW_SCHEMA_LIST@", ViewsSchemaList);
+                    result = result.Replace("@SCHEMA_CLAUSE@", schemaClause);
 				}
 				else
 				{
