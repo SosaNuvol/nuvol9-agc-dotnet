@@ -30,7 +30,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 {
                     sb.AppendLine($"\t[Key]");
                 }
-                sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\")]");
+                sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\"){AddRequired(!column.IsNullable)}]");
                 sb.AppendLine($"\tpublic virtual {column.SysType} {column.CleanName} {{ get; set; }}");
             }
 
@@ -40,6 +40,11 @@ namespace RQI.POC.AutoGenConsole.Utilities
         private string AddKey(bool isPK)
         {
             return isPK ? ", Key" : string.Empty;
+        }
+
+        private string AddRequired(bool isRequired)
+        {
+            return isRequired ? ", Required" : string.Empty;
         }
 
         public string BuildForeighKeys(List<Column> foreignKeyColumns, string tableSchema)
