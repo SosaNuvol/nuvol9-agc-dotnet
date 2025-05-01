@@ -273,6 +273,49 @@ namespace RQI.POC.AutoGen
             }
         }
 
+        private static IList<string> _historicalColumns;
+        public static IList<string> HistoricalColumns
+        {
+            get
+            {
+                if (_historicalColumns == null)
+                {
+                    _historicalColumns = new List<string>();
+                    var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.HistoricalColumns"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.HistoricalColumns"];
+                    if (string.IsNullOrEmpty(rawValue)) return _historicalColumns;
+                    var historicalColumns = rawValue.Split(',');
+
+                    foreach (var column in historicalColumns)
+                    {
+                        if (string.IsNullOrEmpty(column)) continue;
+                        _historicalColumns.Add(column);
+                    }
+                }
+                return _historicalColumns;
+            }
+        }
+
+        private static IList<string> _auditColumns;
+        public static IList<string> AuditColumns
+        {
+            get
+            {
+                if (_auditColumns == null)
+                {
+                    _auditColumns = new List<string>();
+                    var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.AuditColumns"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.AuditColumns"];
+                    if (string.IsNullOrEmpty(rawValue)) return _auditColumns;
+                    var auditColumns = rawValue.Split(',');
+                    foreach (var column in auditColumns)
+                    {
+                        if (string.IsNullOrEmpty(column)) continue;
+                        _auditColumns.Add(column);
+                    }
+                }
+                return _auditColumns;
+            }
+        }
+
         /// <summary>
         /// Wrapper around the ExcludeTableList that returns an IEnumerable
         /// </summary>

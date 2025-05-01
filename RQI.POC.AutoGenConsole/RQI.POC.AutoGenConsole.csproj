@@ -185,9 +185,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library\DatabaseLibrary.cs" />
-    <Compile Include="Library\Inflector.cs" />
-    <Compile Include="Library\Utility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates\Models\HeaderModel.cs" />
@@ -195,6 +192,7 @@
     <Compile Include="Utilities\AutoGenConsoleSettings.cs" />
     <Compile Include="Utilities\GeneratorBase.cs" />
     <Compile Include="Utilities\IGenerator.cs" />
+    <Compile Include="Utilities\NOAHTablesGenerator.Columns.cs" />
     <Compile Include="Utilities\NOAHTablesGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

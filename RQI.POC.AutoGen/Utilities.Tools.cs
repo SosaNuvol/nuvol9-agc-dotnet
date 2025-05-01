@@ -693,6 +693,25 @@ namespace RQI.POC.AutoGen
             return result;
         }
 
+        public static bool IsHistoricalColumn(Column col)
+        {
+            // ** Check
+            if (HistoricalColumns.Contains(col.Name))
+                return true;
+
+            // ** Return result
+            return false;
+        }
+
+        public static bool IsAuditColumn(Column col)
+        {
+            // ** Check
+            if (AuditColumns.Contains(col.Name))
+                return true;
+            // ** Return result
+            return false;
+        }
+
         /// <summary>
         /// This is used in T4T to not add a ForeignKey Property since it will not be rendered in the Models
         /// </summary>

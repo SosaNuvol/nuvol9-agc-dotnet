@@ -113,6 +113,7 @@ FROM
 	) AS PT
 	ON
 		(PK.TABLE_NAME = PT.TABLE_NAME)
+		AND (PK.TABLE_SCHEMA = PT.TABLE_SCHEMA)
 ORDER BY
 	ConstraintName
 	, [Owner]
@@ -288,9 +289,11 @@ ORDER BY
 						{
 							col.IsPK = isPK;
 						}
+						col.IsHistorical = IsHistoricalColumn(col);
+						col.IsAuditColumn = IsAuditColumn(col);
 
-						// ** Check if the column list needs to be reset.
-						if (list == null) throw new Exception("Column list can not be null.");
+                        // ** Check if the column list needs to be reset.
+                        if (list == null) throw new Exception("Column list can not be null.");
 
 						// ** Add column
 						list.Add(col);
@@ -538,10 +541,8 @@ ORDER BY
 			// ** Loop through and build list
 			foreach (ForeignKeyRow row in ForeignKeyRows)
 			{
-				// TODO: ???? Not sure what this does
-				// ** Check that thisTable is the same as OtherTable
 				if (string.Compare(row.ThisTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0
-				    || string.Compare(row.OtherTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0)
+				    && string.Compare(row.ThisTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 
 					FKTable fk = new FKTable();

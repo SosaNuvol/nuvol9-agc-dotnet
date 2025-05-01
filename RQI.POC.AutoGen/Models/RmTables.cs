@@ -119,7 +119,7 @@ namespace RQI.POC.AutoGen.Models
                     {
                         // ** Find the foreign Key table
                         FKTable fkt = tableItem.FKTables.FirstOrDefault(
-                            x => x.ThisColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
+                            x => x.OtherColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
                         );
 
                         // ** Bind properties

@@ -20,6 +20,19 @@
             }
         }
 
+        private string _dataAccessRootFilePath;
+        public string DataAccessRootFilePath
+        {
+            get
+            {
+                if (_dataAccessRootFilePath == null)
+                {
+                    _dataAccessRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.DataAccessRootFilePath"];
+                }
+                return _dataAccessRootFilePath;
+            }
+        }
+
         private string _templateDataBound;
         public string TemplateDataBound
         {
