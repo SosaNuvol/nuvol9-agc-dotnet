@@ -1,6 +1,7 @@
 namespace RQI.POC.AutoGenConsole.Utilities
 {
     using RQI.POC.AutoGen.Models.Base;
+    using System;
     using System.Collections.Generic;
     using System.Text;
 
@@ -11,7 +12,46 @@ namespace RQI.POC.AutoGenConsole.Utilities
             var sb = new StringBuilder();
             foreignKeyColumns = new List<Column>();
 
+            foreach (var column in tableItem.Columns)
+            {
+                sb.AppendLine("");
+                if (column.IsForeignKey)
+                {
+                    foreignKeyColumns.Add(column);
+                    sb.AppendLine($"\t[ForeignKey(\"{column.ForeignKeyClassName}\")]");
+                }
+                sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\")]");
+                sb.AppendLine($"\tpublic virtual {column.SysType} {column.CleanName} {{ get; set; }}");
+            }
+
             return sb.ToString();
+        }
+
+        public string BuildForeighKeys(List<Column> foreignKeyColumns, string tableSchema)
+        {
+            var sb = new StringBuilder();
+            if (foreignKeyColumns.Count > 0)
+            {
+                sb.AppendLine("\t#region Foreign Keys");
+                foreach (var foreignKeyColumn in foreignKeyColumns)
+                {
+                    sb.AppendLine($"\tpublic virtual {GetSchemaName(tableSchema, foreignKeyColumn.ForeignKeyTableSchemaName)}{foreignKeyColumn.ForeignKeyClassName} {foreignKeyColumn.ForeignKeyClassName} {{ get; set; }}");
+                }
+                sb.AppendLine("\t#endregion");
+            }
+            return sb.ToString();
+        }
+
+        private string GetSchemaName(string tableSchema, string fkSchema)
+        {
+            if (tableSchema.Equals(fkSchema, StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return $"{fkSchema}.";
+            }
         }
     }
 }

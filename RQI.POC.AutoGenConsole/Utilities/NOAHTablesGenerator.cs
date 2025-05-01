@@ -49,7 +49,7 @@
                     .Replace("<INHERITANCE_PART>", classInheretsFrom);
 
                 tableStringBuilder = tableStringBuilder.Replace("<TABLE_COLUMN_PROPERTIES>", BuildColumns(tableItem, out var foreignKeyColumns));
-                tableStringBuilder = tableStringBuilder.Replace("<TABLE_FOREIGN_KEYS>", BuildForeighKeys(foreignKeyColumns));
+                tableStringBuilder = tableStringBuilder.Replace("<TABLE_FOREIGN_KEYS>", BuildForeighKeys(foreignKeyColumns, tableItem.Schema));
 
                 SaveTableDefinitionToFile(tableItem, tableStringBuilder.ToString());
 
