@@ -14,6 +14,8 @@ namespace RQI.POC.AutoGenConsole.Utilities
 
             foreach (var column in tableItem.Columns)
             {
+                if (column.IsHistorical) continue;
+
                 sb.AppendLine("");
                 if (column.IsForeignKey)
                 {
