@@ -23,36 +23,39 @@
             Console.WriteLine($"|*** Count of views: {_rmViews.LongCount()}");
 
             // ** Loop through all tables
-            foreach (var tableItem in _rmViews)
+            foreach (var viewItem in _rmViews)
             {
                 // ** Init
                 counter++;
-                var tableName = tableItem.Name;
-                var className = AutoGen.Utilities.Inflector.MakeSingular(tableItem.CleanName);
-                var nameSpaceString = $"{DataAccessNameSpace}.Models.{tableItem.Schema}";
-                var classAnnotation = $"[Table(\"{tableName}\", Schema = \"{tableItem.Schema}\")]";
-                var classInheretsFrom = TableIsHistorical(tableItem)
+                var viewName = viewItem.Name;
+                var className = AutoGen.Utilities.Inflector.MakeSingular(viewItem.CleanName);
+                var nameSpaceString = $"{DataAccessNameSpace}.Models.{viewItem.Schema}";
+                var classAnnotation = $"[Table(\"{viewName}\", Schema = \"{viewItem.Schema}\")]";
+                var classInheretsFrom = TableIsHistorical(viewItem)
                     ? " : HistoricalEntity"
                     : null;
 
-                var tableStringBuilder = headerTemplate
+                var viewStringBuilder = headerTemplate
                     .Replace("<NAMESPACE>", nameSpaceString)
                     .Replace("<CLASS_ANNOTATION>", classAnnotation)
                     .Replace("<CLASS_NAME>", className)
                     .Replace("<INHERITANCE_PART>", classInheretsFrom);
 
-                tableStringBuilder = tableStringBuilder.Replace("<TABLE_COLUMN_PROPERTIES>", BuildColumns(tableItem, out var foreignKeyColumns));
-                tableStringBuilder = tableStringBuilder.Replace("<TABLE_FOREIGN_KEYS>", BuildForeighKeys(foreignKeyColumns, tableItem.Schema));
+                viewStringBuilder = viewStringBuilder.Replace("<TABLE_COLUMN_PROPERTIES>", BuildColumns(viewItem, out var foreignKeyColumns));
+                viewStringBuilder = viewStringBuilder.Replace("<TABLE_FOREIGN_KEYS>", BuildForeighKeys(foreignKeyColumns, viewItem.Schema));
 
-                SaveTableDefinitionToFile(tableItem, tableStringBuilder.ToString());
+                SaveTableDefinitionToFile(viewItem, viewStringBuilder.ToString());
 
-                // ** Print table info
+                // ** Loop though all Views
+                viewName = $"[{viewItem.Schema}].[{viewItem.Name}]";
+
+                // ** Print view information
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"|** {counter:D4}|-> Table Name: {tableName,-50} | Columns: {tableItem.Columns.Count:D3}");
+                Console.WriteLine($"|** {counter:D4}|=> View Name: {viewName,-50} | Columns: {viewItem.Columns.Count:D3}");
 
                 // ** Print Columns
                 Console.ForegroundColor = ConsoleColor.Blue;
-                foreach (var tableItemColumn in tableItem.Columns)
+                foreach (var tableItemColumn in viewItem.Columns)
                 {
                     Console.WriteLine($"|** ** Column Name {tableItemColumn.Name,-50} | Column C# Type: {tableItemColumn.DbType,-22} | Column DB Type: {tableItemColumn.DataType.ToUpper(),-22} | Column Length: {tableItemColumn.MaxLength}");
                 }
