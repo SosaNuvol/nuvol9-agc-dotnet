@@ -96,8 +96,6 @@ SELECT * FROM WithParametersCTE";
         protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN (@SCHEMA_LIST@))
 ";
 
-        protected const string SQL_SCHEMA_CLAUSE_TYPE = @"";
-
         protected const string SQL_STATEMENT_TYPES = @"
 WITH RootCTE AS (
     SELECT
@@ -113,13 +111,18 @@ WITH RootCTE AS (
     WHERE
         T.is_user_defined = 1
 )
-SELECT * FROM RootCTE
+SELECT
+    *
+FROM
+    RootCTE
 WHERE
-    TYPE_SCHEMA IN (@SCHEMA_LIST@)
+    (IsTableType = 0 OR IsTableType = 1)@SCHEMA_CLAUSE@
 ORDER BY
     TYPE_SCHEMA,
     TYPE_NAME
 ";
+        protected const string SQL_SCHEMA_CLAUSE_TYPE = @"
+    AND TYPE_SCHEMA IN (@SCHEMA_LIST@)";
 
         protected string SQLStatement;
 

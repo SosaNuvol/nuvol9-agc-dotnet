@@ -28,11 +28,13 @@ namespace RQI.POC.AutoGenConsole
             var table = new RmTables(connectionString);
             var views = new RmViews(connectionString);
             var sprocs = new RmProcedures(connectionString);
+            var utypes = new RmUserTypes(connectionString);
 
             // ** Load from SQL
             var sprocResult = sprocs.Load().OrderBy(s => s.SchemaName);
             var tableResult = table.Load().OrderBy(s => s.Schema);
             var viewsResult = views.LoadViews().OrderBy(s => s.Schema);
+            var userDefinedTypesResult = utypes.LoadUserDefinedTypes().OrderBy(s => s.Schema);
 
             var counter = 0;
 
