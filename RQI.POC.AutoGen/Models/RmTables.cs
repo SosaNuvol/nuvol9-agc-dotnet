@@ -141,7 +141,7 @@ namespace RQI.POC.AutoGen.Models
                     throw new Exception(string.Format("No columns for Table: {0}.{1}", tableItem.Schema, tableItem.Name));
                 }
 
-                // ** Check if this is a Types table that needs to be stubbed out.
+                // ** Check if this is a UserDefinedTypes table that needs to be stubbed out.
                 // ReSharper disable once UseStringInterpolation
                 if (Utilities.EnumTables.ContainsKey(string.Format("{0}.{1}", tableItem.Schema, tableItem.Name)))
                 {

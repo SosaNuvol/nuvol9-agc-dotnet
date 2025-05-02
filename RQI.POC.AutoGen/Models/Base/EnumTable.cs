@@ -13,7 +13,7 @@ namespace RQI.POC.AutoGen.Models.Base
     using System.Collections.Generic;
 
     /// <summary>
-    /// Defines the ability to create Enum Types in the Stack
+    /// Defines the ability to create Enum UserDefinedTypes in the Stack
     /// </summary>
     public class EnumTable
     {

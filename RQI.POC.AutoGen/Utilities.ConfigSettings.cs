@@ -129,26 +129,23 @@ namespace RQI.POC.AutoGen
             }
         }
 
-        /// <summary>
-        /// List of Schemas that will be used for Stored Procedures.
-        /// </summary>
-        //public static string StoredProcedureSchemaList
-        //{
-        //    get
-        //    {
-        //        // ** Init
-        //        var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StPrcSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+        public static string UserDefinedTypesSchemaList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StUDTSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
 
-        //        // ** Check configuration value
-        //        if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
 
-        //        // ** Build the
-        //        var result = ConvertToSQLListFormat(rawValue);
+                // ** Build the
+                var result = ConvertToSQLListFormat(rawValue);
 
-        //        // ** Return result
-        //        return result;
-        //    }
-        //}
+                // ** Return result
+                return result;
+            }
+        }
 
         #region TABLES
         /// <summary>

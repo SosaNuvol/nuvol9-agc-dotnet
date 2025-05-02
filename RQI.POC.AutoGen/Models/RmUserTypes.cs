@@ -10,7 +10,47 @@
 
 namespace RQI.POC.AutoGen.Models
 {
-    internal class RmUserTypes
+    using RQI.POC.AutoGen.Models.Base;
+    using System.Collections.Generic;
+    using System.Data;
+
+    public class RmUserTypes : RmBase
     {
+
+        #region Properties
+        List<UserDefinedType> _userTypes;
+        #endregion Properties
+        public RmUserTypes(string sqlConnectionString) : base(sqlConnectionString)
+        {
+            // ** Init Class properties
+            _userTypes = null;
+            // ** Init
+            InitInstance(Utilities.UserDefinedTypesSchemaList, SQLTypesEnum.UserDefinedTypes);
+        }
+
+        public List<UserDefinedType> LoadUserDefinedTypes()
+        {
+            // ** Check if initialized
+            if (_userTypes != null) return _userTypes;
+            // ** Init
+            _userTypes = new List<UserDefinedType>();
+            // ** Build User Defined UserDefinedTypes list
+            using (IDataReader dataReader = GetReader(SQLStatement))
+            {
+                // ** Root loop through reader
+                while (dataReader.Read())
+                {
+                    // ** Init
+                    var userType = new UserDefinedType
+                    {
+                        Name = (string)dataReader["TYPE_NAME"],
+                        Schema = (string)dataReader["TYPE_SCHEMA"]
+                    };
+                    // ** Add to list
+                    _userTypes.Add(userType);
+                }
+            }
+            return _userTypes;
+        }
     }
 }

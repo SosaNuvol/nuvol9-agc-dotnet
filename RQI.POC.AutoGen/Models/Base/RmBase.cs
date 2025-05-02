@@ -22,7 +22,7 @@ namespace RQI.POC.AutoGen.Models.Base
         private const string _VIEW = "VIEW";
         private const string _PROCEDURE = "PROCEDURE";
         private const string _FUNCTION = "FUNCTION";
-        private const string _TABLE_TYPE = "TABLE TYPE";
+        private const string _USER_TYPES = "USER TYPE";
 
         private string _classType;
         protected readonly string SQLConnectionString;
@@ -98,7 +98,28 @@ SELECT * FROM WithParametersCTE";
 
         protected const string SQL_SCHEMA_CLAUSE_TYPE = @"";
 
-        protected const string SQL_STATEMENT_TYPES = @"";
+        protected const string SQL_STATEMENT_TYPES = @"
+WITH RootCTE AS (
+    SELECT
+        SCHEMA_NAME(T.schema_id) AS TYPE_SCHEMA,
+        T.name AS TYPE_NAME,
+        T.is_table_type AS IsTableType,
+        T.max_length AS MaxLength,
+        T.precision AS Precision,
+        T.scale AS Scale,
+        T.is_nullable AS IsNullable
+    FROM
+        sys.types AS T
+    WHERE
+        T.is_user_defined = 1
+)
+SELECT * FROM RootCTE
+WHERE
+    TYPE_SCHEMA IN (@SCHEMA_LIST@)
+ORDER BY
+    TYPE_SCHEMA,
+    TYPE_NAME
+";
 
         protected string SQLStatement;
 
@@ -108,7 +129,7 @@ SELECT * FROM WithParametersCTE";
             Views,
             Procedures,
             Functions,
-            Types
+            UserDefinedTypes
         }
 
         #endregion Properties
@@ -187,9 +208,9 @@ SELECT * FROM WithParametersCTE";
                     classTypeArgument = _FUNCTION;
                     sqlClauseStatement = SQL_SCHEMA_CLAUSE_PF;
                     break;
-                case SQLTypesEnum.Types:
+                case SQLTypesEnum.UserDefinedTypes:
                     sqlStatement = SQL_STATEMENT_TYPES;
-                    classTypeArgument = _TABLE_TYPE;
+                    classTypeArgument = _USER_TYPES;
                     sqlClauseStatement = SQL_SCHEMA_CLAUSE_TYPE;
                     break;
                 default:
