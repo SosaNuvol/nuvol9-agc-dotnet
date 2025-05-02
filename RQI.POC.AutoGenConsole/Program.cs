@@ -34,12 +34,10 @@ namespace RQI.POC.AutoGenConsole
             var tableResult = table.Load().OrderBy(s => s.Schema);
             var viewsResult = views.LoadViews().OrderBy(s => s.Schema);
 
-            #region DEBUGGING 
-
-            //ExecuteTest(connectionString);
-            #endregion DEBUGGING 
-
             var counter = 0;
+
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** TABLES **********************************************");
 
             var tableGenerator = new NOAHTablesGenerator(tableResult);
             tableGenerator.Generate(counter);

@@ -5,7 +5,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
     using System.Collections.Generic;
     using System.Text;
 
-    public partial class NOAHTablesGenerator
+    public partial class GeneratorBase
     {
         public string BuildColumns(Table tableItem, out List<Column> foreignKeyColumns)
         {

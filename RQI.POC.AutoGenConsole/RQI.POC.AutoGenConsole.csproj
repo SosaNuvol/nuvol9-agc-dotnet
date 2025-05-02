@@ -192,8 +192,9 @@
     <Compile Include="Utilities\AutoGenConsoleSettings.cs" />
     <Compile Include="Utilities\GeneratorBase.cs" />
     <Compile Include="Utilities\IGenerator.cs" />
-    <Compile Include="Utilities\NOAHTablesGenerator.Columns.cs" />
+    <Compile Include="Utilities\GeneratorBase.Columns.cs" />
     <Compile Include="Utilities\NOAHTablesGenerator.cs" />
+    <Compile Include="Utilities\NOAHViewsGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

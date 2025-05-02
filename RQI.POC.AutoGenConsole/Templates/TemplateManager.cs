@@ -20,6 +20,19 @@
             }
         }
 
+        private string _viewTemplateFilePath;
+        public string ViewTemplateFilePath
+        {
+            get
+            {
+                if (_viewTemplateFilePath == null)
+                {
+                    _viewTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.ViewTemplateFilePath"];
+                }
+                return _viewTemplateFilePath;
+            }
+        }
+
         private string _dataAccessRootFilePath;
         public string DataAccessRootFilePath
         {
@@ -57,6 +70,15 @@
 
             return tablePrimer;
         }
+
+        public string GetViewTemplatePrimer()
+        {
+            var viewPrimer = File.ReadAllText(ViewTemplateFilePath);
+            if (viewPrimer == null) return null;
+            
+            viewPrimer = BindHeaderInformation(viewPrimer);
+            return viewPrimer;
+        }   
 
         private string BindHeaderInformation(string templateData)
         {
