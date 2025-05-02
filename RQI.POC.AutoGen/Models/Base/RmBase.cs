@@ -1,6 +1,6 @@
 ﻿#region File Header
-// <copyright file="RmBase.cs" company="Cotiviti">
-//  Copyright (c) 2019 Cotiviti.  All rights reserved.
+// <copyright file="RmBase.cs" company="Núvol 9">
+//  Copyright (c) 2025 Núvol 9.  All rights reserved.
 // </copyright>
 // <summary>
 //  Document created on 2019-12-12-9:57 AM
@@ -22,6 +22,7 @@ namespace RQI.POC.AutoGen.Models.Base
         private const string _VIEW = "VIEW";
         private const string _PROCEDURE = "PROCEDURE";
         private const string _FUNCTION = "FUNCTION";
+        private const string _TABLE_TYPE = "TABLE TYPE";
 
         private string _classType;
         protected readonly string SQLConnectionString;
@@ -95,6 +96,10 @@ SELECT * FROM WithParametersCTE";
         protected const string SQL_SCHEMA_CLAUSE_PF = @"		AND (R.ROUTINE_SCHEMA IN (@SCHEMA_LIST@))
 ";
 
+        protected const string SQL_SCHEMA_CLAUSE_TYPE = @"";
+
+        protected const string SQL_STATEMENT_TYPES = @"";
+
         protected string SQLStatement;
 
         public enum SQLTypesEnum
@@ -102,7 +107,8 @@ SELECT * FROM WithParametersCTE";
             Tables,
             Views,
             Procedures,
-            Functions
+            Functions,
+            Types
         }
 
         #endregion Properties
@@ -180,6 +186,11 @@ SELECT * FROM WithParametersCTE";
                     sqlStatement = SQL_STATEMENT_SPROCS_FUNCTIONS;
                     classTypeArgument = _FUNCTION;
                     sqlClauseStatement = SQL_SCHEMA_CLAUSE_PF;
+                    break;
+                case SQLTypesEnum.Types:
+                    sqlStatement = SQL_STATEMENT_TYPES;
+                    classTypeArgument = _TABLE_TYPE;
+                    sqlClauseStatement = SQL_SCHEMA_CLAUSE_TYPE;
                     break;
                 default:
                     sqlStatement = SQL_STATEMENT;

@@ -1,6 +1,6 @@
 ﻿#region File Header
-// <copyright file="Column.cs" company="Cotiviti">
-//  Copyright (c) 2019 Cotiviti.  All rights reserved.
+// <copyright file="Column.cs" company="Núvol 9">
+//  Copyright (c) 2025 Núvol 9.  All rights reserved.
 // </copyright>
 // <summary>
 //  Document created on 2019-12-06-2:24 PM

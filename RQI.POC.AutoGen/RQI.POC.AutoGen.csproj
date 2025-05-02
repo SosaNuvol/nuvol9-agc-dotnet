@@ -69,6 +69,7 @@
     <Compile Include="Models\Base\RmBase.cs" />
     <Compile Include="Models\Base\SPResultSetColumn.cs" />
     <Compile Include="Models\RmProcedures.cs" />
+    <Compile Include="Models\RmUserTypes.cs" />
     <Compile Include="Models\RmViews.cs" />
     <Compile Include="Utilities.ConfigSettings.cs" />
     <Compile Include="Utilities.cs" />
