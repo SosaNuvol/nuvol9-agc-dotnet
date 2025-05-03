@@ -150,7 +150,37 @@ ORDER BY
         private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN (@VIEW_SCHEMA_LIST@))
 ";
 
-		private const string _UDTT_DEF_SQL_STATEMENT = @"";
+		private const string _UDTT_DEF_SQL_STATEMENT = @"
+SELECT
+      SCHEMA_NAME(TT.schema_id) AS TableSchema
+    , TT.name AS TableName
+    , DB_NAME() AS [Database]
+    , SCHEMA_NAME(TT.schema_id) AS [Owner]
+    , C.name AS [ColumnName]
+    , C.column_id AS [OrdinalPosition]
+    , NULL AS [DefaultSetting]
+    , C.is_nullable AS [IsNullable]
+    , TYPE_NAME(C.user_type_id) AS DataType
+    , C.max_length AS [MaxLength]
+    , C.precision AS [Precision]
+    , C.scale AS [Scale]
+    , CAST(0 AS BIT) AS [IsIdentity]
+    , CAST(0 AS BIT) AS [IsComputed]
+	, CAST(0 AS BIT) AS [IsPK]
+FROM
+    sys.table_types AS TT WITH(NOLOCK)
+    INNER JOIN sys.columns AS C WITH(NOLOCK)
+    ON
+        (TT.type_table_object_id = C.object_id)
+WHERE
+    (TT.is_user_defined = 1)
+    AND (TT.is_table_type = 1)
+    AND (SCHEMA_NAME(TT.schema_id) IN (@SCHEMA_LIST@))
+ORDER BY
+    SCHEMA_NAME(TT.schema_id),
+    TT.name,
+    C.column_id;
+";
 
 		public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
 SELECT

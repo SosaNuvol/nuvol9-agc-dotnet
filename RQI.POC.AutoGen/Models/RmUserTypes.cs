@@ -11,6 +11,7 @@
 namespace RQI.POC.AutoGen.Models
 {
     using RQI.POC.AutoGen.Models.Base;
+    using System;
     using System.Collections.Generic;
     using System.Data;
 
@@ -60,6 +61,30 @@ namespace RQI.POC.AutoGen.Models
                     };
                     // ** Add to list
                     _userTypes.Add(userType);
+                }
+
+                // Build definitions
+                foreach (var userType in _userTypes)
+                {
+                    // ** Init 
+                    var key = $"{userType.Schema}.{userType.Name}";
+
+                    // ** Get the definitions
+                    var found = Utilities.UdttColumnDict.TryGetValue(key, out var uttDefinitions);
+                    if (found)
+                    {
+                        // ** Loop through the definitions
+                        foreach (var column in uttDefinitions)
+                        {
+                            // ** Add to the list
+                            userType.Definitions.Add(column);
+                        }
+                    }
+                    else
+                    {
+                        // ** Log error
+                        Console.WriteLine($"User Defined Type {userType.Name} not found in dictionary");
+                    }
                 }
             }
             return _userTypes;
