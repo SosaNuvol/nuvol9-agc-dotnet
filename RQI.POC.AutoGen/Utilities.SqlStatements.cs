@@ -150,6 +150,8 @@ ORDER BY
         private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN (@VIEW_SCHEMA_LIST@))
 ";
 
+		private const string _UDTT_DEF_SQL_STATEMENT = @"";
+
 		public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
 SELECT
 	  SPR.[name] AS [ColName]
@@ -206,6 +208,20 @@ ORDER BY
 				return result;
 	        }
         }
+		
+		private static string GetUDTableTypeDefSqlStatement
+		{
+			get
+			{
+                // ** Init
+                var result = _UDTT_DEF_SQL_STATEMENT.Replace("@SCHEMA_LIST@", UserDefinedTypesSchemaList);
+                result = result.Replace("@SYSTEM_COL_TO_IGNORE@", SQLSystemColToIgnoreList);
+                result = result.Replace("@COL_DATA_TYPES_TO_IGNORE@", SQLColDataTypeToIgnoreList);
+                // ** Return result
+                return result;
+            }
+		}
+
 		#endregion SQL String Constants
 
 		#region Database Artifacts
@@ -374,7 +390,84 @@ ORDER BY
 			}
 		}
 
-		private static ForeignKeyRowCollection _foreignKeyRows;
+		public static Dictionary<string, List<Column>> _udttColumnDict;
+
+        public static Dictionary<string, List<Column>> UdttColumnDict
+		{
+			get
+			{
+                // ** Check if initialized
+                if (_udttColumnDict != null) return _udttColumnDict;
+
+                // ** Init
+                _udttColumnDict = new Dictionary<string, List<Column>>();
+                var udTableTypeName = "";
+                var udTableTypeSchema = "";
+                List<Column> list = null;
+
+                // ** Loop through columns
+                using (IDataReader rdr = GetReader(GetUDTableTypeDefSqlStatement))
+                {
+                    // ** Loop through column tuples
+                    while (rdr.Read())
+                    {
+                        // ** Init
+                        var tableName = (string)rdr["TableName"];
+                        var tableSchema = (string)rdr["Owner"];
+
+                        // ** Check we are looking at the right table
+                        if (!udTableTypeName.Equals(tableName) || !udTableTypeSchema.Equals(tableSchema))
+                        {
+                            // ** Reset mechanism for the loop
+                            udTableTypeName = tableName;
+                            udTableTypeSchema = tableSchema;
+                            list = new List<Column>();
+                            _udttColumnDict.Add(tableSchema + "." + tableName, list);
+                        }
+
+                        // ** Build Column Info
+                        var col = new Column();
+                        col.Name = (string)rdr["ColumnName"];
+                        col.CleanName = TransformName(col.Name);
+                        col.DataType = rdr["DataType"].ToString();
+                        col.SysType = GetSysType(col.DataType);
+                        col.DbType = GetDbType(col.DataType);
+                        col.AutoIncrement = Convert.ToBoolean(rdr["IsIdentity"]);
+                        object obj = rdr["DefaultSetting"];
+                        col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
+                        col.IsReadOnly = Convert.ToBoolean(rdr["IsComputed"]);
+                        col.IsNullable = rdr["IsNullable"].ToString() == "YES";
+                        col.TableName = tableName;
+                        col.TableSchema = tableSchema;
+                        // ReSharper disable InlineOutVariableDeclaration
+                        int maxLength;
+                        if (int.TryParse(rdr["MaxLength"].ToString(), out maxLength))
+                        {
+                            col.MaxLength = maxLength;
+                        }
+                        bool isPK;
+                        // ReSharper restore InlineOutVariableDeclaration
+                        if (bool.TryParse(rdr["IsPK"].ToString(), out isPK))
+                        {
+                            col.IsPK = isPK;
+                        }
+                        col.IsHistorical = IsHistoricalColumn(col);
+                        col.IsAuditColumn = IsAuditColumn(col);
+
+                        // ** Check if the column list needs to be reset.
+                        if (list == null) throw new Exception("Column list can not be null.");
+
+                        // ** Add column
+                        list.Add(col);
+                    }
+                }
+
+                // ** Default response
+                return _tableColumnDict;
+            }
+		}
+
+        private static ForeignKeyRowCollection _foreignKeyRows;
 		public static ForeignKeyRowCollection ForeignKeyRows
 		{
 			get
