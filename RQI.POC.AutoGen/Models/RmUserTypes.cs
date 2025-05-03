@@ -66,8 +66,10 @@ namespace RQI.POC.AutoGen.Models
                 // Build definitions
                 foreach (var userType in _userTypes)
                 {
-                    // ** Init 
-                    var key = $"{userType.Schema}.{userType.Name}";
+                    // ** Check if we have a table type
+                    if (!userType.IsTableType) continue;
+
+                    var key = $"{userType.Schema.Trim().ToLowerInvariant()}.{userType.Name.Trim().ToLowerInvariant()}";
 
                     // ** Get the definitions
                     var found = Utilities.UdttColumnDict.TryGetValue(key, out var uttDefinitions);

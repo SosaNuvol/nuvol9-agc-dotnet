@@ -452,7 +452,7 @@ ORDER BY
                             udTableTypeName = tableName;
                             udTableTypeSchema = tableSchema;
                             list = new List<Column>();
-                            _udttColumnDict.Add(tableSchema + "." + tableName, list);
+                            _udttColumnDict.Add($"{tableSchema.Trim().ToLowerInvariant()}.{tableName.Trim().ToLowerInvariant()}", list);
                         }
 
                         // ** Build Column Info
@@ -493,7 +493,7 @@ ORDER BY
                 }
 
                 // ** Default response
-                return _tableColumnDict;
+                return _udttColumnDict;
             }
 		}
 
