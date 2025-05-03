@@ -20,5 +20,14 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public string Schema { get; set; }
 
+        public bool IsTableType { get; set; }
+
+        public short MaxLength { get; set; }
+        
+        public byte Precision { get; set; }
+
+        public byte Scale { get; set; }
+
+        public bool IsNullable { get; set; }
     }
 }

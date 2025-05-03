@@ -43,8 +43,13 @@ namespace RQI.POC.AutoGen.Models
                     // ** Init
                     var userType = new UserDefinedType
                     {
+                        Schema = (string)dataReader["TYPE_SCHEMA"],
                         Name = (string)dataReader["TYPE_NAME"],
-                        Schema = (string)dataReader["TYPE_SCHEMA"]
+                        IsTableType = (bool)dataReader["IS_TABLE_TYPE"],
+                        MaxLength =  dataReader.IsDBNull(3) ? (short)0 : (short)dataReader["MaxLength"],
+                        Precision = (byte)dataReader["Precision"],
+                        Scale = (byte)dataReader["Scale"],
+                        IsNullable = (bool)dataReader["IsNullable"]
                     };
                     // ** Add to list
                     _userTypes.Add(userType);

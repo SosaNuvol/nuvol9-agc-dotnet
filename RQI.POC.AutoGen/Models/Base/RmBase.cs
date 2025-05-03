@@ -101,7 +101,7 @@ WITH RootCTE AS (
     SELECT
         SCHEMA_NAME(T.schema_id) AS TYPE_SCHEMA,
         T.name AS TYPE_NAME,
-        T.is_table_type AS IsTableType,
+        T.is_table_type AS IS_TABLE_TYPE,
         T.max_length AS MaxLength,
         T.precision AS Precision,
         T.scale AS Scale,
@@ -116,7 +116,7 @@ SELECT
 FROM
     RootCTE
 WHERE
-    (IsTableType = 0 OR IsTableType = 1)@SCHEMA_CLAUSE@
+    (IS_TABLE_TYPE = 0 OR IS_TABLE_TYPE = 1)@SCHEMA_CLAUSE@
 ORDER BY
     TYPE_SCHEMA,
     TYPE_NAME
