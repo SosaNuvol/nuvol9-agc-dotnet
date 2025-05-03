@@ -16,7 +16,7 @@ namespace RQI.POC.AutoGen
     {
         #region Logging
 
-        // ** Properties
+        // ** Definitions
         public static List<LogEntry> ErrorLogs = new List<LogEntry>();
 
         public static List<LogEntry> WarningLogs = new List<LogEntry>();

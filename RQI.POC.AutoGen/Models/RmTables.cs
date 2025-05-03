@@ -25,7 +25,7 @@ namespace RQI.POC.AutoGen.Models
         [InjectionConstructor]
         public RmTables([Dependency("SqlConnectionString")]string sqlConnectionString) : base(sqlConnectionString)
         {
-            // ** Bind to Properties
+            // ** Bind to Definitions
             _tables = null;
             _manyToManyTables = new List<Table>();
 

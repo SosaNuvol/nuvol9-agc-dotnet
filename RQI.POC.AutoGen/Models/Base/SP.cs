@@ -47,7 +47,7 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public SP(string definition, string jsonParameterList, string schema, string sprocName)
         {
-            // ** Bind Properties
+            // ** Bind Definitions
             SchemaName = schema;
             Name = sprocName;
             Parameters = string.IsNullOrEmpty(jsonParameterList) ? new List<SPParam>() : JsonConvert.DeserializeObject<List<SPParam>>(jsonParameterList);

@@ -152,7 +152,7 @@ ORDER BY
             // ** Init
             SetClassTypeAndSqlStatement(classType, out var classTypeArgument, out var sqlStatement, out var sqlClauseStatement);
 
-            // ** Bind Properties
+            // ** Bind Definitions
             _classType = classTypeArgument;
 
             // ** Build class type

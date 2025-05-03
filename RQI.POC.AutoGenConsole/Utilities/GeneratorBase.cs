@@ -59,7 +59,7 @@
 
         protected void SaveUDDTDefinitionToFile(UserDefinedType userDefinedType, string userDefinedTypeString)
         {
-            var fileName = $"{userDefinedType.CleanName}{GetSuffix(userDefinedType)}.generated.cs";
+            var fileName = $"{userDefinedType.ClassName}.generated.cs";
             var targetDirectory = GetTargetDirectory(userDefinedType);
             
             // ** Check if directory exists
@@ -73,20 +73,6 @@
             
             // ** Save to file
             System.IO.File.WriteAllText(filePath, userDefinedTypeString);
-        }
-
-        protected string GetSuffix(UserDefinedType userDefinedType)
-        {
-            var suffix = string.Empty;
-            if (userDefinedType.IsTableType)
-            {
-                suffix = "TableType";
-            }
-            else
-            {
-                suffix = "UserType";
-            }
-            return suffix;
         }
 
         protected string GetTargetDirectory(object value, string schema = null)

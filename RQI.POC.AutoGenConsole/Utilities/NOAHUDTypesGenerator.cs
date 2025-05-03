@@ -26,14 +26,18 @@
                 // ** Init
                 counter++;
                 var viewName = uddType.Name;
-                var className = AutoGen.Utilities.Inflector.MakeSingular(uddType.CleanName);
+                var className = uddType.ClassName;
                 var nameSpaceString = $"{DataAccessNameSpace}.UDDTs.{uddType.Schema}";
 
                 var viewStringBuilder = headerTemplate
                     .Replace("<NAMESPACE>", nameSpaceString)
-                    .Replace("<CLASS_ANNOTATION>", string.Empty)
+                    .Replace("<CLASS_ANNOTATION>", "[Keyless]")
                     .Replace("<CLASS_NAME>", className)
                     .Replace("<INHERITANCE_PART>", string.Empty);
+
+                var definitionString = BuildColumns(uddType);
+
+                viewStringBuilder = viewStringBuilder.Replace("<TYPE_DEFINITIONS>", definitionString);
 
                 SaveUDDTDefinitionToFile(uddType, viewStringBuilder.ToString());
             }

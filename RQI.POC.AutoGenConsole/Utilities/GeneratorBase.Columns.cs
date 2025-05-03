@@ -37,6 +37,31 @@ namespace RQI.POC.AutoGenConsole.Utilities
             return sb.ToString();
         }
 
+        public string BuildColumns(UserDefinedType udType)
+        {
+            if (!udType.IsTableType) return BuildUserTypeDefinition(udType);
+
+            var sb = new StringBuilder();
+            foreach (var definition in udType.Definitions)
+            {
+                if (definition.IsHistorical) continue;
+                sb.AppendLine("");
+                sb.AppendLine($"\t[Column(\"{definition.Name}\", TypeName=\"{definition.DataType}\"){AddRequired(!definition.IsNullable)}]");
+                sb.AppendLine($"\tpublic virtual {definition.SysType} {definition.CleanName} {{ get; set; }}");
+            }
+            return sb.ToString();
+        }
+
+        private string BuildUserTypeDefinition(UserDefinedType definition)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"\t[Column(\"{definition.Name}\", TypeName=\"{definition.DataType}\"){AddRequired(!definition.IsNullable)}]");
+            sb.AppendLine($"\tpublic {definition.UTSysType} Value {{ get; set; }} = default!;");
+
+            return sb.ToString();
+        }
+
         private string AddKey(bool isPK)
         {
             return isPK ? ", Key" : string.Empty;

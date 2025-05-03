@@ -9,16 +9,19 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Data;
 
 namespace RQI.POC.AutoGen.Models.Base
 {
     public class UserDefinedType
     {
-        public List<Column> Properties { get; set; }
+        public List<Column> Definitions { get; set; } = new List<Column>();
 
         public string Name { get; set; }
 
         public string CleanName { get; set; }
+
+        public string Suffix { get; set; }
 
         public string Schema { get; set; }
 
@@ -33,5 +36,35 @@ namespace RQI.POC.AutoGen.Models.Base
         public bool IsNullable { get; set; }
 
         public string SystemType { get; set; }
+
+        public string ClassName
+        {
+            get
+            {
+                return $"{Utilities.Inflector.MakeSingular(CleanName)}{Suffix}";
+            }
+        }
+
+        public string DataType
+        {
+            get
+            {
+                var precision = "";
+                if (SystemType.Equals("VARCHAR") || SystemType.Equals("NVARCHAR"))
+                    precision = $"({MaxLength})";
+
+                return IsTableType 
+                    ? "DataTable" 
+                    : $"{SystemType}{precision}";
+            }
+        }
+
+        public string UTSysType
+        {
+            get
+            {
+                return Utilities.GetSysType(SystemType);
+            }
+        }
     }
 }
