@@ -51,6 +51,12 @@ namespace RQI.POC.AutoGenConsole
             var viewGenerator = new NOAHTablesGenerator(viewsResult);
             viewGenerator.Generate(counter);
 
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** TYPES **********************************************");
+
+            var udTypesGenerator = new NOAHUDTypesGenerator(userDefinedTypesResult);
+            udTypesGenerator.Generate(counter);
+
             // ** Show done
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** SPROCS **********************************************");

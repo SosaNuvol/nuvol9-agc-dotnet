@@ -19,6 +19,7 @@
         public void Generate(int counter = 0)
         {
             var headerTemplate = _templateManager.GetViewTemplatePrimer();
+
             // ** Print results
             Console.WriteLine($"|*** Count of views: {_rmViews.LongCount()}");
 

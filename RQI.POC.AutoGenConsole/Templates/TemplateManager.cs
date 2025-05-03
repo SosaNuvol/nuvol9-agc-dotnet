@@ -33,6 +33,19 @@
             }
         }
 
+        private string _uddtTemplateFilePath;
+        public string UddtTemplateFilePath
+        {
+            get
+            {
+                if (_uddtTemplateFilePath == null)
+                {
+                    _uddtTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.UDDTTemplateFilePath"];
+                }
+                return _uddtTemplateFilePath;
+            }
+        }
+
         private string _dataAccessRootFilePath;
         public string DataAccessRootFilePath
         {
@@ -78,7 +91,15 @@
             
             viewPrimer = BindHeaderInformation(viewPrimer);
             return viewPrimer;
-        }   
+        }
+
+        public string GetUddtTemplatePrimer()
+        {
+            var udttPrimer = File.ReadAllText(UddtTemplateFilePath);
+            if (udttPrimer == null) return null;
+            udttPrimer = BindHeaderInformation(udttPrimer);
+            return udttPrimer;
+        }
 
         private string BindHeaderInformation(string templateData)
         {

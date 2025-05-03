@@ -37,6 +37,10 @@ namespace RQI.POC.AutoGen.Models
             // ** Build User Defined UserDefinedTypes list
             using (IDataReader dataReader = GetReader(SQLStatement))
             {
+                // Dynamically get the index of the SYSTEM_TYPE column
+                int systemTypeIndex = dataReader.GetOrdinal("SYSTEM_TYPE");
+                int maxLengthIndex = dataReader.GetOrdinal("MaxLength");
+
                 // ** Root loop through reader
                 while (dataReader.Read())
                 {
@@ -45,11 +49,13 @@ namespace RQI.POC.AutoGen.Models
                     {
                         Schema = (string)dataReader["TYPE_SCHEMA"],
                         Name = (string)dataReader["TYPE_NAME"],
+                        CleanName = Utilities.TransformName((string)dataReader["TYPE_NAME"]).Replace("udtt", string.Empty).Replace("uddt", string.Empty).Replace("udt", string.Empty),
                         IsTableType = (bool)dataReader["IS_TABLE_TYPE"],
-                        MaxLength =  dataReader.IsDBNull(3) ? (short)0 : (short)dataReader["MaxLength"],
+                        MaxLength =  dataReader.IsDBNull(maxLengthIndex) ? (short)0 : (short)dataReader["MaxLength"],
                         Precision = (byte)dataReader["Precision"],
                         Scale = (byte)dataReader["Scale"],
-                        IsNullable = (bool)dataReader["IsNullable"]
+                        IsNullable = (bool)dataReader["IsNullable"],
+                        SystemType = dataReader.IsDBNull(systemTypeIndex) ? null : (string)dataReader["SYSTEM_TYPE"],
                     };
                     // ** Add to list
                     _userTypes.Add(userType);

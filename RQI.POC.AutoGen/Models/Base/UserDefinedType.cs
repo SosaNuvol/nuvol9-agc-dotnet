@@ -18,6 +18,8 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public string Name { get; set; }
 
+        public string CleanName { get; set; }
+
         public string Schema { get; set; }
 
         public bool IsTableType { get; set; }
@@ -29,5 +31,7 @@ namespace RQI.POC.AutoGen.Models.Base
         public byte Scale { get; set; }
 
         public bool IsNullable { get; set; }
+
+        public string SystemType { get; set; }
     }
 }

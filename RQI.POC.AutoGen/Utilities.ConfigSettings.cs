@@ -134,7 +134,7 @@ namespace RQI.POC.AutoGen
             get
             {
                 // ** Init
-                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.StUDTSchemaList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.StUDTSchemaList"] ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StPrcSchemaList"];
 
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "*";

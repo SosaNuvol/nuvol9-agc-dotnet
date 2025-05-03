@@ -1,5 +1,6 @@
 ﻿namespace RQI.POC.AutoGenConsole.Utilities
 {
+    using Newtonsoft.Json.Linq;
     using RQI.POC.AutoGen.Models.Base;
     using RQI.POC.AutoGenConsole.Templates;
     using System;
@@ -41,7 +42,7 @@
         protected void SaveTableDefinitionToFile(Table table, string tableString)
         {
             var fileName = $"{AutoGen.Utilities.Inflector.MakeSingular(table.CleanName)}.generated.cs";
-            var targetDirectory = $"{_templateManager.DataAccessRootFilePath}\\Models\\{table.Schema}";
+            var targetDirectory = GetTargetDirectory(table);
 
             // ** Check if directory exists
             if (!System.IO.Directory.Exists(targetDirectory))
@@ -54,6 +55,59 @@
 
             // ** Save to file
             System.IO.File.WriteAllText(filePath, tableString);
+        }
+
+        protected void SaveUDDTDefinitionToFile(UserDefinedType userDefinedType, string userDefinedTypeString)
+        {
+            var fileName = $"{userDefinedType.CleanName}{GetSuffix(userDefinedType)}.generated.cs";
+            var targetDirectory = GetTargetDirectory(userDefinedType);
+            
+            // ** Check if directory exists
+            if (!System.IO.Directory.Exists(targetDirectory))
+            {
+                // ** Create directory
+                System.IO.Directory.CreateDirectory(targetDirectory);
+            }
+         
+            var filePath = $"{targetDirectory}\\{fileName}";
+            
+            // ** Save to file
+            System.IO.File.WriteAllText(filePath, userDefinedTypeString);
+        }
+
+        protected string GetSuffix(UserDefinedType userDefinedType)
+        {
+            var suffix = string.Empty;
+            if (userDefinedType.IsTableType)
+            {
+                suffix = "TableType";
+            }
+            else
+            {
+                suffix = "UserType";
+            }
+            return suffix;
+        }
+
+        protected string GetTargetDirectory(object value, string schema = null)
+        {
+            var folder1 = "\\Models";
+
+            if (value is Table)
+            {
+                var table = (Table)value;
+                schema = table.Schema;
+                folder1 = "\\Models";
+            }
+            else if (value is UserDefinedType)
+            {
+                var userDefinedType = (UserDefinedType)value;
+                schema = userDefinedType.Schema;
+                folder1 = "\\UDDTs";
+            }
+
+            var targetDirectory = $"{_templateManager.DataAccessRootFilePath}{folder1}\\{schema}";
+            return targetDirectory;
         }
 
     }

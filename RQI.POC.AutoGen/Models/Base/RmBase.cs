@@ -99,30 +99,33 @@ SELECT * FROM WithParametersCTE";
         protected const string SQL_STATEMENT_TYPES = @"
 WITH RootCTE AS (
     SELECT
-        SCHEMA_NAME(T.schema_id) AS TYPE_SCHEMA,
-        T.name AS TYPE_NAME,
-        T.is_table_type AS IS_TABLE_TYPE,
-        T.max_length AS MaxLength,
-        T.precision AS Precision,
-        T.scale AS Scale,
-        T.is_nullable AS IsNullable
+          SCHEMA_NAME(T.schema_id) AS TYPE_SCHEMA
+        , T.name AS TYPE_NAME
+        , T.is_table_type AS IS_TABLE_TYPE
+        , T.max_length AS MaxLength
+        , T.precision AS Precision
+        , T.scale AS Scale
+        , T.is_nullable AS IsNullable
+        , UPPER(ST.name) AS SYSTEM_TYPE -- Get the base system type name
     FROM
         sys.types AS T
+    LEFT OUTER JOIN
+        sys.types AS ST ON T.system_type_id = ST.user_type_id AND ST.is_user_defined = 0 -- Join to get the system type
     WHERE
-        T.is_user_defined = 1
+        (T.is_user_defined = 1)@SCHEMA_CLAUSE@
 )
 SELECT
     *
 FROM
     RootCTE
 WHERE
-    (IS_TABLE_TYPE = 0 OR IS_TABLE_TYPE = 1)@SCHEMA_CLAUSE@
+    (IS_TABLE_TYPE = 0 OR IS_TABLE_TYPE = 1)
 ORDER BY
     TYPE_SCHEMA,
     TYPE_NAME
 ";
         protected const string SQL_SCHEMA_CLAUSE_TYPE = @"
-    AND TYPE_SCHEMA IN (@SCHEMA_LIST@)";
+    AND SCHEMA_NAME(T.schema_id) IN (@SCHEMA_LIST@)";
 
         protected string SQLStatement;
 
