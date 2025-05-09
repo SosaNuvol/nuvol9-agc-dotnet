@@ -19,12 +19,17 @@
             // ** Loop through SPROCs
             foreach (var sprocItem in _rmSPROCS)
             {
+                // ** Init
+                counter++;
+                var sprocName = sprocItem.Name;
+                var className = AutoGen.Utilities.Inflector.MakeSPROCClassName(sprocItem.CleanName);
+                var nameSpaceString = $"{DataAccessNameSpace}.Models.{sprocItem.SchemaName}";
 
-                var viewStringBuilder = headerTemplate;
-                //.Replace("<NAMESPACE>", nameSpaceString)
-                //.Replace("<CLASS_ANNOTATION>", classAnnotation)
-                //.Replace("<CLASS_NAME>", className)
-                //.Replace("<INHERITANCE_PART>", classInheretsFrom);
+                var viewStringBuilder = headerTemplate
+                    .Replace("<NAMESPACE>", nameSpaceString)
+                    .Replace("<CLASS_NAME>", className)
+                    .Replace("<INHERITANCE_PART>", string.Empty)
+                    .Replace("<SCHEMA.SPROC_NAME>", $"[{sprocItem.SchemaName}].[{sprocItem.Name}]");
 
                 SaveSprocDefinitionToFile(sprocItem, viewStringBuilder.ToString());
             }

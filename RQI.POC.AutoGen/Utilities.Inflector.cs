@@ -156,6 +156,22 @@ namespace RQI.POC.AutoGen
                 return ApplyRules(_singulars, word);
             }
 
+            public static string MakeSPROCClassName(string word)
+            {
+                // Ensure the word starts with "SP" in uppercase
+                if (!word.StartsWith("sp", StringComparison.OrdinalIgnoreCase))
+                {
+                    word = $"{word}SPROC";
+                }
+                else
+                {
+                    word = $"{word.Substring(2)}SPROC"; // Replace "sp" with "SP"
+                }
+
+                // Remove any whitespace
+                return Regex.Replace(word, @"\s+", string.Empty);
+            }
+
             /// <summary>
             /// Applies the rules.
             /// </summary>

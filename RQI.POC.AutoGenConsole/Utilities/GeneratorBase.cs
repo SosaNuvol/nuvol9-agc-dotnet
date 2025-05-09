@@ -77,7 +77,7 @@
 
         protected void SaveSprocDefinitionToFile(SP sproc, string sprocString)
         {
-            var fileName = $"{AutoGen.Utilities.Inflector.MakeSingular(sproc.CleanName)}.generated.cs";
+            var fileName = $"{AutoGen.Utilities.Inflector.MakeSPROCClassName(sproc.CleanName)}.generated.cs";
             var targetDirectory = GetTargetDirectory(sproc);
             // ** Check if directory exists
             if (!System.IO.Directory.Exists(targetDirectory))
@@ -93,6 +93,7 @@
         protected string GetTargetDirectory(object value, string schema = null)
         {
             var folder1 = "\\Models";
+            var targetDirectory = $"{_templateManager.DataModelsRootFilePath}";
 
             if (value is Table)
             {
@@ -106,9 +107,15 @@
                 schema = userDefinedType.Schema;
                 folder1 = "\\UDDTs";
             }
+            else if (value is SP)
+            {
+                var sproc = (SP)value;
+                schema = sproc.SchemaName;
+                folder1 = "\\SPROCS";
+                targetDirectory = $"{_templateManager.DataAccessRootFilePath}";
+            }
 
-            var targetDirectory = $"{_templateManager.DataModelsRootFilePath}{folder1}\\{schema}";
-            return targetDirectory;
+            return $"{targetDirectory}{folder1}\\{schema}";
         }
 
     }

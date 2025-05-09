@@ -61,6 +61,9 @@ namespace RQI.POC.AutoGenConsole
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** SPROCS **********************************************");
 
+            var sprocGenerator = new NOAHSPROCSGenerator(sprocResult);
+            sprocGenerator.Generate(counter);
+
             // ** Loop though all Views
             counter = 0;
             foreach (var sprocItem in sprocResult)
