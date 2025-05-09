@@ -58,9 +58,16 @@ WITH RootCTE AS (
 	WHERE
 		(R.routine_type = '@CLASS_TYPE@')
 @SCHEMA_CLAUSE@
+), AddReturnTypesCTE AS (
+	SELECT
+		OBJECT_ID(SPT.[SchemaName] + '.' + SPT.[SPROCName]) AS ObjectId
+		, SPT.[CSharpReturnType]
+	FROM
+		[GEN].[StoredProcedureReturnTypes] AS SPT WITH(NOLOCK)
 ), WithParametersCTE AS (
 	SELECT
 		RT.*
+		, RETT.[CSharpReturnType]
 		, (
 SELECT
 	--  SPECIFIC_SCHEMA AS SPSchema
@@ -90,6 +97,9 @@ FOR JSON PATH
 		) AS JsonParametersList
 	FROM
 		RootCTE AS RT WITH(NOLOCK)
+	LEFT OUTER JOIN AddReturnTypesCTE AS RETT
+	ON
+		(RETT.ObjectId = RT.ObjectId)
 )
 SELECT * FROM WithParametersCTE";
 

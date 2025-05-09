@@ -43,14 +43,17 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public List<SPResultSetColumn> ResultSetColumns { get; set; }
 
+        public string CSharpReturnType { get; set; }
+
         #endregion Properties
 
-        public SP(string definition, string jsonParameterList, string schema, string sprocName)
+        public SP(string definition, string jsonParameterList, string schema, string sprocName, string cSharpReturnType)
         {
             // ** Bind Definitions
             SchemaName = schema;
             Name = sprocName;
             Parameters = string.IsNullOrEmpty(jsonParameterList) ? new List<SPParam>() : JsonConvert.DeserializeObject<List<SPParam>>(jsonParameterList);
+            CSharpReturnType = cSharpReturnType;
             _definition = definition;
 
             // ** Initialize SPROC

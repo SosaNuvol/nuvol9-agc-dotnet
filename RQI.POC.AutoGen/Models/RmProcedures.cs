@@ -47,6 +47,7 @@ namespace RQI.POC.AutoGen.Models
                     var schema = DBNull.Value.Equals(dataReader["Schema"]) ? null : (string)dataReader["Schema"];
                     var jsonParameterList = DBNull.Value.Equals(dataReader["JsonParametersList"]) ? null : (string)dataReader["JsonParametersList"];
                     var definition = DBNull.Value.Equals(dataReader["Definition"]) ? null : (string)dataReader["Definition"];
+                    var returnType = DBNull.Value.Equals(dataReader["CSharpReturnType"]) ? null : (string)dataReader["CSharpReturnType"];
 
                     // ** Check that there is a name
                     if (string.IsNullOrEmpty(name)) continue;
@@ -55,7 +56,8 @@ namespace RQI.POC.AutoGen.Models
                     var sprocItem = new SP(definition
                         , jsonParameterList
                         , schema
-                        , name);
+                        , name
+                        , returnType);
 
                     // ** Bind Data
                     sprocItem.CleanName = Utilities.TransformName(sprocItem.Name);

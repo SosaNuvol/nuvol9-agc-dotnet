@@ -34,12 +34,16 @@
 
                 var viewStringBuilder = sprocItem.ReturnsNothing
                     ? headerTemplate.Replace("<COMMAND_LINE_EXEC>", COMMAND_LINE_VOID)
-                    : headerTemplate.Replace("<COMMAND_LINE_EXEC>", COMMAND_LINE_TABLE);
+                    : headerTemplate
+                        .Replace("<COMMAND_LINE_EXEC>"
+                            , COMMAND_LINE_TABLE
+                                .Replace("<@RETURN_TYPE@>", sprocItem.CSharpReturnType));
+
                 viewStringBuilder = viewStringBuilder
                     .Replace("<NAMESPACE>", nameSpaceString)
                     .Replace("<CLASS_NAME>", className)
                     .Replace("<INHERITANCE_PART>", string.Empty)
-                    .Replace("<@RETURN_TYPE@>", sprocItem.ReturnsNothing ? "Void": "int")
+                    .Replace("<@RETURN_TYPE@>", sprocItem.ReturnsNothing ? "int": $"List<{sprocItem.CSharpReturnType}>")
                     .Replace("<SCHEMA.SPROC_NAME>", $"[{sprocItem.SchemaName}].[{sprocItem.Name}]")
                     .Replace("<PARAMETERS_INIT_LIST>", BuildParameters(sprocItem))
                     .Replace("<METHOD_PARAMS_LIST_INIT>", BuildParamList(sprocItem))
