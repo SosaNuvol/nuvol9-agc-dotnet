@@ -3,12 +3,16 @@
     using RQI.POC.AutoGen.Models.Base;
     using System.Linq;
     using System.Text;
-    using Unity.Strategies;
     using static RQI.POC.AutoGen.Utilities;
 
     public class NOAHSPROCSGenerator : GeneratorBase, IGenerator
     {
         private readonly IOrderedEnumerable<SP> _rmSPROCS;
+
+        private const string COMMAND_LINE_VOID = "\t\t\tvar result = await _dbContext.Database.ExecuteSqlRawAsync(\"EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>\", <METHOD_PARAMS_LIST>);";
+        private const string COMMAND_LINE_TABLE = @"			var result = await _dbContext.Set<<@RETURN_TYPE@>>()
+				.FromSqlRaw(""EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>;"", <METHOD_PARAMS_LIST>)
+				.ToListAsync();";
 
         public NOAHSPROCSGenerator(IOrderedEnumerable<SP> rmSPROCS)
         {
@@ -28,14 +32,18 @@
                 var className = AutoGen.Utilities.Inflector.MakeSPROCClassName(sprocItem.CleanName);
                 var nameSpaceString = $"{DataAccessNameSpace}.Models.{sprocItem.SchemaName}";
 
-                var viewStringBuilder = headerTemplate
+                var viewStringBuilder = sprocItem.ReturnsNothing
+                    ? headerTemplate.Replace("<COMMAND_LINE_EXEC>", COMMAND_LINE_VOID)
+                    : headerTemplate.Replace("<COMMAND_LINE_EXEC>", COMMAND_LINE_TABLE);
+                viewStringBuilder = viewStringBuilder
                     .Replace("<NAMESPACE>", nameSpaceString)
                     .Replace("<CLASS_NAME>", className)
                     .Replace("<INHERITANCE_PART>", string.Empty)
                     .Replace("<@RETURN_TYPE@>", sprocItem.ReturnsNothing ? "Void": "int")
                     .Replace("<SCHEMA.SPROC_NAME>", $"[{sprocItem.SchemaName}].[{sprocItem.Name}]")
                     .Replace("<PARAMETERS_INIT_LIST>", BuildParameters(sprocItem))
-                    .Replace("<METHOD_PARAMS_LIST>", BuildParamList(sprocItem))
+                    .Replace("<METHOD_PARAMS_LIST_INIT>", BuildParamList(sprocItem))
+                    .Replace("<METHOD_PARAMS_LIST>", BuildParamList(sprocItem, "Param"))
                     .Replace("<METHOD_PARAMS_WITH_TYPES>", BuildMethodParams(sprocItem))
                     .Replace("<SPROC_PARAM_LIST>", BuildSprocParamList(sprocItem));
 
@@ -58,7 +66,7 @@
             return sb.ToString();
         }
 
-        public string BuildParamList(SP sprocItem)
+        public string BuildParamList(SP sprocItem, string suffix = null)
         {
             var sb = new StringBuilder();
 
@@ -68,10 +76,10 @@
                 var sysType = param.SysType;
                 if (sb.Length == 0)
                 {
-                    sb.Append($"{paramName}");
+                    sb.Append($"{paramName}{suffix}");
                     continue;
                 }
-                sb.Append($", {paramName}");
+                sb.Append($", {paramName}{suffix}");
             }
 
             return sb.ToString();
