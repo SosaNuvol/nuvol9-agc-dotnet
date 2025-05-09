@@ -75,6 +75,21 @@
             System.IO.File.WriteAllText(filePath, userDefinedTypeString);
         }
 
+        protected void SaveSprocDefinitionToFile(SP sproc, string sprocString)
+        {
+            var fileName = $"{AutoGen.Utilities.Inflector.MakeSingular(sproc.CleanName)}.generated.cs";
+            var targetDirectory = GetTargetDirectory(sproc);
+            // ** Check if directory exists
+            if (!System.IO.Directory.Exists(targetDirectory))
+            {
+                // ** Create directory
+                System.IO.Directory.CreateDirectory(targetDirectory);
+            }
+            var filePath = $"{targetDirectory}\\{fileName}";
+            // ** Save to file
+            System.IO.File.WriteAllText(filePath, sprocString);
+        }
+
         protected string GetTargetDirectory(object value, string schema = null)
         {
             var folder1 = "\\Models";

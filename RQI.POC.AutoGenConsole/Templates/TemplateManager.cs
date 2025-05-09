@@ -33,6 +33,19 @@
             }
         }
 
+        private string _sprocTemplateFilePath;
+        public string SprocTemplateFilePath
+        {
+            get
+            {
+                if (_sprocTemplateFilePath == null)
+                {
+                    _sprocTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.SPROCTemplateFilePath"];
+                }
+                return _sprocTemplateFilePath;
+            }
+        }
+
         private string _uddtTemplateFilePath;
         public string UddtTemplateFilePath
         {
@@ -58,7 +71,6 @@
                 return _dataModelsRootFilePath;
             }
         }
-
 
         private string _dataAccessRootFilePath;
         public string DataAccessRootFilePath
@@ -113,6 +125,14 @@
             if (udttPrimer == null) return null;
             udttPrimer = BindHeaderInformation(udttPrimer);
             return udttPrimer;
+        }
+
+        public string GetSPROCTemplatePrimer()
+        {
+            var sprocPrimer = File.ReadAllText(SprocTemplateFilePath);
+            if (sprocPrimer == null) return null;
+            sprocPrimer = BindHeaderInformation(sprocPrimer);
+            return sprocPrimer;
         }
 
         private string BindHeaderInformation(string templateData)
