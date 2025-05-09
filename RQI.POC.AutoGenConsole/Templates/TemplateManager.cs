@@ -46,6 +46,20 @@
             }
         }
 
+        private string _dataModelsRootFilePath;
+        public string DataModelsRootFilePath
+        {
+            get
+            {
+                if (_dataModelsRootFilePath == null)
+                {
+                    _dataModelsRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.DataModelsRootFilePath"];
+                }
+                return _dataModelsRootFilePath;
+            }
+        }
+
+
         private string _dataAccessRootFilePath;
         public string DataAccessRootFilePath
         {

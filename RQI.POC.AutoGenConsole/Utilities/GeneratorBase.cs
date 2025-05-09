@@ -92,7 +92,7 @@
                 folder1 = "\\UDDTs";
             }
 
-            var targetDirectory = $"{_templateManager.DataAccessRootFilePath}{folder1}\\{schema}";
+            var targetDirectory = $"{_templateManager.DataModelsRootFilePath}{folder1}\\{schema}";
             return targetDirectory;
         }
 
