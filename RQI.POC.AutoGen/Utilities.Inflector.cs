@@ -172,6 +172,23 @@ namespace RQI.POC.AutoGen
                 return Regex.Replace(word, @"\s+", string.Empty);
             }
 
+            public static string MakeCamelCase(string word)
+            {
+                string[] words = word.Split(new[] { ' ', '_' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < words.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        words[i] = words[i].ToLower();
+                    }
+                    else
+                    {
+                        words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+                    }
+                }
+                return string.Join(string.Empty, words);
+            }
+
             /// <summary>
             /// Applies the rules.
             /// </summary>
