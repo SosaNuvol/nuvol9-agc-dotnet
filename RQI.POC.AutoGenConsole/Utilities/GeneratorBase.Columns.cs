@@ -31,10 +31,15 @@ namespace RQI.POC.AutoGenConsole.Utilities
                     sb.AppendLine($"\t[Key]");
                 }
                 sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\"){AddRequired(!column.IsNullable)}]");
-                sb.AppendLine($"\tpublic virtual {column.SysType} {column.CleanName} {{ get; set; }}");
+                sb.AppendLine($"\tpublic virtual {column.SysType}{GetQuestionMarkIfNullable(column)} {column.CleanName} {{ get; set; }}");
             }
 
             return sb.ToString();
+        }
+
+        public string GetQuestionMarkIfNullable(Column column)
+        {
+            return column.IsNullable ? "?" : string.Empty;
         }
 
         public string BuildColumns(UserDefinedType udType)
