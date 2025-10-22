@@ -1,4 +1,5 @@
-﻿namespace RQI.POC.AutoGenConsole.Templates.Models
+﻿
+namespace RQI.POC.AutoGenConsole.Templates.Models
 {
     using Newtonsoft.Json;
     using System;
