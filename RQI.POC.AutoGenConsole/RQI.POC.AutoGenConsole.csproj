@@ -193,6 +193,7 @@
     <Compile Include="Utilities\GeneratorBase.cs" />
     <Compile Include="Utilities\IGenerator.cs" />
     <Compile Include="Utilities\GeneratorBase.Columns.cs" />
+    <Compile Include="Utilities\NOAHCriticalDataGenerator.cs" />
     <Compile Include="Utilities\NOAHSPROCSGenerator.cs" />
     <Compile Include="Utilities\NOAHTablesGenerator.cs" />
     <Compile Include="Utilities\NOAHUDTypesGenerator.cs" />

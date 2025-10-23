@@ -46,6 +46,19 @@
             }
         }
 
+        private string _proxyTypeTemplateFilePath;
+        public string ProxyTypeTemplateFilePath
+        {
+            get
+            {
+                if (_proxyTypeTemplateFilePath == null)
+                {
+                    _proxyTypeTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.ProxyTypeTemplateFilePath"];
+                }
+                return _proxyTypeTemplateFilePath;
+            }
+        }
+
         private string _uddtTemplateFilePath;
         public string UddtTemplateFilePath
         {
@@ -82,6 +95,19 @@
                     _dataAccessRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.DataAccessRootFilePath"];
                 }
                 return _dataAccessRootFilePath;
+            }
+        }
+
+        private string _proxyTypeRootFilePath;
+        public string ProxyTypeRootFilePath
+        {
+            get
+            {
+                if (_proxyTypeRootFilePath == null)
+                {
+                    _proxyTypeRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.ProxyTypeRootFilePath"];
+                }
+                return _proxyTypeRootFilePath;
             }
         }
 

@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Models\Base\ForeignKeyRow.cs" />
     <Compile Include="Models\Base\ForeignKeyRowCollection.cs" />
+    <Compile Include="Models\Base\ProxyTypeTable.cs" />
     <Compile Include="Models\Base\RmBase.cs" />
     <Compile Include="Models\Base\SPResultSetColumn.cs" />
     <Compile Include="Models\Base\UserDefinedType.cs" />
