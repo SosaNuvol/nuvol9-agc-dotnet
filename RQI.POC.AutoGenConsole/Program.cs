@@ -15,7 +15,7 @@ namespace RQI.POC.AutoGenConsole
     using System;
     using System.Configuration;
     using System.Linq;
-    using AutoGen.Models;
+    using RQI.POC.AutoGen.Models;
     using RQI.POC.AutoGenConsole.Utilities;
 
     internal class Program
@@ -29,12 +29,14 @@ namespace RQI.POC.AutoGenConsole
             var views = new RmViews(connectionString);
             var sprocs = new RmProcedures(connectionString);
             var utypes = new RmUserTypes(connectionString);
+            var criticalDataTables = new RmCriticalDataTypes(connectionString);
 
             // ** Load from SQL
             var sprocResult = sprocs.Load().OrderBy(s => s.SchemaName);
             var tableResult = table.Load().OrderBy(s => s.Schema);
             var viewsResult = views.LoadViews().OrderBy(s => s.Schema);
             var userDefinedTypesResult = utypes.LoadUserDefinedTypes().OrderBy(s => s.Schema);
+            var criticalDataTypesResult = criticalDataTables.LoadCriticalDataTypes().OrderBy(s => s.Schema).ToList();
 
             var counter = 0;
 
@@ -86,23 +88,25 @@ namespace RQI.POC.AutoGenConsole
             // ** Show done
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** DONE **********************************************");
+
+            // ** Generate Critical Data
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** CRITICAL DATA TYPES **********************************************");
+
+            // ** Loop though all Critical Data Types
+            counter = 0;
+            foreach (var criticalDataType in criticalDataTypesResult)
+            {
+                // ** Init
+                counter++;
+
+                // ** Print critical data type information
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"|** {counter:D4}|=> Critical Data Type: {criticalDataType.Schema}.{criticalDataType.Name,-40} | Prefix: {criticalDataType.Schema} ");
+            }
+
+            var criticalDataGenerator = new NOAHCriticalDataGenerator(criticalDataTypesResult);
+            criticalDataGenerator.Generate(counter);
         }
-
-        //private static void ExecuteTest(string connectionString)
-        //{
-        //    // ** Init
-        //    DataTable sprocs;
-        //    using (var conn = new SqlConnection(connectionString))
-        //    {
-        //        conn.Open();
-        //        sprocs = conn.GetSchema("Procedures");
-        //        conn.Close();
-        //    }
-
-        //    foreach (DataRow sproc in sprocs.Rows)
-        //    {
-        //        Console.WriteLine($"SPROC Name: {sproc["ROUTINE_NAME"].ToString()}");
-        //    }
-        //}
     }
 }

@@ -23,6 +23,7 @@ namespace RQI.POC.AutoGen.Models.Base
         private const string _PROCEDURE = "PROCEDURE";
         private const string _FUNCTION = "FUNCTION";
         private const string _USER_TYPES = "USER TYPE";
+        private const string _CRITICAL_DATA_TYPE_TABLE_NAME = "CriticalDataType";
 
         private string _classType;
         protected readonly string SQLConnectionString;
@@ -134,6 +135,20 @@ ORDER BY
     TYPE_SCHEMA,
     TYPE_NAME
 ";
+
+        protected const string SQL_STATEMENT_CRITICAL_DATA_TYPES = @"
+SELECT
+      [@TABLE_NAME@ID] AS [Id]
+    , [Prefix]
+    , [@TABLE_NAME@Name] AS [Name]
+    , [@TABLE_NAME@Description] AS [Description]
+    , '@SCHEMA_NAME@' AS [Schema]
+    , '@TABLE_NAME@s' AS [TableName]
+FROM
+    @TABLE_NAME_WITH_SCHEMA@
+WHERE
+  (IsDeleted = 0)
+";
         protected const string SQL_SCHEMA_CLAUSE_TYPE = @"
     AND SCHEMA_NAME(T.schema_id) IN (@SCHEMA_LIST@)";
 
@@ -145,7 +160,8 @@ ORDER BY
             Views,
             Procedures,
             Functions,
-            UserDefinedTypes
+            UserDefinedTypes,
+            CriticalDataTypes
         }
 
         #endregion Properties
@@ -227,6 +243,11 @@ ORDER BY
                 case SQLTypesEnum.UserDefinedTypes:
                     sqlStatement = SQL_STATEMENT_TYPES;
                     classTypeArgument = _USER_TYPES;
+                    sqlClauseStatement = SQL_SCHEMA_CLAUSE_TYPE;
+                    break;
+                case SQLTypesEnum.CriticalDataTypes:
+                    sqlStatement = SQL_STATEMENT_CRITICAL_DATA_TYPES;
+                    classTypeArgument = _CRITICAL_DATA_TYPE_TABLE_NAME;
                     sqlClauseStatement = SQL_SCHEMA_CLAUSE_TYPE;
                     break;
                 default:

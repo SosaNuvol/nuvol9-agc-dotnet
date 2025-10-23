@@ -147,6 +147,45 @@ namespace RQI.POC.AutoGen
             }
         }
 
+        /// <summary>
+        /// List of Schemas that will be used for critical data types
+        /// </summary>
+        public static string CriticalDataTypesSchemaList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.CriticalDataTypesSchemaList"] ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.StUDTSchemaList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+
+                // ** Build the
+                var result = ConvertToSQLListFormat(rawValue);
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string CriticalDataTypesTablesList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.CriticalDataTypesTablesList"] ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.CriticalDataTypesTablesList"];
+                
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "";
+                
+                // ** Build the
+                var result = rawValue;
+                
+                // ** Return result
+                return result;
+            }
+        }
+
         #region TABLES
         /// <summary>
         /// List of all tables that will be included in the ORM.  Make sure that the schema is specified.
