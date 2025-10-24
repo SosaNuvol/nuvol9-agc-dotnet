@@ -161,6 +161,14 @@
             return sprocPrimer;
         }
 
+        public string GetProxyTypeTemplatePrimer()
+        {
+            var proxyTypePrimer = File.ReadAllText(ProxyTypeTemplateFilePath);
+            if (proxyTypePrimer == null) return null;
+            proxyTypePrimer = BindHeaderInformation(proxyTypePrimer);
+            return proxyTypePrimer;
+        }
+
         private string BindHeaderInformation(string templateData)
         {
             var result = templateData.Trim();

@@ -21,6 +21,7 @@ namespace RQI.POC.AutoGen.Models.Base
         public string Description { get; set; }
         public string Schema { get; set; }
         public string TableName { get; set; }
+        public string TableNameSingular { get; set; }
         #endregion Properties
     }
 }

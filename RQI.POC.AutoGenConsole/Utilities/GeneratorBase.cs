@@ -57,6 +57,21 @@
             System.IO.File.WriteAllText(filePath, tableString);
         }
 
+        protected void SaveProxyTypeDefinitionToFile(string typeName, string schema, string proxyTypeString)
+        {
+            var fileName = $"{typeName}.generated.cs";
+             var targetDirectory = $"{_templateManager.ProxyTypeRootFilePath}\\{schema}";
+            // ** Check if directory exists
+            if (!System.IO.Directory.Exists(targetDirectory))
+            {
+                // ** Create directory
+                System.IO.Directory.CreateDirectory(targetDirectory);
+            }
+            var filePath = $"{targetDirectory}\\{fileName}";
+            // ** Save to file
+            System.IO.File.WriteAllText(filePath, proxyTypeString);
+        }
+
         protected void SaveUDDTDefinitionToFile(UserDefinedType userDefinedType, string userDefinedTypeString)
         {
             var fileName = $"{userDefinedType.ClassName}.generated.cs";

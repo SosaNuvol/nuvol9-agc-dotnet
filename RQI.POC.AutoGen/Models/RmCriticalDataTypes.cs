@@ -55,6 +55,7 @@ namespace RQI.POC.AutoGen.Models
                         Description = (string)dataReader["Description"],
                         Schema = (string)dataReader["Schema"],
                         TableName = (string)dataReader["TableName"],
+                        TableNameSingular = Utilities.Inflector.MakeSingular((string)dataReader["TableName"])
                     };
 
                     // ** Add to list
