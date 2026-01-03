@@ -320,7 +320,8 @@ ORDER BY
 						object obj = rdr["DefaultSetting"];
 						col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
 						col.IsReadOnly = Convert.ToBoolean(rdr["IsComputed"]);
-						col.IsNullable = rdr["IsNullable"].ToString() == "YES";
+						col.IsNullable = rdr["IsNullable"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase) 
+							|| rdr["IsNullable"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
 						col.TableName = tableName;
 						col.TableSchema = tableSchema;
 						// ReSharper disable InlineOutVariableDeclaration
@@ -397,7 +398,8 @@ ORDER BY
 						object obj = rdr["COLUMN_DEFAULT"];
 						col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
 						col.IsReadOnly = true;
-						col.IsNullable = rdr["IS_NULLABLE"].ToString() == "YES";
+						col.IsNullable = rdr["IS_NULLABLE"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase)
+							|| rdr["IS_NULLABLE"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
 						col.TableName = viewName;
 						col.TableSchema = viewSchemaName;
 						col.IsPK = false;
@@ -466,7 +468,8 @@ ORDER BY
                         object obj = rdr["DefaultSetting"];
                         col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
                         col.IsReadOnly = Convert.ToBoolean(rdr["IsComputed"]);
-                        col.IsNullable = rdr["IsNullable"].ToString() == "YES";
+                        col.IsNullable = rdr["IsNullable"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase)
+                            || rdr["IsNullable"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
                         col.TableName = tableName;
                         col.TableSchema = tableSchema;
                         // ReSharper disable InlineOutVariableDeclaration

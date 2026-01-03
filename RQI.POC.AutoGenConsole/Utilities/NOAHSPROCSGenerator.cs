@@ -9,9 +9,9 @@
     {
         private readonly IOrderedEnumerable<SP> _rmSPROCS;
 
-        private const string COMMAND_LINE_VOID = "\t\t\tvar result = await _dbContext.Database.ExecuteSqlRawAsync(\"EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>\", <METHOD_PARAMS_LIST>);";
+        private const string COMMAND_LINE_VOID = "\t\t\tvar result = await _dbContext.Database.ExecuteSqlRawAsync(\"EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>\"<METHOD_PARAMS_LIST>);";
         private const string COMMAND_LINE_TABLE = @"			var result = await _dbContext.Set<<@RETURN_TYPE@>>()
-				.FromSqlRaw(""EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>;"", <METHOD_PARAMS_LIST>)
+				.FromSqlRaw(""EXEC <SCHEMA.SPROC_NAME> <SPROC_PARAM_LIST>;""<METHOD_PARAMS_LIST>)
 				.ToListAsync();";
 
         public NOAHSPROCSGenerator(IOrderedEnumerable<SP> rmSPROCS)
@@ -47,7 +47,7 @@
                     .Replace("<SCHEMA>", sprocItem.SchemaName)
                     .Replace("<SCHEMA.SPROC_NAME>", $"[{sprocItem.SchemaName}].[{sprocItem.Name}]")
                     .Replace("<PARAMETERS_INIT_LIST>", BuildParameters(sprocItem))
-                    .Replace("<METHOD_PARAMS_LIST_INIT>", BuildParamList(sprocItem))
+                    .Replace("<METHOD_PARAMS_LIST_INIT>", BuildParamList(sprocItem, null, true))
                     .Replace("<METHOD_PARAMS_LIST>", BuildParamList(sprocItem, "Param"))
                     .Replace("<METHOD_PARAMS_WITH_TYPES>", BuildMethodParams(sprocItem))
                     .Replace("<SPROC_PARAM_LIST>", BuildSprocParamList(sprocItem));
@@ -71,7 +71,7 @@
             return sb.ToString();
         }
 
-        public string BuildParamList(SP sprocItem, string suffix = null)
+        public string BuildParamList(SP sprocItem, string suffix = null, bool showPrecedingComma = false)
         {
             var sb = new StringBuilder();
 
@@ -79,7 +79,7 @@
             {
                 var paramName = Inflector.MakeCamelCase(param.CleanName);
                 var sysType = param.SysType;
-                if (sb.Length == 0)
+                if (sb.Length == 0 && showPrecedingComma)
                 {
                     sb.Append($"{paramName}{suffix}");
                     continue;
