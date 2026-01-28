@@ -1,0 +1,50 @@
+#region File Header
+
+// <copyright file="<CLASS_NAME>.cs" company="<COMPANY NAME>">
+//  Copyright (c) <YEAR> <COMPANY NAME>.  All rights reserved.
+// </copyright>
+// <summary>
+//  Auto-generated DbContext - <DATE FULL>
+// </summary>
+// <author><AUTHOR FULLNAME></author>
+
+#endregion
+
+namespace <NAMESPACE>
+{
+    using System.Data.Entity;
+<USING_STATEMENTS>
+
+    /// <summary>
+    /// Database Context for <DATABASE_NAME>
+    /// </summary>
+    public partial class <CLASS_NAME> : DbContext
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="<CLASS_NAME>"/> class.
+        /// </summary>
+        public <CLASS_NAME>() : base("<CONNECTION_STRING_NAME>")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="<CLASS_NAME>"/> class with a connection string.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public <CLASS_NAME>(string connectionString) : base(connectionString)
+        {
+        }
+
+<DBSET_PROPERTIES>
+
+        /// <summary>
+        /// Configures the model that was discovered by convention from the entity types.
+        /// </summary>
+        /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+<MODEL_CONFIGURATIONS>
+        }
+    }
+}

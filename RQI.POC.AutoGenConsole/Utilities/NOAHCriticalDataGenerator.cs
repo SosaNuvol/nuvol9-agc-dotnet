@@ -68,7 +68,7 @@
                     schema = criticalDataType.Schema;
                     proxyTypeStringBuilder = proxyTypeTemplate
                     .Replace("<FILENAME>", $"{fileName}.generated.cs")
-                    .Replace("<NAMESPACE>", $"{DataAccessNameSpace}.Utilities.{criticalDataType.Schema}")
+                    .Replace("<NAMESPACE>", $"{DataDataNameSpace}.Utilities.{criticalDataType.Schema}")
                     .Replace("<PROXY_TYPE_NAME>", criticalDataType.Name)
                     .Replace("<PROXY_TYPE_DESCRIPTION>", criticalDataType.Description)
                     .Replace("<PROXY_TYPE_SCHEMA>", criticalDataType.Schema)

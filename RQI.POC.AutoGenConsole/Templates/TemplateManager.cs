@@ -111,6 +111,19 @@
             }
         }
 
+        private string _dbContextTemplateFilePath;
+        public string DbContextTemplateFilePath
+        {
+            get
+            {
+                if (_dbContextTemplateFilePath == null)
+                {
+                    _dbContextTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.DbContextTemplateFilePath"];
+                }
+                return _dbContextTemplateFilePath;
+            }
+        }
+
         private string _templateDataBound;
         public string TemplateDataBound
         {
@@ -167,6 +180,18 @@
             if (proxyTypePrimer == null) return null;
             proxyTypePrimer = BindHeaderInformation(proxyTypePrimer);
             return proxyTypePrimer;
+        }
+
+        public string GetDbContextTemplatePrimer()
+        {
+            if (string.IsNullOrEmpty(DbContextTemplateFilePath) || !File.Exists(DbContextTemplateFilePath))
+            {
+                return null;
+            }
+            var dbContextPrimer = File.ReadAllText(DbContextTemplateFilePath);
+            if (dbContextPrimer == null) return null;
+            dbContextPrimer = BindHeaderInformation(dbContextPrimer);
+            return dbContextPrimer;
         }
 
         private string BindHeaderInformation(string templateData)

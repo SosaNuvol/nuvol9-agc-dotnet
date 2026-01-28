@@ -27,7 +27,7 @@
                 counter++;
                 var viewName = uddType.Name;
                 var className = uddType.ClassName;
-                var nameSpaceString = $"{DataAccessNameSpace}.UDDTs.{uddType.Schema}";
+                var nameSpaceString = $"{DataDataNameSpace}.UDDTs.{uddType.Schema}";
 
                 var viewStringBuilder = headerTemplate
                     .Replace("<NAMESPACE>", nameSpaceString)

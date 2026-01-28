@@ -11,16 +11,16 @@
     {
         protected readonly TemplateManager _templateManager;
 
-        private string _dataAccessNameSpace = null;
-        public string DataAccessNameSpace
+        private string _dataDataNameSpace = null;
+        public string DataDataNameSpace
         {
             get
             {
-                if (this._dataAccessNameSpace == null)
+                if (this._dataDataNameSpace == null)
                 {
-                    _dataAccessNameSpace = ConfigurationManager.AppSettings["RQI.GEN.DataAccessNameSpace"];
+                    _dataDataNameSpace = ConfigurationManager.AppSettings["RQI.GEN.DataDataNameSpace"];
                 }
-                return this._dataAccessNameSpace;
+                return this._dataDataNameSpace;
             }
         }
 

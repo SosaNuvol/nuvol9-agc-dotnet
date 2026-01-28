@@ -30,7 +30,7 @@
                 counter++;
                 var sprocName = sprocItem.Name;
                 var className = AutoGen.Utilities.Inflector.MakeSPROCClassName(sprocItem.CleanName);
-                var nameSpaceString = $"{DataAccessNameSpace}.Models.{sprocItem.SchemaName}";
+                var nameSpaceString = $"{DataDataNameSpace}.Models.{sprocItem.SchemaName}";
 
                 var viewStringBuilder = sprocItem.ReturnsNothing
                     ? headerTemplate.Replace("<COMMAND_LINE_EXEC>", COMMAND_LINE_VOID)

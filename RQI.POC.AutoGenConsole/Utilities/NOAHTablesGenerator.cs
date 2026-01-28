@@ -29,7 +29,7 @@
                 counter++;
                 var tableName = tableItem.Name;
                 var className = AutoGen.Utilities.Inflector.MakeSingular(tableItem.CleanName);
-                var nameSpaceString = $"{DataAccessNameSpace}.Models.{tableItem.Schema}";
+                var nameSpaceString = $"{DataDataNameSpace}.Models.{tableItem.Schema}";
                 var classAnnotation = $"[Table(\"{tableName}\", Schema = \"{tableItem.Schema}\")]";
                 var classInheretsFrom = TableIsHistorical(tableItem)
                     ? " : HistoricalEntity"

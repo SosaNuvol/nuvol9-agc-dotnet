@@ -30,7 +30,7 @@
                 counter++;
                 var viewName = viewItem.Name;
                 var className = AutoGen.Utilities.Inflector.MakeSingular(viewItem.CleanName);
-                var nameSpaceString = $"{DataAccessNameSpace}.Models.{viewItem.Schema}";
+                var nameSpaceString = $"{DataDataNameSpace}.Models.{viewItem.Schema}";
                 var classAnnotation = $"[Table(\"{viewName}\", Schema = \"{viewItem.Schema}\")]";
                 var classInheretsFrom = TableIsHistorical(viewItem)
                     ? " : HistoricalEntity"

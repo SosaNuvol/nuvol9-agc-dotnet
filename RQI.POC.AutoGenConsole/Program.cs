@@ -107,6 +107,13 @@ namespace RQI.POC.AutoGenConsole
 
             var criticalDataGenerator = new NOAHCriticalDataGenerator(criticalDataTypesResult);
             criticalDataGenerator.Generate(counter);
+
+            // ** Generate DbContext
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** DBCONTEXT **********************************************");
+
+            var dbContextGenerator = new NOAHDbContextGenerator(tableResult);
+            dbContextGenerator.Generate();
         }
     }
 }
