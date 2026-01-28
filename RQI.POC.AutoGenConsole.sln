@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RQI.POC.AutoGenConsole", "RQI.POC.AutoGenConsole\RQI.POC.AutoGenConsole.csproj", "{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}"
 EndProject
@@ -14,15 +14,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Dev|Any CPU = Dev|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{521B8156-4CF3-4F8E-BBDB-18B4DC29DC7E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31494CAB-DD06-4F99-8405-A99C8DAB0AD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
