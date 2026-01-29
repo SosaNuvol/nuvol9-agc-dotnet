@@ -1,0 +1,74 @@
+#region File Header
+
+// <copyright file="I<CLASS_NAME>Repository.cs" company="<COMPANY NAME>">
+//  Copyright (c) <YEAR> <COMPANY NAME>.  All rights reserved.
+// </copyright>
+// <summary>
+//  Auto-generated Repository Interface - <DATE FULL>
+// </summary>
+// <author><AUTHOR FULLNAME></author>
+
+#endregion
+
+namespace <NAMESPACE>
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using <MODEL_NAMESPACE>;
+
+    /// <summary>
+    /// Repository interface for <CLASS_NAME> entity
+    /// </summary>
+    public partial interface I<CLASS_NAME>Repository
+    {
+        /// <summary>
+        /// Gets all <PLURAL_CLASS_NAME>.
+        /// </summary>
+        /// <returns>A collection of <CLASS_NAME> entities.</returns>
+        IQueryable<<CLASS_NAME>> GetAll();
+
+        /// <summary>
+        /// Gets a <CLASS_NAME> by its identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The <CLASS_NAME> entity.</returns>
+        Task<<CLASS_NAME>> GetByIdAsync(<PRIMARY_KEY_TYPE> id);
+
+        /// <summary>
+        /// Gets <PLURAL_CLASS_NAME> based on a predicate.
+        /// </summary>
+        /// <param name="predicate">The filter predicate.</param>
+        /// <returns>A collection of matching <CLASS_NAME> entities.</returns>
+        IQueryable<<CLASS_NAME>> Find(Expression<Func<<CLASS_NAME>, bool>> predicate);
+
+        /// <summary>
+        /// Adds a new <CLASS_NAME>.
+        /// </summary>
+        /// <param name="entity">The entity to add.</param>
+        /// <returns>The added entity.</returns>
+        Task<<CLASS_NAME>> AddAsync(<CLASS_NAME> entity);
+
+        /// <summary>
+        /// Updates an existing <CLASS_NAME>.
+        /// </summary>
+        /// <param name="entity">The entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task UpdateAsync(<CLASS_NAME> entity);
+
+        /// <summary>
+        /// Deletes a <CLASS_NAME> by its identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task DeleteAsync(<PRIMARY_KEY_TYPE> id);
+
+        /// <summary>
+        /// Saves all changes made in this context to the database.
+        /// </summary>
+        /// <returns>The number of state entries written to the database.</returns>
+        Task<int> SaveChangesAsync();
+    }
+}

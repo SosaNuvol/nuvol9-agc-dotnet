@@ -114,6 +114,17 @@ namespace RQI.POC.AutoGenConsole
 
             var dbContextGenerator = new NOAHDbContextGenerator(tableResult);
             dbContextGenerator.Generate();
+
+            // ** Generate Repository Classes with Interfaces
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** REPOSITORIES **********************************************");
+
+            var repositoryGenerator = new NOAHRepositoryGenerator(tableResult);
+            repositoryGenerator.Generate();
+
+            // ** Show final done
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** ALL GENERATION COMPLETE **********************************************");
         }
     }
 }

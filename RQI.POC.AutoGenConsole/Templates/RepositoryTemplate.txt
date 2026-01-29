@@ -1,0 +1,129 @@
+#region File Header
+
+// <copyright file="<CLASS_NAME>Repository.cs" company="<COMPANY NAME>">
+//  Copyright (c) <YEAR> <COMPANY NAME>.  All rights reserved.
+// </copyright>
+// <summary>
+//  Auto-generated Repository Implementation - <DATE FULL>
+// </summary>
+// <author><AUTHOR FULLNAME></author>
+
+#endregion
+
+namespace <NAMESPACE>
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using <MODEL_NAMESPACE>;
+    using <INTERFACE_NAMESPACE>;
+    using <DBCONTEXT_NAMESPACE>;
+
+    /// <summary>
+    /// Repository implementation for <CLASS_NAME> entity
+    /// </summary>
+    public partial class <CLASS_NAME>Repository : I<CLASS_NAME>Repository
+    {
+        private readonly <DBCONTEXT_CLASS_NAME> _context;
+        private readonly DbSet<<CLASS_NAME>> _dbSet;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="<CLASS_NAME>Repository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        public <CLASS_NAME>Repository(<DBCONTEXT_CLASS_NAME> context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _dbSet = _context.Set<<CLASS_NAME>>();
+        }
+
+        /// <summary>
+        /// Gets all <PLURAL_CLASS_NAME>.
+        /// </summary>
+        /// <returns>A queryable collection of <CLASS_NAME> entities.</returns>
+        public IQueryable<<CLASS_NAME>> GetAll()
+        {
+            return _dbSet.AsQueryable();
+        }
+
+        /// <summary>
+        /// Gets a <CLASS_NAME> by its identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The <CLASS_NAME> entity.</returns>
+        public async Task<<CLASS_NAME>> GetByIdAsync(<PRIMARY_KEY_TYPE> id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
+        /// <summary>
+        /// Gets <PLURAL_CLASS_NAME> based on a predicate.
+        /// </summary>
+        /// <param name="predicate">The filter predicate.</param>
+        /// <returns>A queryable collection of matching <CLASS_NAME> entities.</returns>
+        public IQueryable<<CLASS_NAME>> Find(Expression<Func<<CLASS_NAME>, bool>> predicate)
+        {
+            return _dbSet.Where(predicate);
+        }
+
+        /// <summary>
+        /// Adds a new <CLASS_NAME>.
+        /// </summary>
+        /// <param name="entity">The entity to add.</param>
+        /// <returns>The added entity.</returns>
+        public async Task<<CLASS_NAME>> AddAsync(<CLASS_NAME> entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            _dbSet.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+        /// <summary>
+        /// Updates an existing <CLASS_NAME>.
+        /// </summary>
+        /// <param name="entity">The entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateAsync(<CLASS_NAME> entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Deletes a <CLASS_NAME> by its identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteAsync(<PRIMARY_KEY_TYPE> id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Saves all changes made in this context to the database.
+        /// </summary>
+        /// <returns>The number of state entries written to the database.</returns>
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+    }
+}

@@ -98,6 +98,19 @@
             }
         }
 
+        private string _dataEntityRootFilePath;
+        public string DataEntityRootFilePath
+        {
+            get
+            {
+                if (_dataEntityRootFilePath == null)
+                {
+                    _dataEntityRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.Data.EntityRootFilePath"];
+                }
+                return _dataEntityRootFilePath;
+            }
+        }
+
         private string _proxyTypeRootFilePath;
         public string ProxyTypeRootFilePath
         {
@@ -121,6 +134,32 @@
                     _dbContextTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.DbContextTemplateFilePath"];
                 }
                 return _dbContextTemplateFilePath;
+            }
+        }
+
+        private string _repositoryInterfaceTemplateFilePath;
+        public string RepositoryInterfaceTemplateFilePath
+        {
+            get
+            {
+                if (_repositoryInterfaceTemplateFilePath == null)
+                {
+                    _repositoryInterfaceTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.RepositoryInterfaceTemplateFilePath"];
+                }
+                return _repositoryInterfaceTemplateFilePath;
+            }
+        }
+
+        private string _repositoryTemplateFilePath;
+        public string RepositoryTemplateFilePath
+        {
+            get
+            {
+                if (_repositoryTemplateFilePath == null)
+                {
+                    _repositoryTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.RepositoryTemplateFilePath"];
+                }
+                return _repositoryTemplateFilePath;
             }
         }
 
@@ -192,6 +231,30 @@
             if (dbContextPrimer == null) return null;
             dbContextPrimer = BindHeaderInformation(dbContextPrimer);
             return dbContextPrimer;
+        }
+
+        public string GetRepositoryInterfaceTemplatePrimer()
+        {
+            if (string.IsNullOrEmpty(RepositoryInterfaceTemplateFilePath) || !File.Exists(RepositoryInterfaceTemplateFilePath))
+            {
+                return null;
+            }
+            var repositoryInterfacePrimer = File.ReadAllText(RepositoryInterfaceTemplateFilePath);
+            if (repositoryInterfacePrimer == null) return null;
+            repositoryInterfacePrimer = BindHeaderInformation(repositoryInterfacePrimer);
+            return repositoryInterfacePrimer;
+        }
+
+        public string GetRepositoryTemplatePrimer()
+        {
+            if (string.IsNullOrEmpty(RepositoryTemplateFilePath) || !File.Exists(RepositoryTemplateFilePath))
+            {
+                return null;
+            }
+            var repositoryPrimer = File.ReadAllText(RepositoryTemplateFilePath);
+            if (repositoryPrimer == null) return null;
+            repositoryPrimer = BindHeaderInformation(repositoryPrimer);
+            return repositoryPrimer;
         }
 
         private string BindHeaderInformation(string templateData)

@@ -208,6 +208,7 @@
     <Compile Include="Utilities\GeneratorBase.Columns.cs" />
     <Compile Include="Utilities\NOAHCriticalDataGenerator.cs" />
     <Compile Include="Utilities\NOAHDbContextGenerator.cs" />
+    <Compile Include="Utilities\NOAHRepositoryGenerator.cs" />
     <Compile Include="Utilities\NOAHSPROCSGenerator.cs" />
     <Compile Include="Utilities\NOAHTablesGenerator.cs" />
     <Compile Include="Utilities\NOAHUDTypesGenerator.cs" />
@@ -234,6 +235,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Templates\DbContextTemplate.txt" />
+    <Content Include="Templates\RepositoryInterfaceTemplate.txt" />
+    <Content Include="Templates\RepositoryTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.4.0.50\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.4.0.50\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
