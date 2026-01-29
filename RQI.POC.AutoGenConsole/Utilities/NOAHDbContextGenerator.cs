@@ -76,7 +76,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
             
             // Replace placeholders
             var dbContextString = template
-                .Replace("<NAMESPACE>", DataDataNameSpace)
+                .Replace("<NAMESPACE>", DbContextNameSpace)
                 .Replace("<CLASS_NAME>", DbContextClassName)
                 .Replace("<CONNECTION_STRING_NAME>", ConnectionStringName)
                 .Replace("<DATABASE_NAME>", "Application Database")

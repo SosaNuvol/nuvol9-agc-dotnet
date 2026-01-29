@@ -1,10 +1,8 @@
 ﻿namespace RQI.POC.AutoGenConsole.Utilities
 {
-    using Newtonsoft.Json.Linq;
     using RQI.POC.AutoGen.Models.Base;
     using RQI.POC.AutoGenConsole.Templates;
     using System;
-    using System.Configuration;
     using System.Linq;
 
     public partial class GeneratorBase
@@ -18,9 +16,22 @@
             {
                 if (this._dataDataNameSpace == null)
                 {
-                    _dataDataNameSpace = ConfigurationManager.AppSettings["RQI.GEN.DataDataNameSpace"];
+                    _dataDataNameSpace = _templateManager.DataDataNameSpace;
                 }
                 return this._dataDataNameSpace;
+            }
+        }
+
+        private string _dbContextNameSpace = null;
+        public string DbContextNameSpace
+        {
+            get
+            {
+                if (this._dbContextNameSpace == null)
+                {
+                    _dbContextNameSpace = _templateManager.DbContextNamespance;
+                }
+                return this._dbContextNameSpace;
             }
         }
 

@@ -163,6 +163,32 @@
             }
         }
 
+        private string _dbContextNamespance;
+        public string DbContextNamespance
+        {
+            get
+            {
+                if (_dbContextNamespance == null)
+                {
+                    _dbContextNamespance = ConfigurationManager.AppSettings["RQI.GEN.DbContextNamespance"];
+                }
+                return _dbContextNamespance;
+            }
+        }
+
+        private string _dataDataNameSpace;
+        public string DataDataNameSpace
+        {
+            get
+            {
+                if (_dataDataNameSpace == null)
+                {
+                    _dataDataNameSpace = ConfigurationManager.AppSettings["RQI.GEN.DataDataNameSpace"];
+                }
+                return _dataDataNameSpace;
+            }
+        }
+
         private string _templateDataBound;
         public string TemplateDataBound
         {
