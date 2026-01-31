@@ -2,10 +2,8 @@ namespace RQI.POC.AutoGenConsole.Utilities
 {
     using RQI.POC.AutoGen.Models.Base;
     using System;
-    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
-    using System.Text;
 
     public class NOAHRepositoryGenerator : GeneratorBase, IGenerator
     {
@@ -112,7 +110,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
         private void SaveRepositoryInterfaceToFile(Table table, string interfaceString, string className)
         {
             var fileName = $"I{className}Repository.generated.cs";
-            var targetDirectory = $"{_templateManager.DataEntityRootFilePath}\\Repositories\\{table.Schema}";
+            var targetDirectory = $"{_templateManager.RepositoryRootFilePath}\\{table.Schema}";
 
             if (!System.IO.Directory.Exists(targetDirectory))
             {
@@ -126,7 +124,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
         private void SaveRepositoryToFile(Table table, string repositoryString, string className)
         {
             var fileName = $"{className}Repository.generated.cs";
-            var targetDirectory = $"{_templateManager.DataAccessRootFilePath}\\Repositories\\{table.Schema}";
+            var targetDirectory = $"{_templateManager.RepositoryRootFilePath}\\{table.Schema}";
 
             if (!System.IO.Directory.Exists(targetDirectory))
             {

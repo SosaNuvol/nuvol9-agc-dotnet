@@ -120,7 +120,13 @@ namespace RQI.POC.AutoGenConsole
             Console.WriteLine("********************************************** REPOSITORIES **********************************************");
 
             var repositoryGenerator = new NOAHRepositoryGenerator(tableResult);
-            repositoryGenerator.Generate();
+            repositoryGenerator.Generate();            // ** Generate Repository Classes with Interfaces
+            Console.ForegroundColor = defaultConsoleTextColor;
+
+            Console.WriteLine("********************************************** UNIT OF WORK **********************************************");
+
+            var unitOfWorkGenerator = new NOAHUnitOfWorkGenerator(tableResult);
+            unitOfWorkGenerator.Generate();
 
             // ** Show final done
             Console.ForegroundColor = defaultConsoleTextColor;

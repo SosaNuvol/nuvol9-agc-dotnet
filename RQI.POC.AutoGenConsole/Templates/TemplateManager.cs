@@ -98,6 +98,19 @@
             }
         }
 
+        private string _repositoryRootFilePath;
+        public string RepositoryRootFilePath
+        {
+            get
+            {
+                if (_repositoryRootFilePath == null)
+                {
+                    _repositoryRootFilePath = ConfigurationManager.AppSettings["RQI.GEN.RepositoryRootFilePath"];
+                }
+                return _repositoryRootFilePath;
+            }
+        }
+
         private string _dataEntityRootFilePath;
         public string DataEntityRootFilePath
         {
@@ -160,6 +173,58 @@
                     _repositoryTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.RepositoryTemplateFilePath"];
                 }
                 return _repositoryTemplateFilePath;
+            }
+        }
+
+        private string _unitOfWorkTemplateFilePath;
+        public string UnitOfWorkTemplateFilePath
+        {
+            get
+            {
+                if (_unitOfWorkTemplateFilePath == null)
+                {
+                    _unitOfWorkTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.UnitOfWorkTemplateFilePath"];
+                }
+                return _unitOfWorkTemplateFilePath;
+            }
+        }
+
+        private string _unitOfWorkInterfaceTemplateFilePath;
+        public string UnitOfWorkInterfaceTemplateFilePath
+        {
+            get
+            {
+                if (_unitOfWorkInterfaceTemplateFilePath == null)
+                {
+                    _unitOfWorkInterfaceTemplateFilePath = ConfigurationManager.AppSettings["RQI.GEN.UnitOfWorkInterfaceTemplateFilePath"];
+                }
+                return _unitOfWorkInterfaceTemplateFilePath;
+            }
+        }
+
+        private string _unitOfWorkFilePath;
+        public string UnitOfWorkFilePath
+        {
+            get
+            {
+                if (_unitOfWorkFilePath == null)
+                {
+                    _unitOfWorkFilePath = ConfigurationManager.AppSettings["RQI.GEN.UnitOfWorkFilePath"];
+                }
+                return _unitOfWorkFilePath;
+            }
+        }
+
+        private string _unitOfWorkInterfaceFilePath;
+        public string UnitOfWorkInterfaceFilePath
+        {
+            get
+            {
+                if (_unitOfWorkInterfaceFilePath == null)
+                {
+                    _unitOfWorkInterfaceFilePath = ConfigurationManager.AppSettings["RQI.GEN.UnitOfWorkInterfaceFilePath"];
+                }
+                return _unitOfWorkInterfaceFilePath;
             }
         }
 
@@ -281,6 +346,30 @@
             if (repositoryPrimer == null) return null;
             repositoryPrimer = BindHeaderInformation(repositoryPrimer);
             return repositoryPrimer;
+        }
+
+        public string GetUnitOfWorkTemplatePrimer()
+        {
+            if (string.IsNullOrEmpty(UnitOfWorkTemplateFilePath) || !File.Exists(UnitOfWorkTemplateFilePath))
+            {
+                return null;
+            }
+            var unitOfWorkPrimer = File.ReadAllText(UnitOfWorkTemplateFilePath);
+            if (unitOfWorkPrimer == null) return null;
+            unitOfWorkPrimer = BindHeaderInformation(unitOfWorkPrimer);
+            return unitOfWorkPrimer;
+        }
+
+        public string GetUnitOfWorkInterfaceTemplatePrimer()
+        {
+            if (string.IsNullOrEmpty(UnitOfWorkInterfaceTemplateFilePath) || !File.Exists(UnitOfWorkInterfaceTemplateFilePath))
+            {
+                return null;
+            }
+            var unitOfWorkInterfacePrimer = File.ReadAllText(UnitOfWorkInterfaceTemplateFilePath);
+            if (unitOfWorkInterfacePrimer == null) return null;
+            unitOfWorkInterfacePrimer = BindHeaderInformation(unitOfWorkInterfacePrimer);
+            return unitOfWorkInterfacePrimer;
         }
 
         private string BindHeaderInformation(string templateData)

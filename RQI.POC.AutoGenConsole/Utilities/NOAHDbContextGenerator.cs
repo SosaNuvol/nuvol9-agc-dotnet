@@ -145,7 +145,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
         private void SaveDbContextToFile(string dbContextString)
         {
             var fileName = $"{DbContextClassName}.generated.cs";
-            var targetDirectory = _templateManager.DataAccessRootFilePath;
+            var targetDirectory = _templateManager.RepositoryRootFilePath;
 
             // Check if directory exists
             if (!System.IO.Directory.Exists(targetDirectory))

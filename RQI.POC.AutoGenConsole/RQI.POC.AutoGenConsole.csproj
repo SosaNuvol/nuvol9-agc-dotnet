@@ -213,6 +213,7 @@
     <Compile Include="Utilities\NOAHTablesGenerator.cs" />
     <Compile Include="Utilities\NOAHUDTypesGenerator.cs" />
     <Compile Include="Utilities\NOAHViewsGenerator.cs" />
+    <Compile Include="Utilities\NOAHUnitOfWorkGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -235,6 +236,51 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Templates\DbContextTemplate.txt" />
+    <Content Include="Templates\Files\DbContextTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\Dev\DbContextTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\Dev\RepositoryInterfaceTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\Dev\RepositoryTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\Dev\UnitOfWorkInterfaceTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\Dev\UnitOfWorkTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\ProxyTableLookupModel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\RepositoryInterfaceTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\RepositoryTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\SPROC.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\TableModel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\UDDTModel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\UnitOfWorkInterfaceTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\UnitOfWorkTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Files\ViewModel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\RepositoryInterfaceTemplate.txt" />
     <Content Include="Templates\RepositoryTemplate.txt" />
   </ItemGroup>
