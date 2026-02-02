@@ -228,6 +228,19 @@
             }
         }
 
+        private string _unitOfWorkNameSpace;
+        public string UnitOfWorkNameSpace
+        {
+            get
+            {
+                if (_unitOfWorkNameSpace == null)
+                {
+                    _unitOfWorkNameSpace = ConfigurationManager.AppSettings["RQI.GEN.UnitOfWorkNameSpace"];
+                }
+                return _unitOfWorkNameSpace;
+            }
+        }
+
         private string _dbContextNamespance;
         public string DbContextNamespance
         {

@@ -35,6 +35,19 @@
             }
         }
 
+        private string _unitOfWorkNameSpace = null;
+        public string UnitOfWorkNameSpace
+        {
+            get
+            {
+                if (this._unitOfWorkNameSpace == null)
+                {
+                    _unitOfWorkNameSpace = _templateManager.UnitOfWorkNameSpace;
+                }
+                return this._unitOfWorkNameSpace;
+            }
+        }
+
         public GeneratorBase()
         {
             _templateManager = new TemplateManager();

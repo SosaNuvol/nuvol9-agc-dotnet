@@ -48,6 +48,9 @@ namespace RQI.POC.AutoGenConsole.Utilities
             // Group tables by schema
             var schemaGroups = _tables.GroupBy(t => t.Schema).OrderBy(g => g.Key);
 
+            // Build using statements for repositories
+            var repositoryUsingStatements = BuildRepositoryUsingStatements(schemaGroups);
+
             // Build private repository fields
             var privateFields = BuildPrivateRepositoryFields(schemaGroups);
 
@@ -60,12 +63,16 @@ namespace RQI.POC.AutoGenConsole.Utilities
             // Build the Unit of Work class
             var unitOfWorkString = unitOfWorkTemplate
                 .Replace("<FILENAME>", "UnitOfWork.generated.cs")
+                .Replace("<NAMESPACE>", UnitOfWorkNameSpace)
+                .Replace("<REPOSITORY_USING_STATEMENTS>", repositoryUsingStatements)
                 .Replace("<PRIVATE_DEF_REPOSITORIES>", privateFields)
                 .Replace("<PUBLIC_REPOSITORY_PROPERTIES>", publicProperties);
 
             // Build the Unit of Work interface
             var interfaceString = interfaceTemplate
                 .Replace("<FILENAME>", "IUnitOfWork.generated.cs")
+                .Replace("<NAMESPACE>", UnitOfWorkNameSpace)
+                .Replace("<REPOSITORY_USING_STATEMENTS>", repositoryUsingStatements)
                 .Replace("<PUBLIC_REPOSITORY_PROPERTIES_INTERFACE>", interfaceProperties);
 
             // Save files
@@ -74,6 +81,23 @@ namespace RQI.POC.AutoGenConsole.Utilities
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"|** Generated UnitOfWork with {_tables.Count()} repositories across {schemaGroups.Count()} schemas");
+        }
+
+        private string BuildRepositoryUsingStatements(IEnumerable<IGrouping<string, Table>> schemaGroups)
+        {
+            var sb = new StringBuilder();
+
+            // Add common using statements
+            sb.AppendLine($"using {DataDataNameSpace}.Entity;");
+            sb.AppendLine($"using {DataDataNameSpace}.Entity.Repositories;");
+
+            // Add schema-specific repository using statements
+            foreach (var schemaGroup in schemaGroups)
+            {
+                sb.AppendLine($"using {DataDataNameSpace}.Repository.{schemaGroup.Key};");
+            }
+
+            return sb.ToString().TrimEnd();
         }
 
         private string BuildPrivateRepositoryFields(IEnumerable<IGrouping<string, Table>> schemaGroups)
