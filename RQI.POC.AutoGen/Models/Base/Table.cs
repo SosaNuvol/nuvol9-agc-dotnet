@@ -25,13 +25,27 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public string Name { get; set; }
 
-        public string CleanName { get; set; }
+        private string _cleanName;
+        public string CleanName
+        {
+            get
+            {
+                if (this.IsDuplicateName) return $"{this.Schema}{this._cleanName}";
+                return this._cleanName;
+            }
+            set
+            {
+                this._cleanName = value;
+            }
+        }
 
         public string ClassName { get; set; }
 
         public string PrimaryKey { get; set; }
 
         public bool IsManyToManyTable { get; set; }
+
+        public bool IsDuplicateName { get; set; }
 
         public List<Column> CompositeKeyColumns { get; set; }
 

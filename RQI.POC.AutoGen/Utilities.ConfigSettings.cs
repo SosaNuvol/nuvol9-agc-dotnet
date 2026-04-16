@@ -596,6 +596,22 @@ namespace RQI.POC.AutoGen
             }
         }
 
+        public static string AutogGenFileExtension
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.POC.AutoGen.AutogGenFileExtension";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return ".generated.cs";
+
+                // ** Return result
+                return result;
+            }
+        }
+
         #endregion Configuration Properties
     }
 }

@@ -49,7 +49,8 @@ namespace RQI.POC.AutoGen.Models
                     var tbl = new Table
                     {
                         Name = (string) dataReader["TABLE_NAME"], 
-                        Schema = (string) dataReader["TABLE_SCHEMA"]
+                        Schema = (string) dataReader["TABLE_SCHEMA"],
+                        IsDuplicateName = (bool) dataReader["IsDuplicateName"]
                     };
 
                     // ** Check if table is included

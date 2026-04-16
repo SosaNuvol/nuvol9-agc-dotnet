@@ -15,6 +15,7 @@ namespace RQI.POC.AutoGenConsole
     using System;
     using System.Configuration;
     using System.Linq;
+    using System.Threading.Tasks.Sources;
     using RQI.POC.AutoGen.Models;
     using RQI.POC.AutoGenConsole.Utilities;
 
@@ -30,6 +31,12 @@ namespace RQI.POC.AutoGenConsole
             var sprocs = new RmProcedures(connectionString);
             var utypes = new RmUserTypes(connectionString);
             var criticalDataTables = new RmCriticalDataTypes(connectionString);
+
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** DELETE **********************************************");
+
+            // Delete all generated tables, views, types and sprocs
+            AutoGen.Utilities.AutoDALFileSystem.DeleteAllGeneratedFiles();
 
             // ** Load from SQL
             var sprocResult = sprocs.Load().OrderBy(s => s.SchemaName);
