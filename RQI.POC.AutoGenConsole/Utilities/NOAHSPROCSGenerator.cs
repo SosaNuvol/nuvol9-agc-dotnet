@@ -29,7 +29,7 @@
                 // ** Init
                 counter++;
                 var sprocName = sprocItem.Name;
-                var className = AutoGen.Utilities.Inflector.MakeSPROCClassName(sprocItem.CleanName);
+                var className = Inflector.MakeSPROCClassName(sprocItem.CleanName);
                 var nameSpaceString = $"{DataDataNameSpace}.Models.{sprocItem.SchemaName}";
 
                 var viewStringBuilder = sprocItem.ReturnsNothing

@@ -207,17 +207,62 @@ namespace RQI.POC.AutoGen
         }
 
         /// <summary>
-        /// Wrapper around the IncludeTableList that returns an IEnumerable
+        /// List of all stored procedures that will be included in the ORM.  Make sure that the schema is specified.
+        ///     i.e. dbo.spGetCustomer,dbo.spUpdateOrder
+        /// </summary>
+        /// <remarks>Each entry in the returned list may be a RegEx expression used to match procedure names.</remarks>
+        public static IEnumerable<string> IncludeProcedureList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.IncludeProcedureList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeProcedureList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
+
+                // ** Return result
+                return GetRegExEnumerableList(rawValue.Split(','));
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of procedure name patterns to exclude.
+        /// </summary>
+        /// <remarks>The value is retrieved from the application configuration setting
+        /// 'RQI.POC.AutoGen.ExcludeProcedureList'. If the setting is not found or is empty, the default value
+        /// '^spGet*,^spUpdate*' is used. Each entry in the returned list may be a RegEx expression used to match
+        /// procedure names when generating code or performing automated tasks.</remarks>
+        public static IEnumerable<string> ExcludeProcedureList
+        {
+            get
+            {
+                // ** Init
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.ExcludeProcedureList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.ExcludeProcedureList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "^spGet*,^spUpdate*";
+
+                // ** Return result
+                return GetRegExEnumerableList(rawValue.Split(','));
+            }
+        }
+
+        /// <summary>
+        /// Returns the include table list as an IEnumerable for RegEx filtering.
         /// </summary>
         public static IEnumerable<string> IncludeTableListEnumerable
         {
             get
             {
                 // ** Init
-                var tableNameArray = IncludeTableList.Split(',');
+                var rawValue = Config?.AppSettings.Settings["RQI.POC.AutoGen.IncludeTableList"].Value ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.IncludeTableList"];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(rawValue)) rawValue = "*";
 
                 // ** Return result
-                return GetRegExEnumerableList(tableNameArray);
+                return GetRegExEnumerableList(rawValue.Split(','));
             }
         }
 
@@ -611,6 +656,330 @@ namespace RQI.POC.AutoGen
                 return result;
             }
         }
+
+        #region GEN Configuration Properties
+
+        public static string TableTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.TableTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string ViewTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.ViewTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string SprocTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.SPROCTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string ProxyTypeTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.ProxyTypeTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UddtTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UDDTTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DataModelsRootFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.DataModelsRootFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DataAccessRootFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.DataAccessRootFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string RepositoryRootFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.RepositoryRootFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DataEntityRootFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.Data.EntityRootFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string ProxyTypeRootFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.ProxyTypeRootFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DbContextTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.DbContextTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string RepositoryInterfaceTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.RepositoryInterfaceTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string RepositoryTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.RepositoryTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UnitOfWorkTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UnitOfWorkTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UnitOfWorkInterfaceTemplateFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UnitOfWorkInterfaceTemplateFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UnitOfWorkFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UnitOfWorkFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UnitOfWorkInterfaceFilePath
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UnitOfWorkInterfaceFilePath";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string UnitOfWorkNameSpace
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.UnitOfWorkNameSpace";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DbContextNamespance
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.DbContextNamespance";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        public static string DataDataNameSpace
+        {
+            get
+            {
+                // ** Init
+                const string key = "RQI.GEN.DataDataNameSpace";
+                var result = Config?.AppSettings.Settings[key]?.Value ?? ConfigurationManager.AppSettings[key];
+
+                // ** Check configuration value
+                if (string.IsNullOrEmpty(result)) return string.Empty;
+
+                // ** Return result
+                return result;
+            }
+        }
+
+        #endregion GEN Configuration Properties
 
         #endregion Configuration Properties
     }

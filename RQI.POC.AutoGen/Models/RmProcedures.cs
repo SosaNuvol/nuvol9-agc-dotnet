@@ -71,5 +71,8 @@ namespace RQI.POC.AutoGen.Models
             // ** Default response
             return _storedProcedures;
         }
+
+        // TODO: Add a method that will exclude a SPROC that is in the exclude list and include a SPROC that is in the include list.  This will be similar to the ShouldGenerateTable and ShouldGenerateView methods in the Utilities class.
+
     }
 }
