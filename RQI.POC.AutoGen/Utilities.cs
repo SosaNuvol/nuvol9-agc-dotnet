@@ -60,6 +60,29 @@ namespace RQI.POC.AutoGen
             return ShouldGenerate(viewName, IncludeViewListEnumerable, ExcludeViewListEnumerable);
         }
 
+        public static bool ShouldGenerateProcedure(string procedureName)
+        {
+            // ** Normalize: strip SQL bracket decorators so that both [RSU].[spName] and RSU.spName match the same pattern
+            var normalizedName = StripSqlBrackets(procedureName);
+            var normalizedInclude = IncludeProcedureList.Select(StripSqlBrackets);
+            var normalizedExclude = ExcludeProcedureList.Select(StripSqlBrackets);
+
+            return ShouldGenerate(normalizedName, normalizedInclude, normalizedExclude);
+        }
+
+        /// <summary>
+        /// Strips SQL bracket decorators ('[' and ']') from the passed string.
+        /// Allows pattern matching to work regardless of whether names are written
+        /// as <c>[Schema].[Name]</c> or <c>Schema.Name</c>.
+        /// </summary>
+        /// <param name="value">The string to strip brackets from.</param>
+        /// <returns>The input string with all '[' and ']' characters removed.</returns>
+        public static string StripSqlBrackets(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Replace("[", string.Empty).Replace("]", string.Empty);
+        }
+
         public static bool ShouldGenerate(string objectName, IEnumerable<string> includeList, IEnumerable<string> excludeList)
         {
             // ** Init

@@ -9,7 +9,7 @@
                 // Check if folder exists.  If not return.
                 if (!System.IO.Directory.Exists(targetFolder)) return;
 
-                var autoGenFiles = System.IO.Directory.GetFiles(targetFolder, $"*.{Utilities.AutogGenFileExtension}", System.IO.SearchOption.AllDirectories);
+                var autoGenFiles = System.IO.Directory.GetFiles(targetFolder, $"*{Utilities.AutogGenFileExtension}", System.IO.SearchOption.AllDirectories);
                 foreach (var file in autoGenFiles)
                 {
                     System.IO.File.Delete(file);
