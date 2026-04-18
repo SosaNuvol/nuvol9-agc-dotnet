@@ -50,7 +50,7 @@ namespace RQI.POC.AutoGen.Models
                     {
                         Schema = (string)dataReader["TYPE_SCHEMA"],
                         Name = (string)dataReader["TYPE_NAME"],
-                        CleanName = Utilities.TransformName((string)dataReader["TYPE_NAME"]).Replace("udtt", string.Empty).Replace("uddt", string.Empty).Replace("udt", string.Empty),
+                        CleanName = Utilities.TransformName((string)dataReader["TYPE_NAME"]).Replace("udtt_", string.Empty).Replace("uddt_", string.Empty).Replace("udt_", string.Empty),
                         Suffix = (bool)dataReader["IS_TABLE_TYPE"] ? "TableType" : "UserType",
                         IsTableType = (bool)dataReader["IS_TABLE_TYPE"],
                         MaxLength =  dataReader.IsDBNull(maxLengthIndex) ? (short)0 : (short)dataReader["MaxLength"],
