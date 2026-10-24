@@ -28,7 +28,7 @@ namespace RQI.POC.AutoGen.Models.Base
         public bool IsTableType { get; set; }
 
         public short MaxLength { get; set; }
-        
+
         public byte Precision { get; set; }
 
         public byte Scale { get; set; }
@@ -53,8 +53,8 @@ namespace RQI.POC.AutoGen.Models.Base
                 if (SystemType.Equals("VARCHAR") || SystemType.Equals("NVARCHAR"))
                     precision = $"({MaxLength})";
 
-                return IsTableType 
-                    ? "DataTable" 
+                return IsTableType
+                    ? "DataTable"
                     : $"{SystemType}{precision}";
             }
         }

@@ -78,10 +78,9 @@ namespace RQI.POC.AutoGen
         {
             // ** Init
             // ReSharper disable once NotAccessedVariable
-            double result;
 
             // ** Return result
-            return (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out result));
+            return (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out _));
         }
 
         /// <summary>
@@ -300,7 +299,7 @@ namespace RQI.POC.AutoGen
                     return newWord;
                 default:
                     return word;
-                // ReSharper restore StringLiteralTypo
+                    // ReSharper restore StringLiteralTypo
             }
         }
 
@@ -326,7 +325,7 @@ namespace RQI.POC.AutoGen
         {
             if (!string.IsNullOrEmpty(stripString))
             {
-                string[] replace = stripString.Split(new char[] {','});
+                string[] replace = stripString.Split(new char[] { ',' });
                 for (int i = 0; i < replace.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(inputString))
@@ -370,11 +369,11 @@ namespace RQI.POC.AutoGen
             string[] find;
             try
             {
-                find = list.Split(new [] {", ", ","}, StringSplitOptions.RemoveEmptyEntries);
+                find = list.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
             }
             catch
             {
-                find = new [] {string.Empty};
+                find = new[] { string.Empty };
             }
 
             return find;

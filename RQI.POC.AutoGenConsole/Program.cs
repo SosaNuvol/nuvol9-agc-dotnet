@@ -79,7 +79,7 @@ namespace RQI.POC.AutoGenConsole
             {
                 // ** Init
                 counter++;
-                
+
                 // ** Print view information
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"|** {counter:D4}|=> View Name: {sprocItem.Name,-50} | Parameters: {sprocItem.Parameters.Count:D3}");

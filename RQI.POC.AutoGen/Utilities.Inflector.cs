@@ -222,7 +222,7 @@ namespace RQI.POC.AutoGen
             public static string ToTitleCase(string word)
             {
                 return Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])",
-                    delegate(Match match) { return match.Captures[0].Value.ToUpper(); });
+                    delegate (Match match) { return match.Captures[0].Value.ToUpper(); });
             }
 
             /// <summary>
@@ -281,10 +281,9 @@ namespace RQI.POC.AutoGen
             {
                 // ** Init
                 // ReSharper disable once NotAccessedVariable
-                double numericValue;
 
                 // Return result
-                return double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out numericValue);
+                return double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out _);
             }
 
             /// <summary>

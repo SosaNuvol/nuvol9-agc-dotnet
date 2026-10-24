@@ -172,7 +172,7 @@ WHERE
 
         #endregion Properties
 
-        public RmBase([Dependency("SqlConnectionString")]string sqlConnectionString)
+        public RmBase([Dependency("SqlConnectionString")] string sqlConnectionString)
         {
             SQLConnectionString = sqlConnectionString;
         }

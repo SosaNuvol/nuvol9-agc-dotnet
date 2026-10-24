@@ -23,7 +23,7 @@ namespace RQI.POC.AutoGen.Models
         private readonly List<Table> _manyToManyTables;
 
         [InjectionConstructor]
-        public RmTables([Dependency("SqlConnectionString")]string sqlConnectionString) : base(sqlConnectionString)
+        public RmTables([Dependency("SqlConnectionString")] string sqlConnectionString) : base(sqlConnectionString)
         {
             // ** Bind to Definitions
             _tables = null;
@@ -40,7 +40,7 @@ namespace RQI.POC.AutoGen.Models
 
             // ** Init
             _tables = new List<Table>();
-            var tableLookup  = new Dictionary<string, Table>();
+            var tableLookup = new Dictionary<string, Table>();
             using (IDataReader dataReader = GetReader(SQLStatement))
             {
                 while (dataReader.Read())
@@ -48,9 +48,9 @@ namespace RQI.POC.AutoGen.Models
                     // ** Init
                     var tbl = new Table
                     {
-                        Name = (string) dataReader["TABLE_NAME"], 
-                        Schema = (string) dataReader["TABLE_SCHEMA"],
-                        IsDuplicateName = (bool) dataReader["IsDuplicateName"]
+                        Name = (string)dataReader["TABLE_NAME"],
+                        Schema = (string)dataReader["TABLE_SCHEMA"],
+                        IsDuplicateName = (bool)dataReader["IsDuplicateName"]
                     };
 
                     // ** Check if table is included
@@ -90,7 +90,7 @@ namespace RQI.POC.AutoGen.Models
                         tableItem.IsManyToManyTable = true;
                         _manyToManyTables.Add(tableItem);
 
-                    } 
+                    }
                     else if (pkColumns.Count == 1)
                     {
                         // ** Init for a single PK Column
@@ -170,16 +170,14 @@ namespace RQI.POC.AutoGen.Models
                 var toColumn = table.CompositeKeyColumns[1];
 
                 // ReSharper disable once InlineOutVariableDeclaration
-                Table fromTable;
-                if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out fromTable))
+                if (!tableLookup.TryGetValue(fromColumn.ForeignKeyTableSchemaName + "." + fromColumn.ForeignKeyTableName, out Table fromTable))
                 {
                     Utilities.LogInternalWarning(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign from table for column \"{fromColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign from table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", fromColumn.Name, table.Name));
                 }
 
                 // ReSharper disable once InlineOutVariableDeclaration
-                Table toTable;
-                if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out toTable))
+                if (!tableLookup.TryGetValue(toColumn.ForeignKeyTableSchemaName + "." + toColumn.ForeignKeyTableName, out Table toTable))
                 {
                     Utilities.LogInternalWarning(Utilities.ClassTypes.BaseTable, $"Unable to lookup foreign to table for column \"{toColumn.Name}\" on many to many table \"{table.Name}\", verify constraints are correct.");
                     // throw new Exception(string.Format("Unable to lookup foreign to table for column \"{0}\" on many to many table \"{1}\", verify constraints are correct.", toColumn.Name, table.Name));

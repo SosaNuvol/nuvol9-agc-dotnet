@@ -14,7 +14,7 @@ namespace RQI.POC.AutoGen.Models
     using System.Data;
     using System.Linq;
     using Base;
-	using Unity;
+    using Unity;
 
     public class RmViews : RmBase
     {
@@ -24,7 +24,7 @@ namespace RQI.POC.AutoGen.Models
         #endregion Properties
 
         [InjectionConstructor]
-        public RmViews([Dependency("SqlConnectionString")] string sqlConnectionString): base(sqlConnectionString)
+        public RmViews([Dependency("SqlConnectionString")] string sqlConnectionString) : base(sqlConnectionString)
         {
             // ** Init Class properties
             _views = null;

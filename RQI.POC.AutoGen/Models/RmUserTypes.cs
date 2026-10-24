@@ -53,7 +53,7 @@ namespace RQI.POC.AutoGen.Models
                         CleanName = Utilities.TransformName((string)dataReader["TYPE_NAME"]).Replace("udtt_", string.Empty).Replace("uddt_", string.Empty).Replace("udt_", string.Empty),
                         Suffix = (bool)dataReader["IS_TABLE_TYPE"] ? "TableType" : "UserType",
                         IsTableType = (bool)dataReader["IS_TABLE_TYPE"],
-                        MaxLength =  dataReader.IsDBNull(maxLengthIndex) ? (short)0 : (short)dataReader["MaxLength"],
+                        MaxLength = dataReader.IsDBNull(maxLengthIndex) ? (short)0 : (short)dataReader["MaxLength"],
                         Precision = (byte)dataReader["Precision"],
                         Scale = (byte)dataReader["Scale"],
                         IsNullable = (bool)dataReader["IsNullable"],

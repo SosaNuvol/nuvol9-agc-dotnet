@@ -174,13 +174,13 @@ namespace RQI.POC.AutoGen
             {
                 // ** Init
                 var rawValue = ConfigurationManager.AppSettings["RQI.POC.AutoGen.CriticalDataTypesTablesList"] ?? ConfigurationManager.AppSettings["RQI.POC.AutoGen.CriticalDataTypesTablesList"];
-                
+
                 // ** Check configuration value
                 if (string.IsNullOrEmpty(rawValue)) rawValue = "";
-                
+
                 // ** Build the
                 var result = rawValue;
-                
+
                 // ** Return result
                 return result;
             }
@@ -417,7 +417,7 @@ namespace RQI.POC.AutoGen
         public static IEnumerable<string> GetRegExEnumerableList(string[] regExpressionList)
         {
             // ** Init
-            var result = new List<string> {"*"};
+            var result = new List<string> { "*" };
 
             // ** Check for wildcard 
             if (regExpressionList.Length == 1 && regExpressionList[0].Equals("*")) return result;

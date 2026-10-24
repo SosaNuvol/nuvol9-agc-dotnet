@@ -20,7 +20,7 @@ namespace RQI.POC.AutoGen.Models.Base
     public class SP
     {
         #region Properties
-        
+
         private readonly string _definition;
         private const string _REG_EX_FIND_HEADER = "CREATE[ ]*PROCEDURE[ \\[]*@SCHEMA_NAME@[\\].[]*@SPROC_NAME@[\\]]*";
         private const string _REG_EX_ARGUMENT = "\\@[\\S+]* [\\S+\\(\\)]*[ ]*=[ ]*([\\S+]*)";
@@ -93,11 +93,12 @@ namespace RQI.POC.AutoGen.Models.Base
                     ReturnsNothing = false;
 
                     // ReSharper disable once UseObjectOrCollectionInitializer
-                    var row = new SPResultSetColumn();
+                    var row = new SPResultSetColumn
+                    {
+                        IsNullable = (bool)rdr["IsNullable"],
 
-                    row.IsNullable = (bool) rdr["IsNullable"];
-
-                    row.Name = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
+                        Name = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"]
+                    };
                     row.Name = row.Name?.Trim();
                     row.ClassName = rdr["ColName"] == DBNull.Value ? null : (string)rdr["ColName"];
                     row.DataType = (string)rdr["DataTypeName"];
@@ -108,7 +109,7 @@ namespace RQI.POC.AutoGen.Models.Base
 
                     row.SysType = Utilities.GetSysTypeWithNullable(row.DataType, row.IsNullable);
                     row.DbType = Utilities.GetDbType(row.DataType);
-                    row.ColumnOrdinal = (int) rdr["ColumnOrdinal"];
+                    row.ColumnOrdinal = (int)rdr["ColumnOrdinal"];
 
                     // ** Check if the column name is repeated.
                     var foundCol = ResultSetColumns.FirstOrDefault(c => c.Name.Equals(row.Name?.Trim()));

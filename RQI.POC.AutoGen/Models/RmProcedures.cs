@@ -43,7 +43,7 @@ namespace RQI.POC.AutoGen.Models
                 while (dataReader.Read())
                 {
                     // ** Init
-                    var name = DBNull.Value.Equals(dataReader["Name"]) ? null : (string) dataReader["Name"];
+                    var name = DBNull.Value.Equals(dataReader["Name"]) ? null : (string)dataReader["Name"];
                     var schema = DBNull.Value.Equals(dataReader["Schema"]) ? null : (string)dataReader["Schema"];
                     var jsonParameterList = DBNull.Value.Equals(dataReader["JsonParametersList"]) ? null : (string)dataReader["JsonParametersList"];
                     var definition = DBNull.Value.Equals(dataReader["Definition"]) ? null : (string)dataReader["Definition"];
@@ -71,8 +71,8 @@ namespace RQI.POC.AutoGen.Models
                 }
             }
 
-                    // ** Default response
-                        return _storedProcedures;
-                    }
-                }
-            }
+            // ** Default response
+            return _storedProcedures;
+        }
+    }
+}

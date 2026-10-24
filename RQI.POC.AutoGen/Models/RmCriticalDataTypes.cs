@@ -38,7 +38,7 @@ namespace RQI.POC.AutoGen.Models
             _criticalDataTypes = new List<CriticalDataType>();
 
             // ** Build the SQL Statement
-            buildSqlStatement();
+            BuildSqlStatement();
 
             // ** Build Critical Data Types list
             using (IDataReader dataReader = GetReader(SQLStatement))
@@ -66,7 +66,7 @@ namespace RQI.POC.AutoGen.Models
             return _criticalDataTypes;
         }
 
-        private void buildSqlStatement()
+        private void BuildSqlStatement()
         {
             // ** Build schema clause
             var criticalDataTypesTableNamesList = new List<string>();
@@ -77,20 +77,21 @@ namespace RQI.POC.AutoGen.Models
 
             var sqlStatement = string.Empty;
 
-            criticalDataTypesTableNamesList.ToList().ForEach(criticalDataType => {
-                var tableNameData = GetTableNameInSingularAndSchema(criticalDataType);
+            criticalDataTypesTableNamesList.ToList().ForEach(criticalDataType =>
+            {
+                var (singularTableName, schema) = GetTableNameInSingularAndSchema(criticalDataType);
 
                 if (string.IsNullOrEmpty(sqlStatement))
                 {
-                    sqlStatement = SQLStatement.Replace("@TABLE_NAME@", $"{tableNameData.SingularTableName}")
-                        .Replace("@SCHEMA_NAME@", tableNameData.Schema)
+                    sqlStatement = SQLStatement.Replace("@TABLE_NAME@", singularTableName)
+                        .Replace("@SCHEMA_NAME@", schema)
                         .Replace("@TABLE_NAME_WITH_SCHEMA@", criticalDataType);
                 }
                 else
                 {
                     sqlStatement += "\r\nUNION\r\n";
-                    sqlStatement += SQLStatement.Replace("@TABLE_NAME@", $"{tableNameData.SingularTableName}")
-                        .Replace("@SCHEMA_NAME@", tableNameData.Schema)
+                    sqlStatement += SQLStatement.Replace("@TABLE_NAME@", singularTableName)
+                        .Replace("@SCHEMA_NAME@", schema)
                         .Replace("@TABLE_NAME_WITH_SCHEMA@", criticalDataType);
                 }
             });
@@ -116,7 +117,7 @@ ORDER BY
 
             // ** Init
             var singularTableName = Utilities.Inflector.MakeSingular(tableName);
-            
+
             // ** Return
             return (singularTableName, schema);
         }

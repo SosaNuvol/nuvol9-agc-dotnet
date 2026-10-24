@@ -10,7 +10,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
     public class NOAHDbContextGenerator : GeneratorBase, IGenerator
     {
         private readonly IOrderedEnumerable<Table> _tables;
-        
+
         private string _dbContextClassName = null;
         public string DbContextClassName
         {
@@ -54,7 +54,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
         {
             // Get the DbContext template
             var template = _templateManager.GetDbContextTemplatePrimer();
-            
+
             if (string.IsNullOrEmpty(template))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -64,16 +64,16 @@ namespace RQI.POC.AutoGenConsole.Utilities
 
             // Group tables by schema to organize using statements
             var schemaGroups = _tables.GroupBy(t => t.Schema).OrderBy(g => g.Key);
-            
+
             // Build using statements
             var usingStatements = BuildUsingStatements(schemaGroups);
-            
+
             // Build DbSet properties
             var dbSetProperties = BuildDbSetProperties(schemaGroups);
-            
+
             // Build model configurations (optional, for future use)
-            var modelConfigurations = BuildModelConfigurations(schemaGroups);
-            
+            var modelConfigurations = BuildModelConfigurations();
+
             // Replace placeholders
             var dbContextString = template
                 .Replace("<NAMESPACE>", DbContextNameSpace)
@@ -94,20 +94,20 @@ namespace RQI.POC.AutoGenConsole.Utilities
         private string BuildUsingStatements(IEnumerable<IGrouping<string, Table>> schemaGroups)
         {
             var sb = new StringBuilder();
-            
+
             foreach (var schemaGroup in schemaGroups)
             {
                 var namespaceName = $"{DataDataNameSpace}.Models.{schemaGroup.Key}";
                 sb.AppendLine($"using {namespaceName};");
             }
-            
+
             return sb.ToString().TrimEnd();
         }
 
         private string BuildDbSetProperties(IEnumerable<IGrouping<string, Table>> schemaGroups)
         {
             var sb = new StringBuilder();
-            
+
             foreach (var schemaGroup in schemaGroups.OrderBy(g => g.Key))
             {
                 //#region DbSets - ACC (Accounts)
@@ -118,7 +118,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 {
                     var className = AutoGen.Utilities.Inflector.MakeSingular(table.CleanName);
                     var pluralClassName = AutoGen.Utilities.Inflector.MakePlural(className);
-                    
+
                     sb.AppendLine($"        /// <summary>");
                     sb.AppendLine($"        /// Gets or sets the {pluralClassName} DbSet.");
                     sb.AppendLine($"        /// </summary>");
@@ -133,7 +133,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
             return sb.ToString().TrimEnd();
         }
 
-        private string BuildModelConfigurations(IEnumerable<IGrouping<string, Table>> schemaGroups)
+        private string BuildModelConfigurations()
         {
             // Placeholder for future entity configurations
             // You can add Fluent API configurations here if needed
@@ -157,7 +157,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
 
             // Save to file
             System.IO.File.WriteAllText(filePath, dbContextString);
-            
+
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"|*** DbContext saved to: {filePath}");
         }

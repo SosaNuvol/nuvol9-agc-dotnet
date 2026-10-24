@@ -56,7 +56,7 @@
         {
             var viewPrimer = File.ReadAllText(ViewTemplateFilePath);
             if (viewPrimer == null) return null;
-            
+
             viewPrimer = BindHeaderInformation(viewPrimer);
             return viewPrimer;
         }

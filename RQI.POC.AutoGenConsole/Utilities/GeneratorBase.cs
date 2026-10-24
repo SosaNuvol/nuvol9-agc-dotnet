@@ -84,7 +84,7 @@
         protected void SaveProxyTypeDefinitionToFile(string typeName, string schema, string proxyTypeString)
         {
             var fileName = $"{typeName}.generated.cs";
-             var targetDirectory = $"{_templateManager.ProxyTypeRootFilePath}\\{schema}";
+            var targetDirectory = $"{_templateManager.ProxyTypeRootFilePath}\\{schema}";
             // ** Check if directory exists
             if (!System.IO.Directory.Exists(targetDirectory))
             {
@@ -100,16 +100,16 @@
         {
             var fileName = $"{userDefinedType.ClassName}.generated.cs";
             var targetDirectory = GetTargetDirectory(userDefinedType);
-            
+
             // ** Check if directory exists
             if (!System.IO.Directory.Exists(targetDirectory))
             {
                 // ** Create directory
                 System.IO.Directory.CreateDirectory(targetDirectory);
             }
-         
+
             var filePath = $"{targetDirectory}\\{fileName}";
-            
+
             // ** Save to file
             System.IO.File.WriteAllText(filePath, userDefinedTypeString);
         }
@@ -134,21 +134,18 @@
             var folder1 = "\\Models";
             var targetDirectory = $"{_templateManager.DataModelsRootFilePath}";
 
-            if (value is Table)
+            if (value is Table table)
             {
-                var table = (Table)value;
                 schema = table.Schema;
                 folder1 = "\\Models";
             }
-            else if (value is UserDefinedType)
+            else if (value is UserDefinedType userDefinedType)
             {
-                var userDefinedType = (UserDefinedType)value;
                 schema = userDefinedType.Schema;
                 folder1 = "\\UDDTs";
             }
-            else if (value is SP)
+            else if (value is SP sproc)
             {
-                var sproc = (SP)value;
                 schema = sproc.SchemaName;
                 folder1 = "\\SPROCS";
                 targetDirectory = $"{_templateManager.DataAccessRootFilePath}";

@@ -78,7 +78,6 @@
             foreach (var param in sprocItem.Parameters)
             {
                 var paramName = Inflector.MakeCamelCase(param.CleanName);
-                var sysType = param.SysType;
                 if (sb.Length == 0 && showPrecedingComma)
                 {
                     sb.Append($"{paramName}{suffix}");

@@ -17,15 +17,16 @@ namespace RQI.POC.AutoGen.Models.Base
     {
         #region Parameters
 
-        [JsonProperty(propertyName:"name", Required = Required.Always)]
+        [JsonProperty(propertyName: "name", Required = Required.Always)]
         public string Name { get; set; }
 
         [JsonProperty(propertyName: "cleanName", Required = Required.Always)]
         public string CleanName { get; set; }
 
-        private string _sysType; 
+        private string _sysType;
         [JsonProperty(propertyName: "sysType")]
-        public string SysType {
+        public string SysType
+        {
             get
             {
                 // ** Init
@@ -69,7 +70,7 @@ namespace RQI.POC.AutoGen.Models.Base
             var result = (IsOptional && !SysType.Equals("string")) ? $"Nullable<{SysType}> {CleanName}" : $"{SysType} {CleanName}";
 
             // ** Check if default value
-            if (!string.IsNullOrEmpty(DefaultValue)) result = result + $" = {GetDefaultValueForCSharp()}";
+            if (!string.IsNullOrEmpty(DefaultValue)) result += $" = {GetDefaultValueForCSharp()}";
 
             // ** Return result
             return result;

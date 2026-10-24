@@ -14,6 +14,6 @@ namespace RQI.POC.AutoGen.Models.Base
 
     public class ForeignKeyRowCollection : List<ForeignKeyRow>
     {
-        
+
     }
 }

@@ -9,14 +9,14 @@
 #endregion
 namespace RQI.POC.AutoGen
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Data;
-	using System.Data.SqlClient;
-	using System.Linq;
-	using Models.Base;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using System.Linq;
+    using Models.Base;
 
-	public static partial class Utilities
+    public static partial class Utilities
     {
         #region SQL String Constants
 
@@ -150,7 +150,7 @@ ORDER BY
         private const string _VIEWS_SCHEMA_CLAUSE = @"	AND (T.TABLE_SCHEMA IN (@VIEW_SCHEMA_LIST@))
 ";
 
-		private const string _UDTT_DEF_SQL_STATEMENT = @"
+        private const string _UDTT_DEF_SQL_STATEMENT = @"
 SELECT
       SCHEMA_NAME(TT.schema_id) AS TableSchema
     , TT.name AS TableName
@@ -182,7 +182,7 @@ ORDER BY
     C.column_id;
 ";
 
-		public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
+        public const string SPROC_RESULT_SET_SQL_STATEMENT = @"
 SELECT
 	  SPR.[name] AS [ColName]
 	, TP.[name] AS [DataTypeName]
@@ -201,48 +201,48 @@ ORDER BY
 
         private static string GetTableColSqlStatement
         {
-	        get
-	        {
-				// ** Init
-				var result = _TABLE_COL_SQL_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
-				result = result.Replace("@SYSTEM_COL_TO_IGNORE@", SQLSystemColToIgnoreList);
-				result = result.Replace("@COL_DATA_TYPES_TO_IGNORE@", SQLColDataTypeToIgnoreList);
+            get
+            {
+                // ** Init
+                var result = _TABLE_COL_SQL_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
+                result = result.Replace("@SYSTEM_COL_TO_IGNORE@", SQLSystemColToIgnoreList);
+                result = result.Replace("@COL_DATA_TYPES_TO_IGNORE@", SQLColDataTypeToIgnoreList);
 
-				// ** Return result
-				return result;
-	        }
+                // ** Return result
+                return result;
+            }
         }
 
         private static string GetViewsColSqlStatement
         {
-	        get
-	        {
-				// ** Init
-				var result = _VIEWS_COL_SQL_STATEMENT;
+            get
+            {
+                // ** Init
+                var result = _VIEWS_COL_SQL_STATEMENT;
 
-				// ** Check that there is a Schema list
-				// ** Check if we are going to show all schemas
-				if (!ViewsSchemaList.Equals("'*'"))
-				{
-					// ** Build Schema clause
-					var schemaClause = _VIEWS_SCHEMA_CLAUSE.Replace("@VIEW_SCHEMA_LIST@", ViewsSchemaList);
+                // ** Check that there is a Schema list
+                // ** Check if we are going to show all schemas
+                if (!ViewsSchemaList.Equals("'*'"))
+                {
+                    // ** Build Schema clause
+                    var schemaClause = _VIEWS_SCHEMA_CLAUSE.Replace("@VIEW_SCHEMA_LIST@", ViewsSchemaList);
                     result = result.Replace("@SCHEMA_CLAUSE@", schemaClause);
-				}
-				else
-				{
-					// ** Erase the Schema clause from SQL Statement
-					result = result.Replace("@SCHEMA_CLAUSE@", string.Empty);
-				}
+                }
+                else
+                {
+                    // ** Erase the Schema clause from SQL Statement
+                    result = result.Replace("@SCHEMA_CLAUSE@", string.Empty);
+                }
 
-				// ** Return result;
-				return result;
-	        }
+                // ** Return result;
+                return result;
+            }
         }
-		
-		private static string GetUDTableTypeDefSqlStatement
-		{
-			get
-			{
+
+        private static string GetUDTableTypeDefSqlStatement
+        {
+            get
+            {
                 // ** Init
                 var result = _UDTT_DEF_SQL_STATEMENT.Replace("@SCHEMA_LIST@", UserDefinedTypesSchemaList);
                 result = result.Replace("@SYSTEM_COL_TO_IGNORE@", SQLSystemColToIgnoreList);
@@ -250,184 +250,186 @@ ORDER BY
                 // ** Return result
                 return result;
             }
-		}
+        }
 
-		#endregion SQL String Constants
+        #endregion SQL String Constants
 
-		#region Database Artifacts
+        #region Database Artifacts
 
-		public static IDataReader GetReader(string sql)
-		{
-			SqlConnection conn = new SqlConnection(ConnectionString);
-			SqlCommand cmd = new SqlCommand(sql, conn);
-			conn.Open();
-			return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-		}
+        public static IDataReader GetReader(string sql)
+        {
+            SqlConnection conn = new SqlConnection(ConnectionString);
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            conn.Open();
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+        }
 
-/*
-		private static SqlCommand GetCommand(string sql)
-		{
-			SqlConnection conn = new SqlConnection(ConnectionString);
-			SqlCommand cmd = new SqlCommand(sql, conn);
-			conn.Open();
-			return cmd;
-		}
-*/
+        /*
+                private static SqlCommand GetCommand(string sql)
+                {
+                    SqlConnection conn = new SqlConnection(ConnectionString);
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    conn.Open();
+                    return cmd;
+                }
+        */
 
-		private static Dictionary<string, List<Column>> _tableColumnDict;
+        private static Dictionary<string, List<Column>> _tableColumnDict;
 
-		public static Dictionary<string, List<Column>> TableColumnDict
-		{
-			get
-			{
-				// ** Check if initialized
-				if (_tableColumnDict != null) return _tableColumnDict;
+        public static Dictionary<string, List<Column>> TableColumnDict
+        {
+            get
+            {
+                // ** Check if initialized
+                if (_tableColumnDict != null) return _tableColumnDict;
 
-				// ** Init
-				_tableColumnDict = new Dictionary<string, List<Column>>();
-				var currentTableName = "";
-				var currentTableSchema = "";
-				List<Column> list = null;
+                // ** Init
+                _tableColumnDict = new Dictionary<string, List<Column>>();
+                var currentTableName = "";
+                var currentTableSchema = "";
+                List<Column> list = null;
 
-				// ** Loop through columns
-				using (IDataReader rdr = GetReader(GetTableColSqlStatement))
-				{
-					// ** Loop through column tuples
-					while (rdr.Read())
-					{
-						// ** Init
-						var tableName = (string)rdr["TableName"];
-						var tableSchema = (string)rdr["Owner"];
+                // ** Loop through columns
+                using (IDataReader rdr = GetReader(GetTableColSqlStatement))
+                {
+                    // ** Loop through column tuples
+                    while (rdr.Read())
+                    {
+                        // ** Init
+                        var tableName = (string)rdr["TableName"];
+                        var tableSchema = (string)rdr["Owner"];
 
-						// ** Check we are looking at the right table
-						if (!currentTableName.Equals(tableName) || !currentTableSchema.Equals(tableSchema))
-						{
-							// ** Reset mechanism for the loop
-							currentTableName = tableName;
-							currentTableSchema = tableSchema;
-							list = new List<Column>();
-							_tableColumnDict.Add(tableSchema + "." + tableName, list);
-						}
+                        // ** Check we are looking at the right table
+                        if (!currentTableName.Equals(tableName) || !currentTableSchema.Equals(tableSchema))
+                        {
+                            // ** Reset mechanism for the loop
+                            currentTableName = tableName;
+                            currentTableSchema = tableSchema;
+                            list = new List<Column>();
+                            _tableColumnDict.Add(tableSchema + "." + tableName, list);
+                        }
 
-						// ** Build Column Info
-						var col = new Column();
-						col.Name = (string) rdr["ColumnName"];
-						col.CleanName = TransformName(col.Name);
-						col.DataType = rdr["DataType"].ToString();
-						col.SysType = GetSysType(col.DataType);
-						col.DbType = GetDbType(col.DataType);
-						col.AutoIncrement = Convert.ToBoolean(rdr["IsIdentity"]);
-						object obj = rdr["DefaultSetting"];
-						col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
-						col.IsReadOnly = Convert.ToBoolean(rdr["IsComputed"]);
-						col.IsNullable = rdr["IsNullable"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase) 
-							|| rdr["IsNullable"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
-						col.TableName = tableName;
-						col.TableSchema = tableSchema;
-						// ReSharper disable InlineOutVariableDeclaration
-						int maxLength;
-						if (int.TryParse(rdr["MaxLength"].ToString(), out maxLength))
-						{
-							col.MaxLength = maxLength;
-						}
-						bool isPK;
-						// ReSharper restore InlineOutVariableDeclaration
-						if (bool.TryParse(rdr["IsPK"].ToString(), out isPK))
-						{
-							col.IsPK = isPK;
-						}
-						col.IsHistorical = IsHistoricalColumn(col);
-						col.IsAuditColumn = IsAuditColumn(col);
+                        // ** Build Column Info
+                        var col = new Column
+                        {
+                            Name = (string)rdr["ColumnName"]
+                        };
+                        col.CleanName = TransformName(col.Name);
+                        col.DataType = rdr["DataType"].ToString();
+                        col.SysType = GetSysType(col.DataType);
+                        col.DbType = GetDbType(col.DataType);
+                        col.AutoIncrement = Convert.ToBoolean(rdr["IsIdentity"]);
+                        object obj = rdr["DefaultSetting"];
+                        col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
+                        col.IsReadOnly = Convert.ToBoolean(rdr["IsComputed"]);
+                        col.IsNullable = rdr["IsNullable"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase)
+                            || rdr["IsNullable"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
+                        col.TableName = tableName;
+                        col.TableSchema = tableSchema;
+                        // ReSharper disable InlineOutVariableDeclaration
+                        if (int.TryParse(rdr["MaxLength"].ToString(), out int maxLength))
+                        {
+                            col.MaxLength = maxLength;
+                        }
+                        // ReSharper restore InlineOutVariableDeclaration
+                        if (bool.TryParse(rdr["IsPK"].ToString(), out bool isPK))
+                        {
+                            col.IsPK = isPK;
+                        }
+                        col.IsHistorical = IsHistoricalColumn(col);
+                        col.IsAuditColumn = IsAuditColumn(col);
 
                         // ** Check if the column list needs to be reset.
                         if (list == null) throw new Exception("Column list can not be null.");
 
-						// ** Add column
-						list.Add(col);
-					}
-				}
+                        // ** Add column
+                        list.Add(col);
+                    }
+                }
 
-				// ** Default response
-				return _tableColumnDict;
-			}
-		}
+                // ** Default response
+                return _tableColumnDict;
+            }
+        }
 
-		private static Dictionary<string, List<Column>> _viewsColumnDict;
+        private static Dictionary<string, List<Column>> _viewsColumnDict;
 
-		public static Dictionary<string, List<Column>> ViewsColumnDict
-		{
-			get
-			{
-				// ** Check if this has been generated
-				if (_viewsColumnDict != null) return _viewsColumnDict;
+        public static Dictionary<string, List<Column>> ViewsColumnDict
+        {
+            get
+            {
+                // ** Check if this has been generated
+                if (_viewsColumnDict != null) return _viewsColumnDict;
 
-				// ** Init
-				_viewsColumnDict = new Dictionary<string, List<Column>>();
-				var currentViewName = "";
-				var currentViewSchema = "";
-				List<Column> list = null;
+                // ** Init
+                _viewsColumnDict = new Dictionary<string, List<Column>>();
+                var currentViewName = "";
+                var currentViewSchema = "";
+                List<Column> list = null;
 
-				// ** Loop through columns
-				using (IDataReader rdr = GetReader(GetViewsColSqlStatement))
-				{
-					// ** Loop through column tuples
-					while (rdr.Read())
-					{
-						// ** Init
-						var viewName = (string)rdr["VIEW_NAME"];
-						var viewSchemaName = (string)rdr["VIEW_SCHEMA"];
+                // ** Loop through columns
+                using (IDataReader rdr = GetReader(GetViewsColSqlStatement))
+                {
+                    // ** Loop through column tuples
+                    while (rdr.Read())
+                    {
+                        // ** Init
+                        var viewName = (string)rdr["VIEW_NAME"];
+                        var viewSchemaName = (string)rdr["VIEW_SCHEMA"];
 
-						// ** Check we are looking at the right table
-						if (!currentViewName.Equals(viewName) || !currentViewSchema.Equals(viewSchemaName))
-						{
-							// ** Reset mechanism for the loop
-							currentViewName = viewName;
-							currentViewSchema = viewSchemaName;
-							list = new List<Column>();
-							_viewsColumnDict.Add(viewSchemaName + "." + viewName, list);
-						}
+                        // ** Check we are looking at the right table
+                        if (!currentViewName.Equals(viewName) || !currentViewSchema.Equals(viewSchemaName))
+                        {
+                            // ** Reset mechanism for the loop
+                            currentViewName = viewName;
+                            currentViewSchema = viewSchemaName;
+                            list = new List<Column>();
+                            _viewsColumnDict.Add(viewSchemaName + "." + viewName, list);
+                        }
 
-						// ** Build Column Info
-						var col = new Column();
-						col.Name = (string)rdr["COLUMN_NAME"];
-						col.CleanName = TransformName(col.Name);
-						col.DataType = rdr["DATA_TYPE"].ToString();
-						col.SysType = GetSysType(col.DataType);
-						col.DbType = GetDbType(col.DataType);
-						col.AutoIncrement = false;
-						object obj = rdr["COLUMN_DEFAULT"];
-						col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
-						col.IsReadOnly = true;
-						col.IsNullable = rdr["IS_NULLABLE"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase)
-							|| rdr["IS_NULLABLE"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
-						col.TableName = viewName;
-						col.TableSchema = viewSchemaName;
-						col.IsPK = false;
+                        // ** Build Column Info
+                        var col = new Column
+                        {
+                            Name = (string)rdr["COLUMN_NAME"]
+                        };
+                        col.CleanName = TransformName(col.Name);
+                        col.DataType = rdr["DATA_TYPE"].ToString();
+                        col.SysType = GetSysType(col.DataType);
+                        col.DbType = GetDbType(col.DataType);
+                        col.AutoIncrement = false;
+                        object obj = rdr["COLUMN_DEFAULT"];
+                        col.DefaultSetting = Convert.IsDBNull(obj) ? "" : (string)obj;
+                        col.IsReadOnly = true;
+                        col.IsNullable = rdr["IS_NULLABLE"].ToString().Equals("YES", StringComparison.OrdinalIgnoreCase)
+                            || rdr["IS_NULLABLE"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase);
+                        col.TableName = viewName;
+                        col.TableSchema = viewSchemaName;
+                        col.IsPK = false;
 
-						if (int.TryParse(rdr["CHARACTER_MAXIMUM_LENGTH"].ToString(), out var maxLength))
-						{
-							col.MaxLength = maxLength;
-						}
+                        if (int.TryParse(rdr["CHARACTER_MAXIMUM_LENGTH"].ToString(), out var maxLength))
+                        {
+                            col.MaxLength = maxLength;
+                        }
 
-						// ** Check if the column list needs to be reset.
-						if (list == null) throw new Exception("Column list can not be null.");
+                        // ** Check if the column list needs to be reset.
+                        if (list == null) throw new Exception("Column list can not be null.");
 
-						// ** Add column
-						list.Add(col);
-					}
-				}
+                        // ** Add column
+                        list.Add(col);
+                    }
+                }
 
-				// ** Return result
-				return _viewsColumnDict;
-			}
-		}
+                // ** Return result
+                return _viewsColumnDict;
+            }
+        }
 
-		public static Dictionary<string, List<Column>> _udttColumnDict;
+        public static Dictionary<string, List<Column>> _udttColumnDict;
 
         public static Dictionary<string, List<Column>> UdttColumnDict
-		{
-			get
-			{
+        {
+            get
+            {
                 // ** Check if initialized
                 if (_udttColumnDict != null) return _udttColumnDict;
 
@@ -458,8 +460,10 @@ ORDER BY
                         }
 
                         // ** Build Column Info
-                        var col = new Column();
-                        col.Name = (string)rdr["ColumnName"];
+                        var col = new Column
+                        {
+                            Name = (string)rdr["ColumnName"]
+                        };
                         col.CleanName = TransformName(col.Name);
                         col.DataType = rdr["DataType"].ToString();
                         col.SysType = GetSysType(col.DataType);
@@ -473,14 +477,12 @@ ORDER BY
                         col.TableName = tableName;
                         col.TableSchema = tableSchema;
                         // ReSharper disable InlineOutVariableDeclaration
-                        int maxLength;
-                        if (int.TryParse(rdr["MaxLength"].ToString(), out maxLength))
+                        if (int.TryParse(rdr["MaxLength"].ToString(), out int maxLength))
                         {
                             col.MaxLength = maxLength;
                         }
-                        bool isPK;
                         // ReSharper restore InlineOutVariableDeclaration
-                        if (bool.TryParse(rdr["IsPK"].ToString(), out isPK))
+                        if (bool.TryParse(rdr["IsPK"].ToString(), out bool isPK))
                         {
                             col.IsPK = isPK;
                         }
@@ -498,333 +500,340 @@ ORDER BY
                 // ** Default response
                 return _udttColumnDict;
             }
-		}
+        }
 
         private static ForeignKeyRowCollection _foreignKeyRows;
-		public static ForeignKeyRowCollection ForeignKeyRows
-		{
-			get
-			{
-				// ** Check if this has been instantiated
-				if (_foreignKeyRows != null) return _foreignKeyRows;
+        public static ForeignKeyRowCollection ForeignKeyRows
+        {
+            get
+            {
+                // ** Check if this has been instantiated
+                if (_foreignKeyRows != null) return _foreignKeyRows;
 
-				// ** Load from DB
-				_foreignKeyRows = new ForeignKeyRowCollection();
+                // ** Load from DB
+                _foreignKeyRows = new ForeignKeyRowCollection();
 
-				// ** Init SQL Statement
-				var sql = _FOREIGN_KEY_COLLECTIONS_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
+                // ** Init SQL Statement
+                var sql = _FOREIGN_KEY_COLLECTIONS_STATEMENT.Replace("@SCHEMA_LIST@", TableSchemaList);
 
-				using (IDataReader rdr = GetReader(sql))
-				{
-					// ** Build the dataSet.
-					while (rdr.Read())
-					{
-						// ReSharper disable once UseObjectOrCollectionInitializer
-						var row = new ForeignKeyRow();
+                using (IDataReader rdr = GetReader(sql))
+                {
+                    // ** Build the dataSet.
+                    while (rdr.Read())
+                    {
+                        // ReSharper disable once UseObjectOrCollectionInitializer
+                        var row = new ForeignKeyRow
+                        {
+                            ThisTable = (string)rdr["ThisTable"],
+                            ThisColumn = (string)rdr["ThisColumn"],
+                            ThisTableSchema = (string)rdr["ThisTableSchema"],
 
-						row.ThisTable = (string)rdr["ThisTable"];
-						row.ThisColumn = (string)rdr["ThisColumn"];
-						row.ThisTableSchema = (string) rdr["ThisTableSchema"];
+                            OtherTableSchema = (string)rdr["OtherTableSchema"],
+                            OtherTable = (string)rdr["OtherTable"],
+                            OtherColumn = (string)rdr["OtherColumn"],
 
-						row.OtherTableSchema = (string)rdr["OtherTableSchema"];
-						row.OtherTable = (string)rdr["OtherTable"];
-						row.OtherColumn = (string)rdr["OtherColumn"];
+                            ConstraintName = (string)rdr["ConstraintName"],
+                            Owner = (string)rdr["Owner"]
+                        };
 
-						row.ConstraintName = (string)rdr["ConstraintName"];
-						row.Owner = (string)rdr["Owner"];
+                        _foreignKeyRows.Add(row);
+                    }
+                }
 
-						_foreignKeyRows.Add(row);
-					}
-				}
+                // ** Return result
+                return _foreignKeyRows;
+            }
+        }
 
-				// ** Return result
-				return _foreignKeyRows;
-			}
-		}
+        public static List<FKTable> LoadSingleFKTables(string tableName, string tableSchema)
+        {
+            // ** Init
+            var results = new List<FKTable>();
 
-		public static List<FKTable> LoadSingleFKTables(string tableName, string tableSchema)
-		{
-			// ** Init
-			var results = new List<FKTable>();
+            // ** Load collection
+            var rowCollection = ForeignKeyRows.Where(a =>
+                (string.Compare(a.ThisTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                //&& (string.Compare(a.OtherTable, tableName, StringComparison.InvariantCultureIgnoreCase) != 0)//Don't match ThisTable-these are handled by many foreign keys
+                && (string.Compare(a.ThisTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0)
+            );
 
-			// ** Load collection
-			var rowCollection = ForeignKeyRows.Where(a =>
-				(string.Compare(a.ThisTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0)
-				//&& (string.Compare(a.OtherTable, tableName, StringComparison.InvariantCultureIgnoreCase) != 0)//Don't match ThisTable-these are handled by many foreign keys
-				&& (string.Compare(a.ThisTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0)
-			);
+            // ** Build columns used
+            var thisColumnUsed = new Dictionary<string, string>();
+            foreach (ForeignKeyRow row in rowCollection)
+            {
+                // ** Check if already done.
+                if (thisColumnUsed.ContainsKey(row.ThisColumn)) continue;
 
-			// ** Build columns used
-			var thisColumnUsed = new Dictionary<string, string>();
-			foreach (ForeignKeyRow row in rowCollection)
-			{
-				// ** Check if already done.
-				if (thisColumnUsed.ContainsKey(row.ThisColumn)) continue;
+                // ** Add new FK information
+                thisColumnUsed.Add(row.ThisColumn, row.ThisColumn);
 
-				// ** Add new FK information
-				thisColumnUsed.Add(row.ThisColumn, row.ThisColumn);
+                // ** Build FKTable information and save it
+                // ReSharper disable once UseObjectOrCollectionInitializer
+                var fk = new FKTable
+                {
+                    ThisSchema = row.ThisTableSchema,
+                    ThisTable = row.ThisTable,
+                    ThisColumn = row.ThisColumn,
 
-				// ** Build FKTable information and save it
-				// ReSharper disable once UseObjectOrCollectionInitializer
-				var fk = new FKTable();
+                    OtherSchema = row.OtherTableSchema,
+                    OtherTable = row.OtherTable,
+                    OtherColumn = row.OtherColumn
+                };
 
-				fk.ThisSchema = row.ThisTableSchema;
-				fk.ThisTable = row.ThisTable;
-				fk.ThisColumn = row.ThisColumn;
+                fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
+                fk.OtherQueryable = Inflector.MakePlural(Inflector.MakeSingular(TransformName(fk.ThisTable)));
 
-				fk.OtherSchema = row.OtherTableSchema;
-				fk.OtherTable = row.OtherTable;
-				fk.OtherColumn = row.OtherColumn;
+                //remove ID or add Value
+                if (fk.ThisColumn.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    fk.PropName = fk.ThisColumn.Substring(0, fk.ThisColumn.Length - 2);
+                }
+                else
+                {
+                    fk.PropName = fk.ThisColumn + "Value";
+                }
 
-				fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
-				fk.OtherQueryable = Inflector.MakePlural(Inflector.MakeSingular(TransformName(fk.ThisTable)));
+                // ** Special case where a circular reference is found 
+                if (string.Compare(fk.ThisTable, fk.OtherTable, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    fk.OtherQueryable = "Child" + fk.OtherQueryable;
+                }
 
-				//remove ID or add Value
-				if (fk.ThisColumn.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
-				{
-					fk.PropName = fk.ThisColumn.Substring(0, fk.ThisColumn.Length - 2);
-				}
-				else
-				{
-					fk.PropName = fk.ThisColumn + "Value";
-				}
+                fk.ConstraintName = row.ConstraintName;
 
-				// ** Special case where a circular reference is found 
-				if (string.Compare(fk.ThisTable, fk.OtherTable, StringComparison.InvariantCultureIgnoreCase) == 0)
-				{
-					fk.OtherQueryable = "Child" + fk.OtherQueryable;
-				}
+                // ** Build result
+                results.Add(fk);
+            }
 
-				fk.ConstraintName = row.ConstraintName;
+            // ** Return result
+            return results;
+        }
 
-				// ** Build result
-				results.Add(fk);
-			}
+        public static List<FKTable> LoadManyFKTables(string tableName, string tableSchema)
+        {
+            var results = new List<FKTable>();
 
-			// ** Return result
-			return results;
-		}
+            var rowCollection = ForeignKeyRows.Where(a =>
+                (string.Compare(a.OtherTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                && (string.Compare(a.OtherTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0));
 
-		public static List<FKTable> LoadManyFKTables(string tableName, string tableSchema)
-		{
-			var results = new List<FKTable>();
+            var propNameCount = new Dictionary<string, int>();
+            foreach (ForeignKeyRow row in rowCollection)
+            {
+                // ** Init 
+                // ReSharper disable once UseObjectOrCollectionInitializer
+                var fk = new FKTable
+                {
+                    ThisTable = row.OtherTable,
+                    ThisColumn = row.OtherColumn,
+                    ThisSchema = row.OtherTableSchema,
 
-			var rowCollection = ForeignKeyRows.Where(a =>
-				(string.Compare(a.OtherTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0)
-				&& (string.Compare(a.OtherTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0));
+                    OtherTable = row.ThisTable,
+                    OtherColumn = row.ThisColumn,
+                    OtherSchema = row.ThisTableSchema
+                };
 
-			var propNameCount = new Dictionary<string, int>();
-			foreach (ForeignKeyRow row in rowCollection)
-			{
-				// ** Init 
-				// ReSharper disable once UseObjectOrCollectionInitializer
-				var fk = new FKTable();
+                fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
+                fk.OtherQueryable = Inflector.MakePlural(fk.OtherClass);
 
-				fk.ThisTable = row.OtherTable;
-				fk.ThisColumn = row.OtherColumn;
-				fk.ThisSchema = row.OtherTableSchema;
+                fk.PropName = fk.OtherQueryable;
 
-				fk.OtherTable = row.ThisTable;
-				fk.OtherColumn = row.ThisColumn;
-				fk.OtherSchema = row.ThisTableSchema;
+                if (string.Compare(fk.ThisTable, fk.OtherTable, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    fk.PropName = "Child" + fk.PropName;
+                }
 
-				fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
-				fk.OtherQueryable = Inflector.MakePlural(fk.OtherClass);
+                //don't allow duplicate prop names
+                if (!propNameCount.ContainsKey(fk.PropName))
+                {
+                    propNameCount.Add(fk.PropName, 1);
+                }
+                else
+                {
+                    propNameCount[fk.PropName]++;
+                    fk.PropName += propNameCount[fk.PropName].ToString().PadLeft(2, '0');
+                }
 
-				fk.PropName = fk.OtherQueryable;
+                fk.ConstraintName = row.ConstraintName;
 
-				if (string.Compare(fk.ThisTable, fk.OtherTable, StringComparison.InvariantCultureIgnoreCase) == 0)
-				{
-					fk.PropName = "Child" + fk.PropName;
-				}
+                // ** Build result
+                results.Add(fk);
+            }
 
-				//don't allow duplicate prop names
-				if (!propNameCount.ContainsKey(fk.PropName))
-				{
-					propNameCount.Add(fk.PropName, 1);
-				}
-				else
-				{
-					propNameCount[fk.PropName]++;
-					fk.PropName += propNameCount[fk.PropName].ToString().PadLeft(2, '0');
-				}
+            // ** Return result;
+            return results;
+        }
 
-				fk.ConstraintName = row.ConstraintName;
+        public static List<FKTable> LoadFKTables(string tableName, string tableSchema)
+        {
+            // ** Init
+            var results = new List<FKTable>();
 
-				// ** Build result
-				results.Add(fk);
-			}
+            // ** Loop through and build list
+            foreach (ForeignKeyRow row in ForeignKeyRows)
+            {
+                if (string.Compare(row.ThisTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0
+                    && string.Compare(row.ThisTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
 
-			// ** Return result;
-			return results;
-		}
+                    FKTable fk = new FKTable();
 
-		public static List<FKTable> LoadFKTables(string tableName, string tableSchema)
-		{
-			// ** Init
-			var results = new List<FKTable>();
+                    if (tableName.ToLower() == row.ThisTable.ToLower())
+                    {
 
-			// ** Loop through and build list
-			foreach (ForeignKeyRow row in ForeignKeyRows)
-			{
-				if (string.Compare(row.ThisTable, tableName, StringComparison.InvariantCultureIgnoreCase) == 0
-				    && string.Compare(row.ThisTableSchema, tableSchema, StringComparison.InvariantCultureIgnoreCase) == 0)
-				{
+                        fk.ThisSchema = row.ThisTableSchema;
+                        fk.ThisTable = row.ThisTable;
+                        fk.ThisColumn = row.ThisColumn;
 
-					FKTable fk = new FKTable();
+                        fk.OtherSchema = row.OtherTableSchema;
+                        fk.OtherTable = row.OtherTable;
+                        fk.OtherColumn = row.OtherColumn;
+                    }
+                    else
+                    {
 
-					if (tableName.ToLower() == row.ThisTable.ToLower())
-					{
+                        fk.ThisSchema = row.OtherTableSchema;
+                        fk.ThisTable = row.OtherTable;
+                        fk.ThisColumn = row.OtherColumn;
 
-						fk.ThisSchema = row.ThisTableSchema;
-						fk.ThisTable = row.ThisTable;
-						fk.ThisColumn = row.ThisColumn;
+                        fk.OtherSchema = row.ThisTableSchema;
+                        fk.OtherTable = row.ThisTable;
+                        fk.OtherColumn = row.ThisColumn;
+                    }
 
-						fk.OtherSchema = row.OtherTableSchema;
-						fk.OtherTable = row.OtherTable;
-						fk.OtherColumn = row.OtherColumn;
-					}
-					else
-					{
+                    fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
+                    fk.OtherQueryable = Inflector.MakePlural(fk.OtherClass);
 
-						fk.ThisSchema = row.OtherTableSchema;
-						fk.ThisTable = row.OtherTable;
-						fk.ThisColumn = row.OtherColumn;
+                    fk.PropName = fk.OtherQueryable;
 
-						fk.OtherSchema = row.ThisTableSchema;
-						fk.OtherTable = row.ThisTable;
-						fk.OtherColumn = row.ThisColumn;
-					}
+                    fk.ConstraintName = row.ConstraintName;
 
-					fk.OtherClass = Inflector.MakeSingular(TransformName(fk.OtherTable));
-					fk.OtherQueryable = Inflector.MakePlural(fk.OtherClass);
+                    results.Add(fk);
+                }
+            }
 
-					fk.PropName = fk.OtherQueryable;
+            // ** Return results
+            return results;
+        }
 
-					fk.ConstraintName = row.ConstraintName;
+        private const string _ENUM_TABLE_SQL_FORMAT = "SELECT * FROM {0}.{1}";
+        public static EnumTable GetEnumTable(string schemaName, string tableName)
+        {
+            // ** Init
+            EnumTable result = new EnumTable
+            {
+                Values = new Dictionary<string, int>()
+            };
 
-					results.Add(fk);
-				}
-			}
+            using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, schemaName, tableName)))
+            {
+                // ** Init
+                string enumName = rdr.GetName(0);
+                result.IDName = enumName;
+                if (enumName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    enumName = enumName.Substring(0, enumName.Length - 2);
+                }
+                result.EnumName = enumName;
 
-			// ** Return results
-			return results;
-		}
+                string baseClassName;
+                Type fType = rdr.GetFieldType(0);
+                if (fType == typeof(byte))
+                {
+                    baseClassName = "byte";
+                }
+                else if (fType == typeof(int))
+                {
+                    baseClassName = "int";
+                }
+                else if (fType == typeof(short))
+                {
+                    baseClassName = "short";
+                }
+                else if (fType == typeof(long))
+                {
+                    baseClassName = "long";
+                }
+                else
+                {
+                    // ReSharper disable once UseStringInterpolation
+                    throw new NotSupportedException(string.Format("Enum type for {0}.{1} is {2} but must be byte, int, short or long", schemaName, tableName, fType.Name));
+                }
+                result.BaseClassName = baseClassName;
 
-		private const string _ENUM_TABLE_SQL_FORMAT = "SELECT * FROM {0}.{1}";
-		public static EnumTable GetEnumTable(string schemaName, string tableName)
-		{
-			// ** Init
-			EnumTable result = new EnumTable();
-			result.Values = new Dictionary<string, int>();
+                while (rdr.Read())
+                {
+                    // ** Init
+                    int id = Convert.ToInt32(rdr[0]);
+                    string name = (string)rdr[1];
 
-			using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, schemaName, tableName)))
-			{
-				// ** Init
-				string enumName = rdr.GetName(0);
-				result.IDName = enumName;
-				if (enumName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
-				{
-					enumName = enumName.Substring(0, enumName.Length - 2);
-				}
-				result.EnumName = enumName;
+                    name = TransformEnumName(name);
 
-				string baseClassName;
-				Type fType = rdr.GetFieldType(0);
-				if (fType == typeof(byte))
-				{
-					baseClassName = "byte";
-				}
-				else if (fType == typeof(int))
-				{
-					baseClassName = "int";
-				}
-				else if (fType == typeof(short))
-				{
-					baseClassName = "short";
-				}
-				else if (fType == typeof(long))
-				{
-					baseClassName = "long";
-				}
-				else
-				{
-					// ReSharper disable once UseStringInterpolation
-					throw new NotSupportedException(string.Format("Enum type for {0}.{1} is {2} but must be byte, int, short or long", schemaName, tableName, fType.Name));
-				}
-				result.BaseClassName = baseClassName;
+                    result.Values.Add(name, id);
+                }
+            }
 
-				while (rdr.Read())
-				{
-					// ** Init
-					int id = Convert.ToInt32(rdr[0]);
-					string name = (string)rdr[1];
+            // ** Return result
+            return result;
+        }
 
-					name = TransformEnumName(name);
+        public static MetaDataTable GetMetaDataTable(string schemaName, string szTableName)
+        {
+            // Locals
+            var oResult = new MetaDataTable
+            {
+                Values = new Dictionary<string, string>()
+            };
 
-					result.Values.Add(name, id);
-				}
-			}
+            // Loop through the result
+            using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, szTableName, schemaName)))
+            {
+                string szMetaDataName = rdr.GetName(0);
+                oResult.IDName = szMetaDataName;
+                if (szMetaDataName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    szMetaDataName = szMetaDataName.Substring(0, szMetaDataName.Length - 2);
+                }
+                oResult.MetaDataName = szMetaDataName;
 
-			// ** Return result
-			return result;
-		}
+                // Loop through the tables and build the list
+                while (rdr.Read())
+                {
+                    // Print to console
+                    System.Diagnostics.Debug.WriteLine("What up");
 
-		public static MetaDataTable GetMetaDataTable(string schemaName, string szTableName)
-		{
-			// Locals
-			var oResult = new MetaDataTable();
-			oResult.Values = new Dictionary<string, string>();
+                    string szId = (string)rdr[0];
+                    string szName = (string)rdr[1];
+                    // TODO:  Andres you can comment this out so that you can just take what is in the database.
+                    szName = TransformEnumName(szName);
 
-			// Loop through the result
-			using (IDataReader rdr = GetReader(string.Format(_ENUM_TABLE_SQL_FORMAT, szTableName, schemaName)))
-			{
-				string szMetaDataName = rdr.GetName(0);
-				oResult.IDName = szMetaDataName;
-				if (szMetaDataName.EndsWith("ID", StringComparison.InvariantCultureIgnoreCase))
-				{
-					szMetaDataName = szMetaDataName.Substring(0, szMetaDataName.Length - 2);
-				}
-				oResult.MetaDataName = szMetaDataName;
+                    // Add to list
+                    oResult.Values.Add(szId, szName);
+                }
+            }
 
-				// Loop through the tables and build the list
-				while (rdr.Read())
-				{
-					// Print to console
-					System.Diagnostics.Debug.WriteLine("What up");
+            // Return Result
+            return oResult;
+        }
 
-					string szId = (string)rdr[0];
-					string szName = (string)rdr[1];
-					// TODO:  Andres you can comment this out so that you can just take what is in the database.
-					szName = TransformEnumName(szName);
+        public static string TransformEnumName(string name)
+        {
+            // ** Init
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
 
-					// Add to list
-					oResult.Values.Add(szId, szName);
-				}
-			}
+            // ** Transform
+            var newName = name;
+            newName = Inflector.ToPascalCase(newName, false);
+            newName = IsStringNumeric(newName) ? "_" + newName : newName;
+            newName = StripNonAlphaNumeric(newName);
+            newName = newName.Trim();
+            newName = KeyWordCheck(newName, String.Empty);
 
-			// Return Result
-			return oResult;
-		}
+            // ** Return result
+            return newName;
+        }
 
-		public static string TransformEnumName(string name)
-		{
-			// ** Init
-			if (string.IsNullOrEmpty(name))
-				return string.Empty;
-
-			// ** Transform
-			var newName = name;
-			newName = Inflector.ToPascalCase(newName, false);
-			newName = IsStringNumeric(newName) ? "_" + newName : newName;
-			newName = StripNonAlphaNumeric(newName);
-			newName = newName.Trim();
-			newName = KeyWordCheck(newName, String.Empty);
-
-			// ** Return result
-			return newName;
-		}
-
-		#endregion Database Artifacts
-	}
+        #endregion Database Artifacts
+    }
 }

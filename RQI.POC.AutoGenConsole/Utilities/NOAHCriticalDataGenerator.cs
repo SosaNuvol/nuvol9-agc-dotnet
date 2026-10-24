@@ -8,7 +8,7 @@
 
     internal class NOAHCriticalDataGenerator : GeneratorBase, IGenerator
     {
-        private List<CriticalDataType> _criticalDataTypesList;
+        private readonly List<CriticalDataType> _criticalDataTypesList;
 
         public NOAHCriticalDataGenerator(List<CriticalDataType> criticalDataTypesList)
         {
@@ -27,7 +27,7 @@
             {
                 var schemaName = schemaGroup.Key;
                 var criticalDataTypesInSchema = schemaGroup.Value;
-                
+
                 // Process the critical data types for this schema
                 ProcessSchemaGroup(counter, schemaName, criticalDataTypesInSchema);
             }
@@ -44,11 +44,11 @@
 
             foreach (var proxyDataTypeCriticalDataType in groupedByTable)
             {
-                ProcessTableGroup(counter, proxyDataTypeCriticalDataType.Key, proxyDataTypeCriticalDataType.Value);
+                ProcessTableGroup(counter, proxyDataTypeCriticalDataType.Value);
             }
         }
 
-        private void ProcessTableGroup(int counter, string tableName, List<CriticalDataType> proxyDataTypeCriticalDataType)
+        private void ProcessTableGroup(int counter, List<CriticalDataType> proxyDataTypeCriticalDataType)
         {
             // Read in Proxy Type template
             var proxyTypeTemplate = _templateManager.GetProxyTypeTemplatePrimer();
