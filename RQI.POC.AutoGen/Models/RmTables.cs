@@ -119,8 +119,12 @@ namespace RQI.POC.AutoGen.Models
                     foreach (Column col in tableItem.Columns)
                     {
                         // ** Find the foreign Key table
+                        // ** The column must be the constraint's own column, named like the referenced key (navigation
+                        // ** properties are named after the referenced class, so FromLocationId/ToLocationId-style
+                        // ** columns, and self references such as RevisedFromQuoteId, are left without one).
                         FKTable fkt = tableItem.FKTables.FirstOrDefault(
-                            x => x.OtherColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
+                            x => x.ThisColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
+                                 && x.OtherColumn.Equals(col.Name, StringComparison.InvariantCultureIgnoreCase)
                         );
 
                         // ** Bind properties
@@ -131,7 +135,13 @@ namespace RQI.POC.AutoGen.Models
 
                         // ** Get the Foreign Key table ClassName
                         var foundFkTable = _tables.FirstOrDefault(t => t.Name.Equals(col.ForeignKeyTableName) && t.Schema.Equals(col.ForeignKeyTableSchemaName));
-                        if (foundFkTable == null) continue;
+                        if (foundFkTable == null)
+                        {
+                            // ** The referenced table is in a schema that is not generated (e.g. DOC): no navigation.
+                            col.IsForeignKey = false;
+                            col.IsEnum = false;
+                            continue;
+                        }
                         col.ForeignKeyClassName = foundFkTable.ClassName;
                     }
                     #endregion Flag and load ancilary properties of table
