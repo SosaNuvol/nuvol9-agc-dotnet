@@ -30,6 +30,29 @@ namespace RQI.POC.AutoGen.Models.Base
 
         public int MaxLength { get; set; }
 
+        /// <summary>Precision of a decimal or numeric column (0 when not loaded).</summary>
+        public int NumericPrecision { get; set; }
+
+        /// <summary>Scale of a decimal or numeric column.</summary>
+        public int NumericScale { get; set; }
+
+        /// <summary>
+        /// The store type for the [Column] attribute. Decimal and numeric columns carry their precision and scale,
+        /// because a bare "decimal" makes EF send decimal(18,0) and round every fraction away.
+        /// </summary>
+        public string ColumnTypeName
+        {
+            get
+            {
+                if ((DataType == "decimal" || DataType == "numeric") && NumericPrecision > 0)
+                {
+                    return $"{DataType}({NumericPrecision},{NumericScale})";
+                }
+
+                return DataType;
+            }
+        }
+
         public bool IsNullable { get; set; }
 
         public bool IsForeignKey { get; set; }

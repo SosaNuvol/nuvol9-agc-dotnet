@@ -30,7 +30,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 {
                     sb.AppendLine($"\t[Key]");
                 }
-                sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.DataType}\"){AddRequired(!column.IsNullable)}]");
+                sb.AppendLine($"\t[Column(\"{column.Name}\", TypeName=\"{column.ColumnTypeName}\"){AddRequired(!column.IsNullable)}]");
                 sb.AppendLine($"\tpublic virtual {column.SysType}{GetQuestionMarkIfNullable(column)} {column.CleanName} {{ get; set; }}");
             }
 
@@ -85,7 +85,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 sb.AppendLine("\t#region Foreign Keys");
                 foreach (var foreignKeyColumn in foreignKeyColumns)
                 {
-                    sb.AppendLine($"\tpublic virtual {GetSchemaName(tableSchema, foreignKeyColumn.ForeignKeyTableSchemaName)}{foreignKeyColumn.ForeignKeyClassName} {foreignKeyColumn.ForeignKeyClassName} {{ get; set; }}");
+                    sb.AppendLine($"\tpublic virtual {GetSchemaName(tableSchema, foreignKeyColumn.ForeignKeyTableSchemaName)}{foreignKeyColumn.ForeignKeyClassName}{GetQuestionMarkIfNullable(foreignKeyColumn)} {foreignKeyColumn.ForeignKeyClassName} {{ get; set; }}");
                 }
                 sb.AppendLine("\t#endregion");
             }

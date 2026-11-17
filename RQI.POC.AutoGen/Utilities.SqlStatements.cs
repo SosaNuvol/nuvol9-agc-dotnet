@@ -47,6 +47,8 @@ namespace RQI.POC.AutoGen
 		C.DATA_TYPE AS DataType, 
 		C.CHARACTER_MAXIMUM_LENGTH AS MaxLength, 
 		C.DATETIME_PRECISION AS DatePrecision,
+		C.NUMERIC_PRECISION AS NumericPrecision,
+		C.NUMERIC_SCALE AS NumericScale,
 		COLUMNPROPERTY(object_id('[' + C.TABLE_SCHEMA + '].[' + C.TABLE_NAME + ']'), C.COLUMN_NAME, 'IsIdentity') AS IsIdentity,
 		COLUMNPROPERTY(object_id('[' + C.TABLE_SCHEMA + '].[' + C.TABLE_NAME + ']'), C.COLUMN_NAME, 'IsComputed') AS IsComputed,
 		PKColumn.IsPK
@@ -128,6 +130,8 @@ SELECT
 	, COL.IS_NULLABLE
 	, COL.DATA_TYPE
 	, COL.CHARACTER_MAXIMUM_LENGTH
+	, COL.NUMERIC_PRECISION
+	, COL.NUMERIC_SCALE
 	, COL.COLUMN_DEFAULT
 	, COL.ORDINAL_POSITION
 FROM
@@ -331,6 +335,14 @@ ORDER BY
                         {
                             col.MaxLength = maxLength;
                         }
+                        if (int.TryParse(rdr["NumericPrecision"].ToString(), out int numericPrecision))
+                        {
+                            col.NumericPrecision = numericPrecision;
+                        }
+                        if (int.TryParse(rdr["NumericScale"].ToString(), out int numericScale))
+                        {
+                            col.NumericScale = numericScale;
+                        }
                         // ReSharper restore InlineOutVariableDeclaration
                         if (bool.TryParse(rdr["IsPK"].ToString(), out bool isPK))
                         {
@@ -409,6 +421,14 @@ ORDER BY
                         if (int.TryParse(rdr["CHARACTER_MAXIMUM_LENGTH"].ToString(), out var maxLength))
                         {
                             col.MaxLength = maxLength;
+                        }
+                        if (int.TryParse(rdr["NUMERIC_PRECISION"].ToString(), out var numericPrecision))
+                        {
+                            col.NumericPrecision = numericPrecision;
+                        }
+                        if (int.TryParse(rdr["NUMERIC_SCALE"].ToString(), out var numericScale))
+                        {
+                            col.NumericScale = numericScale;
                         }
 
                         // ** Check if the column list needs to be reset.
