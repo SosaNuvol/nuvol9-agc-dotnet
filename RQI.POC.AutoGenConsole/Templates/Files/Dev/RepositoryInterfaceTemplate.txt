@@ -4,6 +4,7 @@
 // </copyright>
 // <summary>
 //     Document created on <DATE FULL>
+//     Document Modified on <DATE MODIFIED>
 // </summary>
 // <author><AUTHOR FULLNAME></author>
 // <email><AUTHOR EMAIL></email>

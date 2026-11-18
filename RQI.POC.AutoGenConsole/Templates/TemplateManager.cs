@@ -155,6 +155,7 @@
                 .Replace("<YEAR>", DateTimeOffset.Now.Year.ToString())
                 .Replace("<WEBSITEURL>", headerData.CompanyWebSiteUrl)
                 .Replace("<DATE FULL>", DateTimeOffset.Now.ToString())
+                .Replace("<DATE MODIFIED>", DateTimeOffset.Now.ToString())
                 .Replace("<AUTHOR FULLNAME>", headerData.AuthorFullName)
                 .Replace("<AUTHOR EMAIL>", headerData.AuthorEmail)
                 .Replace("<AUTHOR EMAIL>", headerData.AuthorEmail);

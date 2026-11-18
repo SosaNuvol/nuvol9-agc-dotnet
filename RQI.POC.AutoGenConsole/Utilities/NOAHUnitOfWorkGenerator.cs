@@ -1,4 +1,4 @@
-namespace RQI.POC.AutoGenConsole.Utilities
+﻿namespace RQI.POC.AutoGenConsole.Utilities
 {
     using RQI.POC.AutoGen.Models.Base;
     using System;
@@ -201,7 +201,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 System.IO.Directory.CreateDirectory(directory);
             }
 
-            System.IO.File.WriteAllText(filePath, unitOfWorkString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, unitOfWorkString);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"|** Saved: {filePath}");
@@ -225,7 +225,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
                 System.IO.Directory.CreateDirectory(directory);
             }
 
-            System.IO.File.WriteAllText(filePath, interfaceString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, interfaceString);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"|** Saved: {filePath}");

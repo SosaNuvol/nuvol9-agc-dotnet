@@ -35,8 +35,8 @@ namespace RQI.POC.AutoGenConsole
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** DELETE **********************************************");
 
-            // Delete all generated tables, views, types and sprocs
-            AutoGen.Utilities.AutoDALFileSystem.DeleteAllGeneratedFiles();
+            // Generated files are no longer deleted up front. Each file is written only when its content changed
+            // (ignoring the header date), and files for objects that no longer exist are removed at the end.
 
             // ** Load from SQL
             var sprocResult = sprocs.Load().OrderBy(s => s.SchemaName);
@@ -70,7 +70,7 @@ namespace RQI.POC.AutoGenConsole
             Console.ForegroundColor = defaultConsoleTextColor;
             Console.WriteLine("********************************************** SPROCS **********************************************");
 
-            var sprocGenerator = new NOAHSPROCSGenerator(sprocResult);
+            var sprocGenerator = new NOAHSPROCSGenerator(sprocResult, userDefinedTypesResult.Select(t => t.Schema));
             sprocGenerator.Generate(counter);
 
             // ** Loop though all Views
@@ -134,6 +134,14 @@ namespace RQI.POC.AutoGenConsole
 
             var unitOfWorkGenerator = new NOAHUnitOfWorkGenerator(tableResult);
             unitOfWorkGenerator.Generate();
+
+            // ** Remove generated files for objects that no longer exist in the database
+            Console.ForegroundColor = defaultConsoleTextColor;
+            Console.WriteLine("********************************************** CLEANUP **********************************************");
+
+            AutoGen.Utilities.AutoDALFileSystem.DeleteStaleGeneratedFiles();
+
+            Console.WriteLine($"|** Files created: {AutoGen.Utilities.AutoDALFileSystem.CreatedCount} | updated: {AutoGen.Utilities.AutoDALFileSystem.UpdatedCount} | unchanged: {AutoGen.Utilities.AutoDALFileSystem.UnchangedCount} | removed: {AutoGen.Utilities.AutoDALFileSystem.RemovedCount}");
 
             // ** Show final done
             Console.ForegroundColor = defaultConsoleTextColor;

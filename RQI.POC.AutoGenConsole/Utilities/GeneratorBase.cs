@@ -78,7 +78,7 @@
             var filePath = $"{targetDirectory}\\{fileName}";
 
             // ** Save to file
-            System.IO.File.WriteAllText(filePath, tableString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, tableString);
         }
 
         protected void SaveProxyTypeDefinitionToFile(string typeName, string schema, string proxyTypeString)
@@ -93,7 +93,7 @@
             }
             var filePath = $"{targetDirectory}\\{fileName}";
             // ** Save to file
-            System.IO.File.WriteAllText(filePath, proxyTypeString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, proxyTypeString);
         }
 
         protected void SaveUDDTDefinitionToFile(UserDefinedType userDefinedType, string userDefinedTypeString)
@@ -111,7 +111,7 @@
             var filePath = $"{targetDirectory}\\{fileName}";
 
             // ** Save to file
-            System.IO.File.WriteAllText(filePath, userDefinedTypeString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, userDefinedTypeString);
         }
 
         protected void SaveSprocDefinitionToFile(SP sproc, string sprocString)
@@ -126,7 +126,7 @@
             }
             var filePath = $"{targetDirectory}\\{fileName}";
             // ** Save to file
-            System.IO.File.WriteAllText(filePath, sprocString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, sprocString);
         }
 
         protected string GetTargetDirectory(object value, string schema = null)
