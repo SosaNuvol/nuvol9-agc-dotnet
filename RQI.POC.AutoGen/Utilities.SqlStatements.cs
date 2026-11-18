@@ -736,7 +736,7 @@ ORDER BY
             return results;
         }
 
-        private const string _ENUM_TABLE_SQL_FORMAT = "SELECT * FROM {0}.{1}";
+        private const string _ENUM_TABLE_SQL_FORMAT = "SELECT * FROM {0}.{1} ORDER BY 1";
         public static EnumTable GetEnumTable(string schemaName, string tableName)
         {
             // ** Init

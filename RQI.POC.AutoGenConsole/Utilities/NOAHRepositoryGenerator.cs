@@ -1,4 +1,4 @@
-namespace RQI.POC.AutoGenConsole.Utilities
+﻿namespace RQI.POC.AutoGenConsole.Utilities
 {
     using RQI.POC.AutoGen.Models.Base;
     using System;
@@ -118,7 +118,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
             }
 
             var filePath = $"{targetDirectory}\\{fileName}";
-            System.IO.File.WriteAllText(filePath, interfaceString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, interfaceString);
         }
 
         private void SaveRepositoryToFile(Table table, string repositoryString, string className)
@@ -132,7 +132,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
             }
 
             var filePath = $"{targetDirectory}\\{fileName}";
-            System.IO.File.WriteAllText(filePath, repositoryString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, repositoryString);
         }
     }
 }

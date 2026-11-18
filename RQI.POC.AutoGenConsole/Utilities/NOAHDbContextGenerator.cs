@@ -1,4 +1,4 @@
-namespace RQI.POC.AutoGenConsole.Utilities
+﻿namespace RQI.POC.AutoGenConsole.Utilities
 {
     using RQI.POC.AutoGen.Models.Base;
     using System;
@@ -156,7 +156,7 @@ namespace RQI.POC.AutoGenConsole.Utilities
             var filePath = $"{targetDirectory}\\{fileName}";
 
             // Save to file
-            System.IO.File.WriteAllText(filePath, dbContextString);
+            RQI.POC.AutoGen.Utilities.AutoDALFileSystem.WriteGeneratedFile(filePath, dbContextString);
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"|*** DbContext saved to: {filePath}");
