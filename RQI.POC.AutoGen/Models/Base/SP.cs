@@ -22,8 +22,15 @@ namespace RQI.POC.AutoGen.Models.Base
         #region Properties
 
         private readonly string _definition;
-        private const string _REG_EX_FIND_HEADER = "CREATE[ ]*PROCEDURE[ \\[]*@SCHEMA_NAME@[\\].[]*@SPROC_NAME@[\\]]*";
-        private const string _REG_EX_ARGUMENT = "\\@[\\S+]* [\\S+\\(\\)]*[ ]*=[ ]*([\\S+]*)";
+        // ** Matches "CREATE PROCEDURE", "CREATE PROC" and "CREATE OR ALTER PROCEDURE", with or without brackets.
+        private const string _REG_EX_FIND_HEADER = @"CREATE\s+(?:OR\s+ALTER\s+)?PROC(?:EDURE)?\s+\[?@SCHEMA_NAME@\]?\s*\.\s*\[?@SPROC_NAME@\]?";
+        // ** The keyword that ends the parameter list: preferably AS at the start of a line, so "as" in a comment is
+        // ** skipped; otherwise the first whole-word AS.
+        private const string _REG_EX_END_OF_ARGUMENTS_LINE = @"(?m)^\s*AS\b";
+        private const string _REG_EX_END_OF_ARGUMENTS = @"\bAS\b";
+        // ** "@Name TYPE = value": group 1 is the name, group 2 the default (a quoted string or a token without
+        // ** spaces or commas). The type cannot contain "=" or ",", so a match never runs into the next parameter.
+        private const string _REG_EX_ARGUMENT = @"(@\w+)\s+[^=,]+?\s*=\s*('(?:[^']|'')*'|[^\s,]+)";
 
         public string SchemaName { get; set; }
 
@@ -157,28 +164,17 @@ namespace RQI.POC.AutoGen.Models.Base
             if (string.IsNullOrEmpty(parameterBody)) return;
 
             // ** Init the Regex object to loop through parameters body
-            var rx = new Regex(_REG_EX_ARGUMENT);
+            var rx = new Regex(_REG_EX_ARGUMENT, RegexOptions.IgnoreCase);
 
             // ** Loop through arguments
             foreach (Match match in rx.Matches(parameterBody))
             {
-                // ** Init
-                var argumentDefinition = match.Value;
-
                 // ** Capture values
-                var operatorArray = argumentDefinition.Split('=');
-                var parameterName = operatorArray[0];
-                var valueString = operatorArray[1];
-
-                // ** Init parameterName
-                parameterName = parameterName.Trim();
-                parameterName = parameterName.Substring(0, parameterName.IndexOf(' ')); // Remove the Type definition
-
-                // ** Init valueString
-                valueString = valueString.Trim();
+                var parameterName = match.Groups[1].Value;
+                var valueString = match.Groups[2].Value.Trim();
 
                 // ** Find the parameter in the list
-                var foundParam = Parameters.Find(s => s.Name.Equals(parameterName));
+                var foundParam = Parameters.Find(s => s.Name.Equals(parameterName, StringComparison.OrdinalIgnoreCase));
 
                 // ** Check if found
                 if (foundParam == null)
@@ -194,7 +190,10 @@ namespace RQI.POC.AutoGen.Models.Base
                     continue;
                 }
 
-                // ** Capture default value
+                // ** Capture default value; a string literal ('x' or N'x') is stored without its quotes
+                if (valueString.StartsWith("N'", StringComparison.OrdinalIgnoreCase)) valueString = valueString.Substring(1);
+                if (valueString.Length >= 2 && valueString.StartsWith("'") && valueString.EndsWith("'"))
+                    valueString = valueString.Substring(1, valueString.Length - 2).Replace("''", "'");
                 foundParam.DefaultValue = valueString;
 
                 // ** Print
@@ -211,17 +210,20 @@ namespace RQI.POC.AutoGen.Models.Base
             // ** Init
             var headerRegEx = _REG_EX_FIND_HEADER.Replace("@SCHEMA_NAME@", SchemaName);
             headerRegEx = headerRegEx.Replace("@SPROC_NAME@", Name);
-            var rx = new Regex(headerRegEx);
-            var startIndex = rx.Match(_definition).Index;
-            // ** ** Check that we found the header
-            if (startIndex == -1)
+            var rx = new Regex(headerRegEx, RegexOptions.IgnoreCase);
+            var headerMatch = rx.Match(_definition);
+            // ** ** Check that we found the header (Index is 0, not -1, when there is no match)
+            if (!headerMatch.Success)
             {
                 Utilities.LogInternalError(Utilities.ClassTypes.Procedure, $"|** The SPROC: {SchemaName}.{Name} is unable to find the argument list");
                 return null;
             }
+            var startIndex = headerMatch.Index + headerMatch.Length;
 
-            // ** ** Find End of Argument List
-            var endIndex = _definition.IndexOf("AS", startIndex, StringComparison.CurrentCulture);
+            // ** ** Find End of Argument List: the AS keyword, not "AS" inside a word such as DATABASE
+            var endMatch = new Regex(_REG_EX_END_OF_ARGUMENTS_LINE, RegexOptions.IgnoreCase).Match(_definition, startIndex);
+            if (!endMatch.Success) endMatch = new Regex(_REG_EX_END_OF_ARGUMENTS, RegexOptions.IgnoreCase).Match(_definition, startIndex);
+            var endIndex = endMatch.Success ? endMatch.Index : -1;
             // ** ** Check that it was found
             if (endIndex == -1)
             {
