@@ -18,7 +18,7 @@
             {
                 if (this._dbContextClassName == null)
                 {
-                    _dbContextClassName = ConfigurationManager.AppSettings["RQI.GEN.DbContextFileName"];
+                    _dbContextClassName = RQI.POC.AutoGen.AgcSettings.Get("RQI.GEN.DbContextFileName");
                     if (string.IsNullOrEmpty(_dbContextClassName))
                     {
                         _dbContextClassName = "AppDbContext"; // Default value
@@ -35,10 +35,10 @@
             {
                 if (this._connectionStringName == null)
                 {
-                    _connectionStringName = ConfigurationManager.AppSettings["RQI.GEN.DbContextConnectionStringName"];
+                    _connectionStringName = RQI.POC.AutoGen.AgcSettings.Get("RQI.GEN.DbContextConnectionStringName");
                     if (string.IsNullOrEmpty(_connectionStringName))
                     {
-                        _connectionStringName = "GBDCDbContext"; // Default value
+                        _connectionStringName = "DefaultConnection"; // Default value
                     }
                 }
                 return this._connectionStringName;

@@ -1,0 +1,33 @@
+{
+  // Shared by every project. A profile overrides any of these.
+  // Lists here are comma-separated strings, so a JSON array in a profile replaces them completely.
+  "fileExtension": ".generated.cs",
+  "include": {
+    "tables": "*",
+    "views": "*",
+    "procedures": "*"
+  },
+  "exclude": {
+    "tables": "sysdiagrams,dtproperty,MSreplication_objects,MSreplication_subscriptions,MSsavedforeignkeycolumns,MSsavedforeignkeyextendedproperties,MSsavedforeignkeys,MSsnapshotdeliveryprogress,MSsubscription_agents,MSsubscription_properties,^temp$,__RefactorLog,AccessLevels,TableAccessLevels,UserLogin,TableInnerJoins,SeasonSummerSeasonMaps",
+    "views": "^vwGen_*,vwUserExperienceSchedules",
+    "procedures": "^custFx*,.*\\.spAutoGen_*"
+  },
+  "columns": {
+    "historical": "IsActive,IsDeleted,CreatedById,CreatedDate,ModifiedById,ModifiedDate"
+  },
+  "sql": {
+    "systemColumnsToIgnore": "DEX_ROW,DEX_ROW_TS",
+    "columnDataTypesToIgnore": ""
+  },
+  "naming": {
+    "regexIgnoreCase": "false",
+    "regexMatchExpression": "",
+    "regexReplaceExpression": "",
+    "regexDictionaryReplace": "^vw_(.*),$1View;^vw([A-Z]{2})_(.*),$1\\_$2View;vw(.*),$1View;^VW_(.*),$1View;^cust([A-Z][A-Z][A-Z]?)_,$1\\_;^proc_([A-Z][A-Z][A-Z]?)_,$1\\_;^([A-Z][A-Z][A-Z]?)_,$1\\_",
+    "stripText": "^cust_|^cust",
+    "skipPluralNames": "Abara,EasyAccess,HartSoftware,VendorManual,Microbilt",
+    "wordsEndingInES": "Status,Address,Prefix"
+  },
+  "enumTables": "",
+  "metaDataTables": ""
+}

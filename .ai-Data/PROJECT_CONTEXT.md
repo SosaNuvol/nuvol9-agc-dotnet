@@ -30,7 +30,8 @@ RQI.POC.AutoGenConsole.sln
 │
 └── RQI.POC.AutoGenConsole/     # Console runner — orchestrates generation
     ├── Program.cs              # Entry point; runs all generators in sequence
-    ├── App.config              # All runtime settings (connection string, namespaces, paths, schemas)
+    ├── Configuration/          # Command line options and project profile loading
+    ├── agc.defaults.json       # Naming rules and filters shared by every profile
     ├── Templates/
     │   ├── TemplateManager.cs  # Loads .txt template files; binds header tokens
     │   └── Files/              # Template .txt files (one per artifact type)
@@ -48,7 +49,6 @@ RQI.POC.AutoGenConsole.sln
         ├── GeneratorBase.cs           # Shared: column building, FK navigation, file saving
         ├── GeneratorBase.Columns.cs   # Column-to-property rendering with EF data annotations
         ├── IGenerator.cs              # Common interface (Generate method)
-        ├── AutoGenConsoleSettings.cs  # Typed wrappers around App.config keys
         ├── NOAHTablesGenerator.cs     # Generates EF entity classes for Tables and Views
         ├── NOAHSPROCSGenerator.cs     # Generates SPROC wrapper classes
         ├── NOAHUDTypesGenerator.cs    # Generates UDDT classes
@@ -145,84 +145,11 @@ All `.txt` template files use `<TOKEN_NAME>` placeholders replaced at generation
 
 ---
 
-## Configuration Reference (`App.config`)
+## Configuration
 
-All settings live under `<appSettings>`.
-
-### Connection
-| Key | Description |
-|---|---|
-| `ConnectionString` | SQL Server connection string for the source database |
-
-### Schema Filters (comma-separated schema names)
-| Key | Description |
-|---|---|
-| `RQI.POC.AutoGen.TableSchemaList` | Schemas to scan for tables |
-| `RQI.POC.AutoGen.ViewsSchemaList` | Schemas to scan for views |
-| `RQI.POC.AutoGen.StPrcSchemaList` | Schemas to scan for stored procedures |
-| `RQI.POC.AutoGen.StUDTSchemaList` | Schemas to scan for UDDTs |
-| `RQI.POC.AutoGen.CriticalDataTypesSchemaList` | Schemas for proxy/enum lookup tables |
-
-### Include / Exclude Filters (regex or `*` for all)
-| Key | Description |
-|---|---|
-| `RQI.POC.AutoGen.IncludeTableList` | Tables to include (`*` = all) |
-| `RQI.POC.AutoGen.ExcludeTableList` | Tables to exclude (comma-separated; regex supported) |
-| `RQI.POC.AutoGen.IncludeViewList` | Views to include |
-| `RQI.POC.AutoGen.ExcludeViewList` | Views to exclude |
-| `RQI.POC.AutoGen.IncludeProcedureList` | SPROCs to include |
-| `RQI.POC.AutoGen.ExcludeProcedureList` | SPROCs to exclude |
-
-### Critical Data Types
-| Key | Description |
-|---|---|
-| `RQI.POC.AutoGen.CriticalDataTypesTablesList` | Fully-qualified `[Schema].[Table]` list of lookup tables to generate proxy types for |
-
-### Name Transformation
-| Key | Description |
-|---|---|
-| `RQI.POC.AutoGen.RegexDictionaryReplace` | Semicolon-separated `pattern,replacement` pairs applied to SQL names |
-| `RQI.POC.AutoGen.StripText` | Regex prefixes to strip from names |
-| `RQI.POC.AutoGen.SkipPluralNamesList` | Words that should not be pluralized |
-| `RQI.POC.AutoGen.WordsShouldEndES` | Words that pluralize with `-es` |
-
-### Column Behavior
-| Key | Description |
-|---|---|
-| `RQI.POC.AutoGen.HistoricalColumns` | Column names that identify a "historical" (audited) table |
-| `RQI.POC.AutoGen.AuditorColumns` | Additional auditor columns to suppress from output |
-| `RQI.POC.AutoGen.SQL.SystemColToIgnoreList` | System columns to always skip |
-
-### Output Paths & Namespaces
-| Key | Description |
-|---|---|
-| `RQI.GEN.OutputBaseDir` | Root output directory |
-| `RQI.GEN.BaseNameSpace` | Top-level namespace prefix |
-| `RQI.GEN.DataDataNameSpace` | Namespace for data models (e.g., `NOAH.Data`) |
-| `RQI.GEN.DataAccessNameSpace` | Namespace for data access classes |
-| `RQI.GEN.DbContextNamespance` | Namespace for the generated DbContext |
-| `RQI.GEN.DbContextFileName` | Class name for the DbContext (e.g., `NOAHDbContext`) |
-| `RQI.GEN.DbContextConnectionStringName` | Connection string name used in DbContext constructor |
-| `RQI.GEN.UnitOfWorkNameSpace` | Namespace for the Unit of Work |
-| `RQI.GEN.DataModelsRootFilePath` | Filesystem root for model output |
-| `RQI.GEN.DataAccessRootFilePath` | Filesystem root for data access output |
-| `RQI.GEN.RepositoryRootFilePath` | Filesystem root for repository output |
-| `RQI.GEN.Data.EntityRootFilePath` | Filesystem root for entity output |
-| `RQI.GEN.ProxyTypeRootFilePath` | Filesystem root for proxy/lookup output |
-
-### Template File Paths
-| Key | Points to |
-|---|---|
-| `RQI.GEN.TableTemplateFilePath` | `TableModel.txt` |
-| `RQI.GEN.ViewTemplateFilePath` | `ViewModel.txt` |
-| `RQI.GEN.UDDTTemplateFilePath` | `UDDTModel.txt` |
-| `RQI.GEN.SPROCTemplateFilePath` | `SPROC.txt` |
-| `RQI.GEN.ProxyTypeTemplateFilePath` | `ProxyTableLookupModel.txt` |
-| `RQI.GEN.DbContextTemplateFilePath` | `DbContextTemplate.txt` |
-| `RQI.GEN.RepositoryInterfaceTemplateFilePath` | `RepositoryInterfaceTemplate.txt` |
-| `RQI.GEN.RepositoryTemplateFilePath` | `RepositoryTemplate.txt` |
-| `RQI.GEN.UnitOfWorkTemplateFilePath` | `UnitOfWorkTemplate.txt` |
-| `RQI.GEN.UnitOfWorkInterfaceTemplateFilePath` | `UnitOfWorkInterfaceTemplate.txt` |
+Settings come from a **project profile** (`profiles/<name>/agc.profile.json`), shared defaults
+(`RQI.POC.AutoGenConsole/agc.defaults.json`) and a named **connection** kept outside git.
+See [README.md](../README.md) for the profile format, path rules and command line.
 
 ---
 
@@ -284,18 +211,16 @@ Tables listed under `CriticalDataTypesTablesList` are treated as static referenc
 | Target ORM | Entity Framework Core |
 | JSON parsing (SPROC params) | Newtonsoft.Json |
 | DI (internal) | Unity |
-| Configuration | `System.Configuration` / `App.config` |
+| Configuration | `Microsoft.Extensions.Configuration` (JSON profiles + environment variables) |
 | Name inflection | Custom `Inflector` utility (singularize, pluralize, camelCase, PascalCase) |
 
 ---
 
 ## Typical Usage Workflow
 
-1. Point `ConnectionString` in `App.config` at the target SQL Server database.
-2. Set the schema lists (`TableSchemaList`, `StPrcSchemaList`, etc.) to the schemas you want to cover.
-3. Set the output path keys (`DataModelsRootFilePath`, `RepositoryRootFilePath`, etc.) to the target project folders.
-4. Set the namespace keys to match the target project's namespace conventions.
-5. Verify include/exclude filter lists.
-6. Run the console application.
-7. Review the console output (color-coded: green = success item, blue = column detail, yellow = SPROC params, red = error).
-8. The target project now contains fresh `.generated.cs` files ready to compile with EF Core.
+1. Create or pick a profile under `profiles/` (see README.md) with the schemas, namespaces, templates and output folders.
+2. Add the profile's connection to `%APPDATA%\Nuvol9\AGC\connections.json` (see `connections.sample.json`).
+3. Optionally preview with `--dry-run`.
+4. Run `RQI.POC.AutoGenConsole --profile <name>`.
+5. Review the console output (color-coded: green = success item, blue = column detail, yellow = SPROC params, red = error).
+6. The target project now contains fresh `.generated.cs` files ready to compile with EF Core.

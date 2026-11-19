@@ -44,7 +44,7 @@
                 WrittenFiles.Add(fullPath);
 
                 var directory = Path.GetDirectoryName(fullPath);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                if (!AgcSettings.DryRun && !string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
@@ -60,11 +60,15 @@
 
                     content = KeepCreatedDate(existing, content);
                     UpdatedCount++;
+                    if (AgcSettings.DryRun) Console.WriteLine($"|** [dry run] Would update: {fullPath}");
                 }
                 else
                 {
                     CreatedCount++;
+                    if (AgcSettings.DryRun) Console.WriteLine($"|** [dry run] Would create: {fullPath}");
                 }
+
+                if (AgcSettings.DryRun) return;
 
                 File.WriteAllText(fullPath, content);
             }
@@ -107,8 +111,14 @@
                     var autoGenFiles = Directory.GetFiles(folder, $"*{Utilities.AutogGenFileExtension}", SearchOption.AllDirectories);
                     foreach (var file in autoGenFiles.Where(f => !WrittenFiles.Contains(Path.GetFullPath(f))))
                     {
-                        File.Delete(file);
                         RemovedCount++;
+                        if (AgcSettings.DryRun)
+                        {
+                            Console.WriteLine($"|** [dry run] Would remove stale file: {file}");
+                            continue;
+                        }
+
+                        File.Delete(file);
                         Console.WriteLine($"|** Removed stale file: {file}");
                     }
                 }

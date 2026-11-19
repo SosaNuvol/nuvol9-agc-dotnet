@@ -504,7 +504,7 @@ public partial class UnitOfWork : IUnitOfWork
 
 Key observations:
 - Namespace: `{RootNamespace}.Utilities.{Schema}`
-- Generated for tables that are designated as **"proxy type" / lookup tables** in `App.config` (`RQI.GEN.ProxyTypes` key).
+- Generated for tables that are designated as **"proxy type" / lookup tables** in the profile (`criticalDataTypeTables`).
 - Emits three artifacts in one file:
   1. `Dictionary<string, int> IdPrefixMappings` — maps the string proxy key (e.g. `"MSTR"`) to the DB `int` ID.
   2. `DealerTenantTypeProxyEnum` — a C# enum with the same values (allows switch/pattern matching without magic strings).
