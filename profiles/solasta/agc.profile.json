@@ -12,7 +12,7 @@
 
   // Views, procedures, user types and critical data types use these unless listed separately.
   "schemas": {
-    "tables": [ "ACC", "AFL", "ACE", "INE", "MAC", "MSG", "QAL", "RSU" ]
+    "tables": [ "ACC", "AFL", "ACE", "INE", "MAC", "MCH", "MSG", "QAL", "RSU" ]
   },
   "criticalDataTypeTables": [ "[ACC].[DealerTenantTypes]" ],
 
