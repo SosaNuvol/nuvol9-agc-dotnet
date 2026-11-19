@@ -1,0 +1,50 @@
+{
+  // Solasta ERP API. Generates the EF models, SPROC wrappers, DbContext, repositories and unit of work.
+  "name": "Solasta",
+
+  // Folder that the output and template paths below are relative to.
+  // Relative to this file, or absolute. Override per run with --project-root.
+  "projectRoot": "D:\\CodeBaseSOLA\\Repos\\solasta-lighting-est-api",
+
+  // Connection name, resolved from connections.local.json, %APPDATA%\Nuvol9\AGC\connections.json
+  // or the AGC_Connections__SolastaDev environment variable. Never put the connection string here.
+  "connection": "SolastaDev",
+
+  // Views, procedures, user types and critical data types use these unless listed separately.
+  "schemas": {
+    "tables": [ "ACC", "AFL", "ACE", "INE", "MAC", "MSG", "QAL", "RSU" ]
+  },
+  "criticalDataTypeTables": [ "[ACC].[DealerTenantTypes]" ],
+
+  "namespaces": {
+    "data": "Solasta.Data",
+    "dbContext": "Solasta.Data.Repository",
+    "unitOfWork": "Solasta.DataAccess"
+  },
+  "dbContext": {
+    "className": "SolastaDbContext",
+    "connectionStringName": "DefaultConnection"
+  },
+
+  // Explicit template files are relative to projectRoot. Any template not listed here is taken from
+  // "templatesDir" (relative to this file, default "templates"), then from AGC's built-in Templates\Files.
+  "templatesDir": "templates",
+  "templates": {
+    "table": "Source/Solasta/Solasta.Data/Templates/TableModel.txt",
+    "view": "Source/Solasta/Solasta.Data/Templates/ViewModel.txt",
+    "userType": "Source/Solasta/Solasta.Data/Templates/UDDTModel.txt",
+    "sproc": "Source/Solasta/Solasta.DataAccess/Templates/SPROC.txt",
+    "proxyType": "Source/Solasta/Solasta.Data/Templates/ProxyTableLookupModel.txt"
+  },
+
+  // Relative to projectRoot.
+  "output": {
+    "dataModels": "Source/Solasta/Solasta.Data",
+    "dataAccess": "Source/Solasta/Solasta.DataAccess",
+    "repository": "Source/Solasta/Solasta.Data.Repository",
+    "dataEntity": "Source/Solasta/Solasta.Data.Entity",
+    "proxyTypes": "Source/Solasta/Solasta.Data/Utilities",
+    "unitOfWork": "Source/Solasta/Solasta.DataAccess/UnitOfWork.generated.cs",
+    "unitOfWorkInterface": "Source/Solasta/Solasta.DataAccess/IUnitOfWork.generated.cs"
+  }
+}

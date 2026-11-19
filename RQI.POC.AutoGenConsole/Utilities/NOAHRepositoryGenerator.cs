@@ -16,7 +16,7 @@
             {
                 if (this._dbContextClassName == null)
                 {
-                    _dbContextClassName = ConfigurationManager.AppSettings["RQI.GEN.DbContextFileName"];
+                    _dbContextClassName = RQI.POC.AutoGen.AgcSettings.Get("RQI.GEN.DbContextFileName");
                     if (string.IsNullOrEmpty(_dbContextClassName))
                     {
                         _dbContextClassName = "AppDbContext";

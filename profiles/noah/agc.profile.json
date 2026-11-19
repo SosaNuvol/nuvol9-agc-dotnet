@@ -1,0 +1,51 @@
+{
+  // NOAH / GBDC. Taken from the settings that used to be the App.config defaults.
+  "name": "NOAH",
+  "projectRoot": "D:\\CodeBaseQUAD\\NOAH",
+  "connection": "NoahDev",
+
+  "schemas": {
+    "tables": [ "ACC", "BAS", "GBD", "MAC", "WAL", "RES", "KYC", "RAT", "TXN" ],
+    "userTypes": [ "ACC", "BAS", "GBD", "MAC", "WAL", "RES", "SEC", "KYC", "RAT", "TXN" ],
+    "criticalDataTypes": [ "ACC", "BAS", "GBD", "MAC", "WAL", "RES", "SEC", "RAT" ]
+  },
+  "criticalDataTypeTables": [
+    "[ACC].[EntityTypes]", "[ACC].[TenantTypes]", "[BAS].[BankAccountTypes]", "[BAS].[BankTypes]",
+    "[GBD].[CurrencyTypes]", "[GBD].[MoneyTypes]", "[GBD].[ParticipantTypes]", "[GBD].[TransactionTypes]",
+    "[RES].[BusinessTypes]", "[RES].[PersonTypes]", "[WAL].[WalletAccountTypes]", "[GBD].[TokenizedGoldBarTypes]",
+    "[GBD].[PaymentRequestTypes]", "[KYC].[RegistrationTypes]", "[KYC].[GovernmentIdTypes]", "[KYC].[SourceOfFundTypes]",
+    "[RAT].[AssetTypes]", "[MAC].[InternalMessageTypes]", "[TXN].[ConversionTypes]"
+  ],
+
+  "namespaces": {
+    "data": "NOAH.Data",
+    "dbContext": "NOAH.Data",
+    "unitOfWork": "ClientPortal.DataAccess"
+  },
+  "dbContext": {
+    "className": "NOAHDbContext",
+    "connectionStringName": "GBDCDbContext"
+  },
+
+  "templates": {
+    "table": "Source/NOAH.Data/Templates/TableModel.txt",
+    "view": "Source/NOAH.Data/Templates/ViewModel.txt",
+    "userType": "Source/NOAH.Data/Templates/UDDTModel.txt",
+    "sproc": "Source/NOAH.DataAccess/Templates/SPROC.txt",
+    "proxyType": "Source/NOAH.Data/Templates/ProxyTableLookupModel.txt",
+    "dbContext": "Source/NOAH.Data/Templates/DbContextTemplate.txt",
+    "repositoryInterface": "Source/NOAH.Data/Templates/RepositoryInterfaceTemplate.txt",
+    "repository": "Source/NOAH.Data/Templates/RepositoryTemplate.txt"
+  },
+
+  // The repository and unit of work outputs went to the ClientPortal repo; absolute paths are allowed.
+  "output": {
+    "dataModels": "Source/NOAH.Data",
+    "dataAccess": "Source/NOAH.DataAccess",
+    "repository": "C:\\CodeBaseFIS\\ClientPortal\\client-portal-poc-api\\Source\\ClientPortal\\ClientPortal.Data.Repository",
+    "dataEntity": "Source/NOAH.Data.Entity",
+    "proxyTypes": "Source/NOAH.Data/Utilities",
+    "unitOfWork": "C:\\CodeBaseFIS\\ClientPortal\\client-portal-poc-api\\Source\\ClientPortal\\ClientPortal.DataAccess\\UnitOfWork.generated.cs",
+    "unitOfWorkInterface": "C:\\CodeBaseFIS\\ClientPortal\\client-portal-poc-api\\Source\\ClientPortal\\ClientPortal.DataAccess\\IUnitOfWork.generated.cs"
+  }
+}

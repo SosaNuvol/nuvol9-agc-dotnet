@@ -1,0 +1,10 @@
+{
+  // Copy to one of these (both are outside git):
+  //   %APPDATA%\Nuvol9\AGC\connections.json                    (recommended: survives clean builds and new clones)
+  //   RQI.POC.AutoGenConsole\bin\Debug\connections.local.json  (next to the exe)
+  // or set an environment variable per connection, e.g. AGC_Connections__SolastaDev.
+  "Connections": {
+    "SolastaDev": "Server=YOUR-SQL-SERVER;Initial Catalog=SOL_MAIN;User ID=sa;Password=<password>;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;",
+    "NoahDev": "Server=YOUR-SQL-SERVER;Initial Catalog=GBDC_MAIN;User ID=sa;Password=<password>;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+}

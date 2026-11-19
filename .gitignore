@@ -54,3 +54,6 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
+# AGC connection strings (never commit)
+connections.local.json
+connections.json
